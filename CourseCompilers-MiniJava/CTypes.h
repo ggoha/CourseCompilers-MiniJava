@@ -8,7 +8,7 @@ using namespace std;
 class IRoot
 {
 public:
-	virtual void accept(visitor* v);
+	virtual void accept(IVisitor* v);
 };
 
 class IStatement : public IRoot
@@ -27,7 +27,7 @@ public:
 		c2 = x2;
 		c3 = x3;
 	};
-	virtual void accept(visitor* v){
+	virtual void accept(IVisitor* v){
 		v->visit(this);
 	};
 };
@@ -39,7 +39,7 @@ public:
 		c1 = x1;
 		c2 = x2;
 	};
-	virtual void accept(visitor* v){
+	virtual void accept(IVisitor* v){
 		v->visit(this);
 	};
 };
@@ -50,7 +50,7 @@ public:
 	CStatementPRINTLN(IRoot* x1) {
 		c1 = x1;
 	};
-	virtual void accept(visitor* v){
+	virtual void accept(IVisitor* v){
 		v->visit(this);
 	};
 };
@@ -62,7 +62,7 @@ public:
 		c1 = x1;
 		c2 = x2;
 	};
-	virtual void accept(visitor* v){
+	virtual void accept(IVisitor* v){
 		v->visit(this);
 	};
 };
@@ -75,7 +75,7 @@ public:
 		c2 = x2;
 		c3 = x3;
 	};
-	virtual void accept(visitor* v){
+	virtual void accept(IVisitor* v){
 		v->visit(this);
 	};
 };
@@ -86,7 +86,7 @@ public:
 	CStatementBRACKETS(IRoot* x1) {
 		c1 = x1;
 	};
-	virtual void accept(visitor* v){
+	virtual void accept(IVisitor* v){
 		v->visit(this);
 	};
 };
@@ -102,7 +102,7 @@ public:
 	{
 		v.push_back(x);
 	}
-	virtual void accept(visitor* v){
+	virtual void accept(IVisitor* v){
 		v->visit(this);
 	};
 };
@@ -125,7 +125,7 @@ public:
 		c2 = x2;
 	}
 
-	virtual void accept(visitor* v){
+	virtual void accept(IVisitor* v){
 		v->visit(this);
 	};
 };
@@ -138,7 +138,7 @@ public:
 		c2 = x2;
 	}
 
-	virtual void accept( visitor* v ) {
+	virtual void accept( IVisitor* v ) {
 		v->visit( this );
 	};
 };
@@ -151,7 +151,7 @@ public:
 		c2 = x2;
 	}
 
-	virtual void accept( visitor* v ) {
+	virtual void accept( IVisitor* v ) {
 		v->visit( this );
 	};
 };
@@ -162,10 +162,10 @@ public:
 	CExpPointID( CExp* x1, CExp* x2, CExp* x3 ) {
 		c1 = x1;
 		c2 = x2;
-		c3 = x3
+		c3 = x3;
 	}
 
-	virtual void accept( visitor* v ) {
+	virtual void accept( IVisitor* v ) {
 		v->visit( this );
 	};
 };
@@ -177,19 +177,19 @@ public:
 		c1 = x1;
 	}
 
-	virtual void accept( visitor* v ) {
+	virtual void accept( IVisitor* v ) {
 		v->visit( this );
 	};
 };
 
 
-class CExpCExpSingleOp : public CExp {
+class CExpBool : public CExp {
 public:
-	CExpCExpSingleOp( CExp* x1 ) {
+	CExpBool(CExp* x1) {
 		c1 = x1;
 	}
 
-	virtual void accept( visitor* v ) {
+	virtual void accept( IVisitor* v ) {
 		v->visit( this );
 	};
 };
@@ -201,7 +201,7 @@ public:
 		c1 = x1;
 	}
 
-	virtual void accept( visitor* v ) {
+	virtual void accept( IVisitor* v ) {
 		v->visit( this );
 	};
 };
@@ -213,7 +213,7 @@ public:
 		c1 = x1;
 	}
 
-	virtual void accept( visitor* v ) {
+	virtual void accept( IVisitor* v ) {
 		v->visit( this );
 	};
 };
@@ -227,7 +227,7 @@ public:
 		c3 = x3;
 	}
 
-	virtual void accept( visitor* v ) {
+	virtual void accept( IVisitor* v ) {
 		v->visit( this );
 	};
 };
@@ -240,7 +240,7 @@ public:
 		c2 = x2;
 	}
 
-	virtual void accept( visitor* v ) {
+	virtual void accept( IVisitor* v ) {
 		v->visit( this );
 	};
 };
@@ -252,7 +252,7 @@ public:
 		c1 = x1;
 	}
 
-	virtual void accept( visitor* v ) {
+	virtual void accept( IVisitor* v ) {
 		v->visit( this );
 	};
 };
@@ -264,12 +264,7 @@ public:
 		c1 = x1;
 	}
 
-	virtual void accept( visitor* v ) {
+	virtual void accept( IVisitor* v ) {
 		v->visit( this );
 	};
 };
-
-
-
-
-

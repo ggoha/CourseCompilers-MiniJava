@@ -34,6 +34,7 @@ public:
 	void visit(CExpNEWID *n);
 	void visit(CExpExclamationMark *n);
 	void visit(CExpCircleBrackets *n);
+	void visit(CExpBool *n);
 };
 
 

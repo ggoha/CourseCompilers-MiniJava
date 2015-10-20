@@ -19,6 +19,7 @@ class CExpNEWINT;
 class CExpNEWID;
 class CExpExclamationMark;
 class CExpCircleBrackets;
+class CExpBool;
 
 class IVisitor
 {
@@ -53,6 +54,7 @@ public:
 	virtual void visit(CExpNEWID *n) = 0;
 	virtual void visit(CExpExclamationMark *n) = 0;
 	virtual void visit(CExpCircleBrackets *n) = 0;
+	virtual void visit(CExpBool *n) = 0;
 
 
 };

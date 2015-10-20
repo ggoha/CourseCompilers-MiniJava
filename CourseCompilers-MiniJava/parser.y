@@ -140,8 +140,8 @@ Exp:
 	| Exp'.' LENGTH { $$ = new CExpPointLENGTH($1, $3) }
 	| Exp '.' ID '(' ExpList ')' {$$ = new CExpPointID($1, $3, $5) }
 	| INTEGER_LITERAL { $$ = new CExpINTEGER_LITERAL( $1 )  }
-	| TRUE { $$ = new CExpSingleOp($1) }
-	| FALSE { $$ = new CExpSingleOp($1) }
+	| TRUE { $$ = new CExpBool(true) }
+	| FALSE { $$ = new CExpBool(false) }
 	| ID { $$ = new CExpID($1) }
 	| THIS { $$ = new CExpTHIS($1) }
 	| NEW INT '[' Exp ']' { $$ = new CExpNEWINT($1,$2,$4) }

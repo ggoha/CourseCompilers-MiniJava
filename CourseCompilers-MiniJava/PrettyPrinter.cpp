@@ -127,7 +127,9 @@ public:
 		n->c1->accept(this);
 		cout << ')';
 	}
+	void visit(CExpBool *n){
 
+	}
 };
 
 
