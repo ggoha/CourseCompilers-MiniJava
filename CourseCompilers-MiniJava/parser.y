@@ -133,21 +133,21 @@ Exp:
 	Exp '+' Exp { $$ = new CExpBinary($1,'+', $3); }
 	| Exp '-' Exp { $$ = new CExpBinary($1,'-', $3); }
 	| Exp '*' Exp { $$ = new CExpBinary($1,'*', $3); }
-	| '-' Exp %prec UMINUS {}
+	| '-' Exp %prec UMINUS { }
 	| Exp '&' '&' Exp { $$ = new CExpBinary($1,'&', $4); }
 	| Exp '<' Exp { $$ = new CExpBinary($1,'+', $3); }
-	| Exp '[' Exp ']' {}
-	| Exp'.' LENGTH {}
-	| Exp '.' ID '(' ExpList ')' {}
-	| INTEGER_LITERAL {}
-	| TRUE {}
-	| FALSE {}
-	| ID {}
-	| THIS {}
-	| NEW INT '[' Exp ']' {}
-	| NEW ID '(' ')' {}
-	| '!' Exp {}
-	| '(' Exp ')' {}
+	| Exp '[' Exp ']' { $$ = new CExpInSquareBrackets($1, $3)}
+	| Exp'.' LENGTH { $$ = new CExpPointLENGTH($1, $3) }
+	| Exp '.' ID '(' ExpList ')' {$$ = new CExpPointID($1, $3, $5) }
+	| INTEGER_LITERAL { $$ = new CExpINTEGER_LITERAL( $1 )  }
+	| TRUE { $$ = new CExpSingleOp($1) }
+	| FALSE { $$ = new CExpSingleOp($1) }
+	| ID { $$ = new CExpID($1) }
+	| THIS { $$ = new CExpTHIS($1) }
+	| NEW INT '[' Exp ']' { $$ = new CExpNEWINT($1,$2,$4) }
+	| NEW ID '(' ')' { $$ = new CExpNEWID($1,$2) }
+	| '!' Exp { $$ = new CExpExclamationMark($2)}
+	| '(' Exp ')' { $$ = new CExpCircleBrackets($2) }
 	;
 ExpList:
 	Exp ExpRests {}

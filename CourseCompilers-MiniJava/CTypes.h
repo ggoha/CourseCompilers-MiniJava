@@ -58,7 +58,7 @@ public:
 class CStatementASIGNMENT : public IStatement
 {
 public:
-	CStatementASIGNMENT(IRoot* x1, IRoot* x2) {
+	CStatementASIGNMENT(IRoot* x1,IRoot* x2) {
 		c1 = x1;
 		c2 = x2;
 	};
@@ -67,7 +67,7 @@ public:
 	};
 };
 
-class CStatementSQUEREASIGNMENT : public IStatement
+class CStatementSQUEREASIGNMENT: public IStatement
 {
 public:
 	CStatementSQUEREASIGNMENT(IRoot* x1, IRoot* x2, IRoot* x3) {
@@ -108,7 +108,7 @@ public:
 };
 
 class CExp : public IRoot
-{
+{ 
 public:
 	IRoot *c1, *c2;
 	CExp() {};
@@ -130,17 +130,146 @@ public:
 	};
 };
 
-class CExpBinary : public CExp
-{
+
+class CExpInSquareBrackets : public CExp {
 public:
-	char c;
-	CExpBinary(CExp* x1, CExp* x2)
-	{
+	CExpInSquareBrackets( CExp* x1, CExp* x2 ) {
 		c1 = x1;
 		c2 = x2;
 	}
 
-	virtual void accept(visitor* v){
-		v->visit(this);
+	virtual void accept( visitor* v ) {
+		v->visit( this );
 	};
 };
+
+
+class CExpPointLENGTH : public CExp {
+public:
+	CExpPointLENGTH( CExp* x1, CExp* x2 ) {
+		c1 = x1;
+		c2 = x2;
+	}
+
+	virtual void accept( visitor* v ) {
+		v->visit( this );
+	};
+};
+
+
+class CExpPointID : public CExp {
+public:
+	CExpPointID( CExp* x1, CExp* x2, CExp* x3 ) {
+		c1 = x1;
+		c2 = x2;
+		c3 = x3
+	}
+
+	virtual void accept( visitor* v ) {
+		v->visit( this );
+	};
+};
+
+
+class CExpINTEGER_LITERAL : public CExp {
+public:
+	CExpINTEGER_LITERAL( CExp* x1 ) {
+		c1 = x1;
+	}
+
+	virtual void accept( visitor* v ) {
+		v->visit( this );
+	};
+};
+
+
+class CExpCExpSingleOp : public CExp {
+public:
+	CExpCExpSingleOp( CExp* x1 ) {
+		c1 = x1;
+	}
+
+	virtual void accept( visitor* v ) {
+		v->visit( this );
+	};
+};
+
+
+class CExpID : public CExp {
+public:
+	CExpID( CExp* x1 ) {
+		c1 = x1;
+	}
+
+	virtual void accept( visitor* v ) {
+		v->visit( this );
+	};
+};
+
+
+class CExpTHIS : public CExp {
+public:
+	CExpTHIS( CExp* x1 ) {
+		c1 = x1;
+	}
+
+	virtual void accept( visitor* v ) {
+		v->visit( this );
+	};
+};
+
+
+class CExpNEWINT : public CExp {
+public:
+	CExpNEWINT( CExp* x1, CExp* x2, CExp* x3 ) {
+		c1 = x1;
+		c2 = x2;
+		c3 = x3;
+	}
+
+	virtual void accept( visitor* v ) {
+		v->visit( this );
+	};
+};
+
+
+class CExpNEWID : public CExp {
+public:
+	CExpNEWID( CExp* x1, CExp* x2 ) {
+		c1 = x1;
+		c2 = x2;
+	}
+
+	virtual void accept( visitor* v ) {
+		v->visit( this );
+	};
+};
+
+
+class CExpExclamationMark : public CExp {
+public:
+	CExpExclamationMark( CExp* x1 ) {
+		c1 = x1;
+	}
+
+	virtual void accept( visitor* v ) {
+		v->visit( this );
+	};
+};
+
+
+class CExpCircleBrackets : public CExp {
+public:
+	CExpCircleBrackets( CExp* x1 ) {
+		c1 = x1;
+	}
+
+	virtual void accept( visitor* v ) {
+		v->visit( this );
+	};
+};
+
+
+
+
+
