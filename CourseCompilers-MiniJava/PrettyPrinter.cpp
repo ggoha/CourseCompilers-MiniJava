@@ -2,13 +2,14 @@
 
 #include <iostream>
 #include "Visitor.h"
+#include "CTypes.h"
 
 using namespace std;
 
 class CPrettyPrinter : public IVisitor
 {
 public:
-	void visit(CStatementIF* n);
+	void visit(CStatementIF* n)
 	{
 		cout << "if ( ";
 		n->c1->accept(this);

@@ -110,7 +110,7 @@ public:
 class CExp : public IRoot
 { 
 public:
-	IRoot *c1, *c2;
+	IRoot *c1, *c2, *c3;
 	CExp() {};
 };
 
