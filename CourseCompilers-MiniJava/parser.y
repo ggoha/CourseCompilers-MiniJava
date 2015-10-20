@@ -17,6 +17,7 @@ void yyerror( int*, const char* );
 	int ival;
 	char sval[255];
 	CProgram* program;
+	CStatement* statement; 
 }
 
 /* Определение лево-ассоцитивности. Аналогично есть %right.
@@ -54,9 +55,8 @@ void yyerror( int*, const char* );
 %token NEW 
 %token RETURN
 %token INT
-%type<CProgram> Program
-%type<CStatement> Statement
-%type< CStar<CStatement> > Statements
+%type<program> Program
+%type<statement> Statement
 %type<CExp> Exp
 /* Связываем тип из union и символ парсера. */
 

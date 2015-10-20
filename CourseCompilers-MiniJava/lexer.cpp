@@ -1,6 +1,6 @@
-#line 2 "C:\\Users\\acerPC\\Downloads\\CourseCompilers-MiniJava\\CourseCompilers-MiniJava-6f4c062a32d8130e843455d40b548c53a8bd8d83\\CourseCompilers-MiniJava\\lexer.cpp"
+#line 2 "C:\\Users\\acerPC\\Documents\\GitHub\\CourseCompilers-MiniJavaCurrent\\CourseCompilers-MiniJava\\lexer.cpp"
 
-#line 4 "C:\\Users\\acerPC\\Downloads\\CourseCompilers-MiniJava\\CourseCompilers-MiniJava-6f4c062a32d8130e843455d40b548c53a8bd8d83\\CourseCompilers-MiniJava\\lexer.cpp"
+#line 4 "C:\\Users\\acerPC\\Documents\\GitHub\\CourseCompilers-MiniJavaCurrent\\CourseCompilers-MiniJava\\lexer.cpp"
 
 #define  YY_INT_ALIGNED short int
 
@@ -577,7 +577,7 @@ char *yytext;
 #include "parser.tab.hpp"
 using namespace std;
 #define YY_DECL extern "C" int yylex()
-#line 581 "C:\\Users\\acerPC\\Downloads\\CourseCompilers-MiniJava\\CourseCompilers-MiniJava-6f4c062a32d8130e843455d40b548c53a8bd8d83\\CourseCompilers-MiniJava\\lexer.cpp"
+#line 581 "C:\\Users\\acerPC\\Documents\\GitHub\\CourseCompilers-MiniJavaCurrent\\CourseCompilers-MiniJava\\lexer.cpp"
 
 #define INITIAL 0
 
@@ -758,7 +758,7 @@ YY_DECL
     
 #line 12 "lexer.l"
 
-#line 762 "C:\\Users\\acerPC\\Downloads\\CourseCompilers-MiniJava\\CourseCompilers-MiniJava-6f4c062a32d8130e843455d40b548c53a8bd8d83\\CourseCompilers-MiniJava\\lexer.cpp"
+#line 762 "C:\\Users\\acerPC\\Documents\\GitHub\\CourseCompilers-MiniJavaCurrent\\CourseCompilers-MiniJava\\lexer.cpp"
 
 	if ( !(yy_init) )
 		{
@@ -962,7 +962,7 @@ YY_RULE_SETUP
 #line 36 "lexer.l"
 ECHO;
 	YY_BREAK
-#line 966 "C:\\Users\\acerPC\\Downloads\\CourseCompilers-MiniJava\\CourseCompilers-MiniJava-6f4c062a32d8130e843455d40b548c53a8bd8d83\\CourseCompilers-MiniJava\\lexer.cpp"
+#line 966 "C:\\Users\\acerPC\\Documents\\GitHub\\CourseCompilers-MiniJavaCurrent\\CourseCompilers-MiniJava\\lexer.cpp"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
