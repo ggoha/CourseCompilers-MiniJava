@@ -31,7 +31,7 @@ public:
 	virtual void accept(CPrettyPrinter* v){
 		v->visit(this);
 	};
-}
+};
 
 class CClassDecls : IRoot{
 	IRoot *c1;
