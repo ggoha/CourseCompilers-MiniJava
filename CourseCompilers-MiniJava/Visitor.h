@@ -1,4 +1,21 @@
 #pragma once
+class CProgram;
+class CMain;
+class CClassDecl;
+class CClassDeclInheritance{};
+class CVarDecls;
+class CMethodDecls;
+class CVarDecl;
+class CMethodDecl
+class CStatements
+class CFormalList
+class CFormalRests;
+class CFormalRest
+class CType;
+class CExpList;
+class CExpRests;
+class CExpRest;
+
 
 class CStatementIF;
 class CStatementBRACKETS;

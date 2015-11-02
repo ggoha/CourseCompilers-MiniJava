@@ -17,7 +17,23 @@ void yyerror( int*, const char* );
 	int ival;
 	char sval[255];
 	CProgram* program;
-	CStatement* statement; 
+	CStatement* statement;
+	CClassDecls * classdecls; 
+	CMain* cmain;
+	CClassDeclInheritance* cclassdeclinheritance;
+	CMethodDecl* cmethoddecl;
+	CMethodDecls* cmethoddecls;
+	CVarDecl* cvardecl;
+	CVarDecls* cvardecls;
+	CStatements* cstatements;
+	CFormalList* cformallist;
+	CFormalRests* cformalrests;
+	CFormalRest* cformalrest;
+	CType* ctype;
+	CExp* cexp;
+	CExpList* cexplist;
+	CExpRests* cexprests;
+	CexpRest* cexprest;
 }
 
 /* Определение лево-ассоцитивности. Аналогично есть %right.
@@ -55,15 +71,34 @@ void yyerror( int*, const char* );
 %token NEW 
 %token RETURN
 %token INT
-%type<program> Program
-%type<statement> Statement
-%type<CExp> Exp
+
 /* Связываем тип из union и символ парсера. */
+
+>
+%type<program> Program
+%type<statement> Statement 
+%type<classdecls> ClassDecls; 
+%type<cmain> Main;
+%type<cclassdeclinheritance> ClassDeclInheritance;
+%type<cmethoddecl> MethodDecl;
+%type<cmethoddecls> MethodDecls;
+%type<cvardecl> VarDecl;
+%type<cvardecls> VarDecls;
+%type<cstatements> Statements;
+%type<cformallist> FormalList;
+%type<cformalrests> FormalRests;
+%type<cformalrest> FormalRest;
+%type<ctype> Type;
+%type<cexp> Exp;
+%type<cexplist>  ExpList;
+%type<cexprests> ExpRests;
+%type<cexprest> ExpRest;
+
 
 /* Секция с описанием правил парсера. */
 %%
 Program:
-	MainClass {}
+	MainClass { $$ = new CProgram( $1 ) }
 	| MainClass ClassDecls {$$ = new CProgram( $1, $2 ); }
 	;
 ClassDecls:
@@ -71,56 +106,57 @@ ClassDecls:
 	| ClassDecls ClassDecl { $1->addNext($2); }
 	;
 MainClass:
-	CLASS ID '{' PUBLIC STATIC VOID MAIN '(' STRING '[' ']' ID ')' '{' Statement '}' '}' {}
+	CLASS ID '{' PUBLIC STATIC VOID MAIN '(' STRING '[' ']' ID ')' '{' Statement '}' '}' { $$ = new CMain( $2, $12, $15 )}
 	;
 ClassDecl:
-	CLASS ID '{'VarDecls MethodDecls'}' {}
-	| CLASS ID '{'VarDecls'}' {}
-	| CLASS ID '{'MethodDecls'}' {}
-	| CLASS ID '{''}' {}
-	| CLASS ID EXTENDS ID '{'VarDecls MethodDecls'}' {}
-	| CLASS ID EXTENDS ID '{'VarDecls'}' {}
-	| CLASS ID EXTENDS ID '{'MethodDecls'}' {}
-	| CLASS ID EXTENDS ID '{''}' {}
+	CLASS ID '{'VarDecls MethodDecls'}' { $$ = new CClassDecl($2, $3, $4) }
+	| CLASS ID '{'VarDecls'}' { $$ = new CClassDecl( $2, $4 ) }
+	| CLASS ID '{'MethodDecls'}' { $$ = new CClassDecl( $2, $4 )  }
+	| CLASS ID '{''}' { $$ = new CClassDecl($2) }
+	| CLASS ID EXTENDS ID '{'VarDecls MethodDecls'}' { $$ = new CClassDeclsInheritance($2, $4, $6, $7) }
+	| CLASS ID EXTENDS ID '{'VarDecls'}' { $$ = new CClassDeclsInheritance($2, $4, $6) }
+	| CLASS ID EXTENDS ID '{'MethodDecls'}' { $$ = new CClassDeclsInheritance($2, $4, $6) }
+	| CLASS ID EXTENDS ID '{''}' { $$ = new CClassDeclsInheritance($2, $4) }
 	;
 VarDecls:
-	VarDecl {}
-	| VarDecls VarDecl {}
+	VarDecl { $$ = new CVardecls($1) }
+	| VarDecls VarDecl { $1->addNext($2) }
 	;
 MethodDecls:
-    MethodDecl {} 
-	| MethodDecls MethodDecl {}
+    MethodDecl { $$ = new CMethodDecls($1) } 
+	| MethodDecls MethodDecl { $1->addNext($2) }
 	;
 VarDecl:
-	Type ID ';' {}
+	Type ID ';' { $$ = new CVarDecl($1, $2) }
 	;
 MethodDecl:
-	PUBLIC Type ID '(' FormalList  ')' '{' VarDecls Statements RETURN Exp ';' '}' {}
-	| PUBLIC Type ID '(' FormalList  ')' '{' VarDecls RETURN Exp ';' '}' {}
-	| PUBLIC Type ID '(' FormalList  ')' '{' Statements RETURN Exp ';' '}' {}
-	| PUBLIC Type ID '(' FormalList  ')' '{' RETURN Exp ';' '}' {}
+	PUBLIC Type ID '(' FormalList  ')' '{' VarDecls Statements RETURN Exp ';' '}' { $$ = new CMethodDecls( $2, $3, $5, $8, $9, $11 ) }
+	| PUBLIC Type ID '(' FormalList  ')' '{' VarDecls RETURN Exp ';' '}' { $$ = new CMethodDecls( $2, $3, $5, $8, $10 }
+	| PUBLIC Type ID '(' FormalList  ')' '{' Statements RETURN Exp ';' '}' { $$ = new CMethodDecls( $2, $3, $5, $8, $10 }
+	| PUBLIC Type ID '(' FormalList  ')' '{' RETURN Exp ';' '}' { $$ = new CMethodDecls( $2, $3, $5, $9 }
 	;
 Statements:
-	Statement {}
-	| Statements Statement {}
+	Statement { $$ = new CStatements($1) }
+	| Statements Statement {$1->addNext($2)  }
 	;
 FormalList:
-	Type ID FormalRests {}
-	| Type ID {}
+	Type ID FormalRests { $$ = new CFormalList($1, $2, $3)  }
+	| Type ID { $$ = new CFormalList( $1, $2 ) }
 	;
 FormalRests:
-	FormalRest {}
-	| FormalRests FormalRest {}
+	FormalRest { $$ = new CFormalRests($1) }
+	| FormalRests FormalRest { $1->addNext($2) }
 	;
 FormalRest:
-	',' Type ID {}
+	',' Type ID { $$ = new CFormalRest($2,$3); }
 	;
 Type:
-	INT '['']' {}
-	| BOOLEAN {}
-	| INT {}
-	| ID {}
+	INT '['']' {$$ = new CType( CType::_mas, $1 ) }
+	| BOOLEAN { $$ = new CType( CType::_bool, $1 ) }
+	| INT { $$ = new CType( CType::_int, $1 ) }
+	| ID { $$ = new CType( CType::_id, $1 )}
 	;
+
 Statement:
 	'{'Statement'}' {$$ = new CStatementBRACKETS($1); }
 	| IF '(' Exp ')' Statement ELSE Statement { $$ = new CStatementIF($3,$5,$7); }
@@ -150,14 +186,14 @@ Exp:
 	| '(' Exp ')' { $$ = new CExpCircleBrackets($2) }
 	;
 ExpList:
-	Exp ExpRests {}
-	| Exp {}
+	Exp ExpRests { $$ = new CExpList($1, $2) }
+	| Exp {$$ = new CExpList($1)}
 	;
 ExpRests:
-	ExpRest {}
-	| ExpRests ExpRest {} 
+	ExpRest { $$ = new CExpRest($1)}
+	| ExpRests ExpRest { $1->addNext($2)} 
 ExpRest:
-	',' Exp {}
+	',' Exp { $$ = new CExpRest($2) }
 	;
 %%
 /* Функция обработки ошибки. */

@@ -1,14 +1,14 @@
 #pragma once
 #include <iostream>
 #include <vector>
-#include "Visitor.h"
+#include "PrettyPrinter.h"
 using namespace std;
 
 
 class IRoot
 {
 public:
-	virtual void accept(visitor* v);
+	virtual void accept(CPrettyPrinter* v);
 };
 
 class IStatement : public IRoot
@@ -18,6 +18,91 @@ public:
 	IStatement() {};
 };
 
+class CProgram : public IRoot {
+	IRoot *c1, *c2;
+public:
+	CProgram(IRoot* x1, IRoot * x2){
+		c1 = x1;
+		c2 = x2;
+	}
+	CProgram(IRoot * x1){
+		c1 = x1;
+	}
+	virtual void accept(CPrettyPrinter* v){
+		v->visit(this);
+	};
+}
+
+class CClassDecls : IRoot{
+	IRoot *c1;
+	std::vector<IRoot*> a;
+public:
+	CClassDecls(CClassDecl * x1){
+		c1 = x1;
+	}
+	void addNext( CClassDecl * x1 ){
+		a.push_back(x1);
+};
+class CMain : IRoot {
+	CMain(char* x1, char* x2, IRoot * x3){
+		
+	} 
+class CClassDecl : IRoot{
+	virtual void accept(CPrettyPrinter* v){
+		v->visit(this);
+	};
+};
+class CClassDeclInheritance : IRoot{
+	virtual void accept(CPrettyPrinter* v){
+		v->visit(this);
+	};
+};
+class CVarDecls : IRoot{
+
+	virtual void accept(CPrettyPrinter* v){
+		v->visit(this);
+	};
+};
+class CMethodDecls : IRoot{
+	virtual void accept(CPrettyPrinter* v){
+		v->visit(this);
+	};
+};
+class CVarDecl : IRoot{
+	virtual void accept(CPrettyPrinter* v){
+		v->visit(this);
+	};
+};
+class CMethodDecl : IRoot{
+	virtual void accept(CPrettyPrinter* v){
+		v->visit(this);
+	};
+};
+class CStatements : IRoot{
+	virtual void accept(CPrettyPrinter* v){
+		v->visit(this);
+	};
+};
+class CFormalList : IRoot{
+	virtual void accept(CPrettyPrinter* v){
+		v->visit(this);
+	};
+};
+class CFormalRests : IRoot{
+	virtual void accept(CPrettyPrinter* v){
+		v->visit(this);
+	};
+};
+class CFormalRest : IRoot{
+	virtual void accept(CPrettyPrinter* v){
+		v->visit(this);
+	};
+};
+class CType{
+	virtual void accept(CPrettyPrinter* v){
+		v->visit(this);
+	};
+};
 
 class CStatementIF : public IStatement
 {
@@ -27,7 +112,7 @@ public:
 		c2 = x2;
 		c3 = x3;
 	};
-	virtual void accept(visitor* v){
+	virtual void accept(CPrettyPrinter* v){
 		v->visit(this);
 	};
 };
@@ -39,7 +124,7 @@ public:
 		c1 = x1;
 		c2 = x2;
 	};
-	virtual void accept(visitor* v){
+	virtual void accept(CPrettyPrinter* v){
 		v->visit(this);
 	};
 };
@@ -50,7 +135,7 @@ public:
 	CStatementPRINTLN(IRoot* x1) {
 		c1 = x1;
 	};
-	virtual void accept(visitor* v){
+	virtual void accept(CPrettyPrinter* v){
 		v->visit(this);
 	};
 };
@@ -62,7 +147,7 @@ public:
 		c1 = x1;
 		c2 = x2;
 	};
-	virtual void accept(visitor* v){
+	virtual void accept(CPrettyPrinter* v){
 		v->visit(this);
 	};
 };
@@ -75,7 +160,7 @@ public:
 		c2 = x2;
 		c3 = x3;
 	};
-	virtual void accept(visitor* v){
+	virtual void accept(CPrettyPrinter* v){
 		v->visit(this);
 	};
 };
@@ -86,7 +171,7 @@ public:
 	CStatementBRACKETS(IRoot* x1) {
 		c1 = x1;
 	};
-	virtual void accept(visitor* v){
+	virtual void accept(CPrettyPrinter* v){
 		v->visit(this);
 	};
 };
@@ -102,7 +187,7 @@ public:
 	{
 		v.push_back(x);
 	}
-	virtual void accept(visitor* v){
+	virtual void accept(CPrettyPrinter* v){
 		v->visit(this);
 	};
 };
@@ -125,7 +210,7 @@ public:
 		c2 = x2;
 	}
 
-	virtual void accept(visitor* v){
+	virtual void accept(CPrettyPrinter* v){
 		v->visit(this);
 	};
 };
@@ -138,7 +223,7 @@ public:
 		c2 = x2;
 	}
 
-	virtual void accept( visitor* v ) {
+	virtual void accept( CPrettyPrinter* v ) {
 		v->visit( this );
 	};
 };
@@ -151,7 +236,7 @@ public:
 		c2 = x2;
 	}
 
-	virtual void accept( visitor* v ) {
+	virtual void accept( CPrettyPrinter* v ) {
 		v->visit( this );
 	};
 };
@@ -162,10 +247,10 @@ public:
 	CExpPointID( CExp* x1, CExp* x2, CExp* x3 ) {
 		c1 = x1;
 		c2 = x2;
-		c3 = x3
+		c3 = x3;
 	}
 
-	virtual void accept( visitor* v ) {
+	virtual void accept( CPrettyPrinter* v ) {
 		v->visit( this );
 	};
 };
@@ -177,7 +262,7 @@ public:
 		c1 = x1;
 	}
 
-	virtual void accept( visitor* v ) {
+	virtual void accept( CPrettyPrinter* v ) {
 		v->visit( this );
 	};
 };
@@ -189,7 +274,7 @@ public:
 		c1 = x1;
 	}
 
-	virtual void accept( visitor* v ) {
+	virtual void accept( CPrettyPrinter* v ) {
 		v->visit( this );
 	};
 };
@@ -201,7 +286,7 @@ public:
 		c1 = x1;
 	}
 
-	virtual void accept( visitor* v ) {
+	virtual void accept( CPrettyPrinter* v ) {
 		v->visit( this );
 	};
 };
@@ -213,7 +298,7 @@ public:
 		c1 = x1;
 	}
 
-	virtual void accept( visitor* v ) {
+	virtual void accept( CPrettyPrinter* v ) {
 		v->visit( this );
 	};
 };
@@ -227,7 +312,7 @@ public:
 		c3 = x3;
 	}
 
-	virtual void accept( visitor* v ) {
+	virtual void accept( CPrettyPrinter* v ) {
 		v->visit( this );
 	};
 };
@@ -240,7 +325,7 @@ public:
 		c2 = x2;
 	}
 
-	virtual void accept( visitor* v ) {
+	virtual void accept( CPrettyPrinter* v ) {
 		v->visit( this );
 	};
 };
@@ -252,7 +337,7 @@ public:
 		c1 = x1;
 	}
 
-	virtual void accept( visitor* v ) {
+	virtual void accept( CPrettyPrinter* v ) {
 		v->visit( this );
 	};
 };
@@ -264,8 +349,23 @@ public:
 		c1 = x1;
 	}
 
-	virtual void accept( visitor* v ) {
+	virtual void accept( CPrettyPrinter* v ) {
 		v->visit( this );
+	};
+};
+class CExpList : IRoot{
+	virtual void accept(CPrettyPrinter* v){
+		v->visit(this);
+	};
+};
+class CExpRests : IRoot{
+	virtual void accept(CPrettyPrinter* v){
+		v->visit(this);
+	};
+};
+class CExpRest : IRoot{
+	virtual void accept(CPrettyPrinter* v){
+		v->visit(this);
 	};
 };
 
