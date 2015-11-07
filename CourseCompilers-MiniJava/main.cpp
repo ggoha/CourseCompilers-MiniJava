@@ -1,17 +1,18 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <stdexcept>
 #include <iostream>
 using std::invalid_argument;
 using std::cout;
 using std::endl;
-extern "C" int yylex();
+//extern "C" int yylex();
 extern FILE* yyin;
-extern int yyparse();
+int yyparse(int*);
 
 int main(int argc, char** argv) {
 	FILE* f = fopen("input.txt","r");
 	yyin = f;
-	yyparse();
+	yyparse((int*)&f);
 	return 0;
 }
 /*
