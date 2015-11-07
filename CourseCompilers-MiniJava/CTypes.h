@@ -8,25 +8,229 @@ using namespace std;
 class IRoot
 {
 public:
-	virtual void accept(IVisitor* v);
+	virtual void accept(IVisitor* v) = 0;
 };
 
 class IStatement : public IRoot
 {
 public:
-	IRoot *c1, *c2, *c3;
 	IStatement() {};
 };
 
+class CProgram : public IRoot {
+public:
+	CMainClass *mainClass;
+	CClassDecls *classDecls;
+	CProgram(CMainClass* x1, CClassDecls * x2){
+		mainClass = x1;
+		classDecls = x2;
+	}
+	CProgram(CMainClass * x1){
+		mainClass = x1;
+		classDecls = new CClassDecls();
+	}
+	virtual void accept(IVisitor* v){
+		v->visit(this);
+	};
+};
+
+class CClassDecls :public IRoot {
+public:
+	std::vector<CClassDecl*> a;
+	CClassDecls()
+	{};
+	CClassDecls( CClassDecl * x1 ) {
+		a.push_back(x1);
+	}
+	void addNext( CClassDecl * x1 ) {
+		a.push_back( x1 );
+	};
+	virtual void accept(IVisitor* v) {
+		v->visit(this);
+	};
+};
+class CMainClass :public IRoot {
+public:
+	string id1;
+	string id2;
+	IStatement * statement;
+	CMainClass( string _id1, string _id2, IStatement* _statement ) {
+		id1 = _id1;
+		id2 = _id2;
+		statement = _statement;
+	}
+};
+class CClassDecl :public IRoot{
+public:
+	string id;
+	CMethodDecls* methodDecls;
+	CVarDecls* varDecls;
+	CClassDecl(string _id, CVarDecls* _varDecls, CMethodDecls* _methodDecls) :
+		id(_id)
+	{
+		if (_varDecls == 0)
+			varDecls = new CVarDecls();
+		else
+			varDecls = _varDecls;
+		if (_methodDecls == 0)
+			methodDecls = new CMethodDecls();
+		else
+			methodDecls = _methodDecls;
+	};
+	virtual void accept(IVisitor* v){
+		v->visit(this);
+	};
+};
+
+class CClassDeclInheritance :public CClassDecl {
+public:
+	string id2, id1;
+	CClassDeclInheritance(string _id1, string _id2, CVarDecls* _varDecls, CMethodDecls* _methodDecls) :
+		CClassDecl(_id1, _varDecls, _methodDecls) , id2(_id2),id1(_id1)
+	{}
+	virtual void accept(IVisitor* v){
+		v->visit(this);
+	};
+};
+class CVarDecls :public IRoot{
+public:
+	std::vector<CVarDecl*> a;
+	CVarDecls()
+	{};
+	CVarDecls(CVarDecl * x1) {
+		a.push_back(x1);
+	}
+	void addNext(CVarDecl * x1) {
+		a.push_back(x1);
+	};
+	virtual void accept(IVisitor* v) {
+		v->visit(this);
+	};
+};
+class CMethodDecls :public IRoot {
+public:
+	std::vector<CMethodDecl*> a;
+	CMethodDecls()
+	{};
+	CMethodDecls(CMethodDecl * x1) {
+		a.push_back(x1);
+	}
+	void addNext(CMethodDecl * x1) {
+		a.push_back(x1);
+	};
+	virtual void accept(IVisitor* v) {
+		v->visit(this);
+	};
+};
+class CVarDecl :public IRoot{
+public:
+	CType* type;
+	string id;
+	CVarDecl(CType* _type,string _id ) : id(_id), type(_type)
+	{};
+	virtual void accept(IVisitor* v){
+		v->visit(this);
+	};
+};
+class CMethodDecl :public IRoot{
+public:
+	CType* type;
+	string id;
+	CFormalList* formalList;
+	CVarDecls* varDecls;
+	CStatements* statements;
+	CExp* exp;
+	CMethodDecl(CType* _type, string _id, CFormalList* _formalList, CVarDecls* _varDecls, CStatements* _statements, CExp* _exp) :
+		type(_type), id(_id), formalList(_formalList), exp(_exp)
+	{
+		if (_varDecls == 0)
+			varDecls = new CVarDecls();
+		else
+			varDecls = _varDecls;
+		if (_statements == 0)
+			statements = new CStatements();
+		else
+			statements = _statements;
+	};
+	virtual void accept(IVisitor* v){
+		v->visit(this);
+	};
+};
+
+class CStatements :public IRoot{
+public:
+	std::vector<IStatement*> a;
+	CStatements()
+	{};
+	CStatements(IStatement * x1) {
+		a.push_back(x1);
+	}
+	void addNext(IStatement * x1) {
+		a.push_back(x1);
+	};
+	virtual void accept(IVisitor* v){
+		v->visit(this);
+	};
+};
+class CFormalList :public IRoot{
+public:
+	CType* type;
+	string id;
+	CFormalRests* formalRests;
+	CFormalList(CType* _type, string _id, CFormalRests* _formalRests) :
+		type(_type), id(_id), formalRests(_formalRests) {};
+	virtual void accept(IVisitor* v){
+		v->visit(this);
+	};
+};
+class CFormalRests :public IRoot {
+public:
+	std::vector<CFormalRest*> a;
+	CFormalRests()
+	{};
+	CFormalRests(CFormalRest * x1) {
+		a.push_back(x1);
+	}
+	void addNext(CFormalRest * x1) {
+		a.push_back(x1);
+	};
+	virtual void accept(IVisitor* v) {
+		v->visit(this);
+	};
+};
+class CFormalRest : IRoot{
+public:
+	CType* type;
+	string id;
+	CFormalRest( CType* _type, string _id) :
+		id(_id), type(_type) {};
+	virtual void accept(IVisitor* v){
+		v->visit(this);
+	};
+};
+class CType{
+public:
+	static const int  _mas = 0;
+	static const int  _bool = 1;
+	static const int  _int = 2;
+	static const int  _id = 3;
+	int inputType;
+	string id;
+	CType(int _type, string ID = 0) : inputType(_type), id(ID) {};
+
+	virtual void accept(IVisitor* v){
+		v->visit(this);
+	};
+};
 
 class CStatementIF : public IStatement
 {
 public:
-	CStatementIF(IRoot* x1, IRoot* x2, IRoot* x3) {
-		c1 = x1;
-		c2 = x2;
-		c3 = x3;
-	};
+	CExp* exp;
+	IStatement* statement1;
+	IStatement* statement2;
+	CStatementIF(CExp* _exp, IStatement* _statement1, IStatement* _statement2) :
+		exp(_exp), statement1(_statement1), statement2(_statement2) {};
 	virtual void accept(IVisitor* v){
 		v->visit(this);
 	};
@@ -35,11 +239,11 @@ public:
 class CStatementWHILE : public IStatement
 {
 public:
-	CStatementWHILE(IRoot* x1, IRoot* x2) {
-		c1 = x1;
-		c2 = x2;
-	};
-	virtual void accept(IVisitor* v){
+	CExp* exp;
+	IStatement* statement;
+	CStatementWHILE(CExp* _exp, IStatement* _statement) :
+		exp(_exp), statement(_statement) {};
+	virtual void accept(IVisitor* v) {
 		v->visit(this);
 	};
 };
@@ -47,9 +251,8 @@ public:
 class CStatementPRINTLN : public IStatement
 {
 public:
-	CStatementPRINTLN(IRoot* x1) {
-		c1 = x1;
-	};
+	CExp* exp;
+	CStatementPRINTLN(CExp* _exp): exp(_exp) {};
 	virtual void accept(IVisitor* v){
 		v->visit(this);
 	};
@@ -58,10 +261,10 @@ public:
 class CStatementASIGNMENT : public IStatement
 {
 public:
-	CStatementASIGNMENT(IRoot* x1,IRoot* x2) {
-		c1 = x1;
-		c2 = x2;
-	};
+	string id;
+	CExp* exp;
+	CStatementASIGNMENT(string _id, CExp* _exp):
+	id(_id), exp(_exp){};
 	virtual void accept(IVisitor* v){
 		v->visit(this);
 	};
@@ -70,12 +273,12 @@ public:
 class CStatementSQUEREASIGNMENT: public IStatement
 {
 public:
-	CStatementSQUEREASIGNMENT(IRoot* x1, IRoot* x2, IRoot* x3) {
-		c1 = x1;
-		c2 = x2;
-		c3 = x3;
-	};
-	virtual void accept(IVisitor* v){
+	string id;
+	CExp* exp1;
+	CExp* exp2;
+	CStatementSQUEREASIGNMENT(string _id, CExp* _exp1, CExp* _exp2) :
+		id(_id), exp1(_exp1), exp2(_exp2) {};
+	virtual void accept(IVisitor* v) {
 		v->visit(this);
 	};
 };
@@ -83,61 +286,56 @@ public:
 class CStatementBRACKETS : public IStatement
 {
 public:
-	CStatementBRACKETS(IRoot* x1) {
-		c1 = x1;
-	};
+	IStatement* statement;
+	CStatementBRACKETS(IStatement* _statement) : statement(_statement){};
 	virtual void accept(IVisitor* v){
 		v->visit(this);
 	};
 };
 
-//it's * : Statments, ExpRests , ect.
-template< class T>
-class TStar : public IRoot
-{
-public:
-	vector<T*> v;
-	TStar(){};
-	void add(T* x)
-	{
-		v.push_back(x);
-	}
-	virtual void accept(IVisitor* v){
-		v->visit(this);
-	};
-};
 
 class CExp : public IRoot
 { 
 public:
-	IRoot *c1, *c2, *c3;
 	CExp() {};
 };
 
 class CExpBinary : public CExp
 {
 public:
-	char c;
-	CExpBinary(CExp* x1, char _C, CExp* x2)
-	{
-		c = _C;
-		c1 = x1;
-		c2 = x2;
-	}
+	char op;
+	CExp* exp1, *exp2;
+
+	CExpBinary(CExp* _exp1, char _op, CExp* _exp2):
+		exp1(_exp1), exp2(_exp2),op(_op)
+	{}
 
 	virtual void accept(IVisitor* v){
 		v->visit(this);
 	};
 };
 
+class CExpUnaryMinus : public CExp
+{
+public:
+	CExp* exp;
+
+	CExpUnaryMinus(CExp* _exp) :
+		exp(_exp)
+	{}
+
+	virtual void accept(IVisitor* v) {
+		v->visit(this);
+	};
+};
 
 class CExpInSquareBrackets : public CExp {
 public:
-	CExpInSquareBrackets( CExp* x1, CExp* x2 ) {
-		c1 = x1;
-		c2 = x2;
-	}
+	CExp* exp1, *exp2;
 
+	CExpInSquareBrackets(CExp* _exp1, CExp* _exp2) :
+		exp1(_exp1), exp2(_exp2)
+	{}
 	virtual void accept( IVisitor* v ) {
 		v->visit( this );
 	};
@@ -146,10 +344,8 @@ public:
 
 class CExpPointLENGTH : public CExp {
 public:
-	CExpPointLENGTH( CExp* x1, CExp* x2 ) {
-		c1 = x1;
-		c2 = x2;
-	}
+	CExp* exp;
+	CExpPointLENGTH(CExp* _exp) : exp(_exp) {};
 
 	virtual void accept( IVisitor* v ) {
 		v->visit( this );
@@ -159,11 +355,11 @@ public:
 
 class CExpPointID : public CExp {
 public:
-	CExpPointID( CExp* x1, CExp* x2, CExp* x3 ) {
-		c1 = x1;
-		c2 = x2;
-		c3 = x3;
-	}
+	CExpList* expList;
+	string id;
+	CExp* exp;
+	CExpPointID(CExp* _exp, string _id, CExpList* _expList) :
+		exp(_exp), id(_id), expList(_expList) {};
 
 	virtual void accept( IVisitor* v ) {
 		v->visit( this );
@@ -173,9 +369,9 @@ public:
 
 class CExpINTEGER_LITERAL : public CExp {
 public:
-	CExpINTEGER_LITERAL( CExp* x1 ) {
-		c1 = x1;
-	}
+	int integer_literal;
+	CExpINTEGER_LITERAL(int i) : integer_literal(i)
+	{};
 
 	virtual void accept( IVisitor* v ) {
 		v->visit( this );
@@ -183,10 +379,11 @@ public:
 };
 
 
-class CExpBool : public CExp {
+class CExpSingleOp : public CExp {
 public:
-	CExpBool(CExp* x1) {
-		c1 = x1;
+	bool val;
+	CExpSingleOp( bool a ) {
+		val = a;
 	}
 
 	virtual void accept( IVisitor* v ) {
@@ -197,8 +394,8 @@ public:
 
 class CExpID : public CExp {
 public:
-	CExpID( CExp* x1 ) {
-		c1 = x1;
+	string id;
+	CExpID( const string _id ):id(_id) {
 	}
 
 	virtual void accept( IVisitor* v ) {
@@ -209,8 +406,7 @@ public:
 
 class CExpTHIS : public CExp {
 public:
-	CExpTHIS( CExp* x1 ) {
-		c1 = x1;
+	CExpTHIS() {
 	}
 
 	virtual void accept( IVisitor* v ) {
@@ -221,11 +417,8 @@ public:
 
 class CExpNEWINT : public CExp {
 public:
-	CExpNEWINT( CExp* x1, CExp* x2, CExp* x3 ) {
-		c1 = x1;
-		c2 = x2;
-		c3 = x3;
-	}
+	CExp* exp;
+	CExpNEWINT(CExp* _exp) : exp(_exp) {};
 
 	virtual void accept( IVisitor* v ) {
 		v->visit( this );
@@ -235,9 +428,8 @@ public:
 
 class CExpNEWID : public CExp {
 public:
-	CExpNEWID( CExp* x1, CExp* x2 ) {
-		c1 = x1;
-		c2 = x2;
+	string id;
+	CExpNEWID(string _id ):id(_id) {
 	}
 
 	virtual void accept( IVisitor* v ) {
@@ -248,9 +440,8 @@ public:
 
 class CExpExclamationMark : public CExp {
 public:
-	CExpExclamationMark( CExp* x1 ) {
-		c1 = x1;
-	}
+	CExp* exp;
+	CExpExclamationMark(CExp* _exp) : exp(_exp) {};
 
 	virtual void accept( IVisitor* v ) {
 		v->visit( this );
@@ -260,11 +451,48 @@ public:
 
 class CExpCircleBrackets : public CExp {
 public:
-	CExpCircleBrackets( CExp* x1 ) {
-		c1 = x1;
-	}
+	CExp* exp;
+	CExpCircleBrackets(CExp* _exp) : exp(_exp) {};
 
 	virtual void accept( IVisitor* v ) {
 		v->visit( this );
 	};
 };
+class CExpList : public IRoot{
+public:
+	CExp* exp;
+	CExpRests* expRests;
+	CExpList(CExp* _exp, CExpRests* _expRests) :
+		exp(_exp), expRests(_expRests) {};
+	virtual void accept(IVisitor* v){
+		v->visit(this);
+	};
+};
+class CExpRests :public IRoot {
+public:
+	std::vector<CExpRest*> a;
+	CExpRests()
+	{};
+	CExpRests(CExpRest * x1) {
+		a.push_back(x1);
+	}
+	void addNext(CExpRest * x1) {
+		a.push_back(x1);
+	};
+	virtual void accept(IVisitor* v) {
+		v->visit(this);
+	};
+};
+class CExpRest :public IRoot{
+public:
+	CExp* exp;
+	CExpRest(CExp* _exp) : exp(_exp) {};
+	virtual void accept(IVisitor* v){
+		v->visit(this);
+	};
+};
+
+
+
+
+
