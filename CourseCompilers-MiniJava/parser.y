@@ -3,6 +3,7 @@
 /* Секция с кодом, который попадет в парсер.*/
 %{
 #include <iostream>
+#include "parser.tab.hpp"
 #include "PrettyPrinter.h"
 #include "CTypes.h"
 extern "C" int yylex();
@@ -18,24 +19,24 @@ void yyerror( int*, const char* );
 %union{
 	int ival;
 	char sval[255];
-	CProgram* program;
-	IStatement* statement;
-	CClassDecls* classdecls; 
-	CClassDecl* classdecl; 
-	CMainClass* cmain;
-	CMethodDecl* cmethoddecl;
-	CMethodDecls* cmethoddecls;
-	CVarDecl* cvardecl;
-	CVarDecls* cvardecls;
-	CStatements* cstatements;
-	CFormalList* cformallist;
-	CFormalRests* cformalrests;
-	CFormalRest* cformalrest;
-	CType* ctype;
-	CExp* cexp;
-	CExpList* cexplist;
-	CExpRests* cexprests;
-	CExpRest* cexprest;
+	class CProgram* program;
+	class IStatement* statement;
+	class CClassDecls* classdecls; 
+	class CClassDecl* classdecl; 
+	class CMainClass* cmain;
+	class CMethodDecl* cmethoddecl;
+	class CMethodDecls* cmethoddecls;
+	class CVarDecl* cvardecl;
+	class CVarDecls* cvardecls;
+	class CStatements* cstatements;
+	class CFormalList* cformallist;
+	class CFormalRests* cformalrests;
+	class CFormalRest* cformalrest;
+	class CType* ctype;
+	class CExp* cexp;
+	class CExpList* cexplist;
+	class CExpRests* cexprests;
+	class CExpRest* cexprest;
 }
 
 /* Определение лево-ассоцитивности. Аналогично есть %right.
@@ -100,12 +101,20 @@ void yyerror( int*, const char* );
 /* Секция с описанием правил парсера. */
 %%
 Program:
-	MainClass { $$ = new CProgram( $1 ); }
-	| MainClass ClassDecls {$$ = new CProgram( $1, $2 ); }
+	MainClass {
+	 $$ = new CProgram( $1 );
+	 CPrettyPrinter pp;
+	 pp.visit($$);
+	 }
+	| MainClass ClassDecls {
+	 $$ = new CProgram( $1, $2 );
+	 CPrettyPrinter pp;
+	 pp.visit($$);
+	 }
 	;
 ClassDecls:
 	ClassDecl { $$ = new CClassDecls($1); }
-	| ClassDecls ClassDecl { $$ = $1->addNext($2); }
+	| ClassDecls ClassDecl { $$ = $1; $1->addNext($2); }
 	;
 MainClass:
 	CLASS ID '{' PUBLIC STATIC VOID MAIN '(' STRING '[' ']' ID ')' '{' Statement '}' '}' { $$ = new CMainClass( $2, $12, $15 );}
@@ -115,35 +124,35 @@ ClassDecl:
 	| CLASS ID '{'VarDecls'}' { $$ = new CClassDecl( $2, $4,0 ); }
 	| CLASS ID '{'MethodDecls'}' { $$ = new CClassDecl( $2, 0,$4 );  }
 	| CLASS ID '{''}' { $$ = new CClassDecl($2,0,0); }
-	| CLASS ID EXTENDS ID '{'VarDecls MethodDecls'}' { $$ = new CClassDeclsInheritance($2, $4, $6, $7); }
-	| CLASS ID EXTENDS ID '{'VarDecls'}' { $$ = new CClassDeclsInheritance($2, $4, $6,0); }
-	| CLASS ID EXTENDS ID '{'MethodDecls'}' { $$ = new CClassDeclsInheritance($2, $4, 0,$6); }
-	| CLASS ID EXTENDS ID '{''}' { $$ = new CClassDeclsInheritance($2, $4,0,0); }
+	| CLASS ID EXTENDS ID '{'VarDecls MethodDecls'}' { $$ = new CClassDeclInheritance($2, $4, $6, $7); }
+	| CLASS ID EXTENDS ID '{'VarDecls'}' { $$ = new CClassDeclInheritance($2, $4, $6,0); }
+	| CLASS ID EXTENDS ID '{'MethodDecls'}' { $$ = new CClassDeclInheritance($2, $4, 0,$6); }
+	| CLASS ID EXTENDS ID '{''}' { $$ = new CClassDeclInheritance($2, $4,0,0); }
 	;
 VarDecls:
-	VarDecl { $$ = new CVardecls($1); }
-	| VarDecls VarDecl {$$ = $1->addNext($2); }
+	VarDecl { $$ = new CVarDecls($1); }
+	| VarDecls VarDecl {$$ = $1; $1->addNext($2); }
 	;
 MethodDecls:
     MethodDecl { $$ = new CMethodDecls($1); } 
-	| MethodDecls MethodDecl {$$ = $1->addNext($2); }
+	| MethodDecls MethodDecl {$$ = $1; $1->addNext($2); }
 	;
 VarDecl:
 	Type ID ';' { $$ = new CVarDecl($1, $2); }
 	;
 MethodDecl:
-	PUBLIC Type ID '(' FormalList  ')' '{' VarDecls Statements RETURN Exp ';' '}' { $$ = new CMethodDecls( $2, $3, $5, $8, $9, $11 ); }
-	| PUBLIC Type ID '(' FormalList  ')' '{' VarDecls RETURN Exp ';' '}' { $$ = new CMethodDecls( $2, $3, $5, $8,0, $10); }
-	| PUBLIC Type ID '(' FormalList  ')' '{' Statements RETURN Exp ';' '}' { $$ = new CMethodDecls( $2, $3, $5, 0,$8, $10); }
-	| PUBLIC Type ID '(' FormalList  ')' '{' RETURN Exp ';' '}' { $$ = new CMethodDecls( $2, $3, $5, 0,0,$9); }
+	PUBLIC Type ID '(' FormalList  ')' '{' VarDecls Statements RETURN Exp ';' '}' { $$ = new CMethodDecl( $2, $3, $5, $8, $9, $11 ); }
+	| PUBLIC Type ID '(' FormalList  ')' '{' VarDecls RETURN Exp ';' '}' { $$ = new CMethodDecl( $2, $3, $5, $8,0, $10); }
+	| PUBLIC Type ID '(' FormalList  ')' '{' Statements RETURN Exp ';' '}' { $$ = new CMethodDecl( $2, $3, $5, 0,$8, $10); }
+	| PUBLIC Type ID '(' FormalList  ')' '{' RETURN Exp ';' '}' { $$ = new CMethodDecl( $2, $3, $5, 0,0,$9); }
 	;
 Statements:
 	Statement { $$ = new CStatements($1); }
-	| Statements Statement { $$ = $1->addNext($2) ; }
+	| Statements Statement { $$ = $1; $1->addNext($2) ; }
 	;
 FormalList:
 	Type ID FormalRests { $$ = new CFormalList($1, $2, $3) ; }
-	| Type ID { $$ = new CFormalList( $1, $2 ); }
+	| Type ID { $$ = new CFormalList( $1, $2, 0 ); }
 	;
 FormalRests:
 	FormalRest { $$ = new CFormalRests($1); }
@@ -192,8 +201,8 @@ ExpList:
 	| Exp {$$ = new CExpList($1); }
 	;
 ExpRests:
-	ExpRest { $$ = new CExpRest($1); }
-	| ExpRests ExpRest {$$ = $1->addNext($2); }
+	ExpRest { $$ = new CExpRests($1); }
+	| ExpRests ExpRest {$$ = $1; $1->addNext($2); }
 	; 
 ExpRest:
 	',' Exp { $$ = new CExpRest($2); }

@@ -3,6 +3,7 @@
 #include <iostream>
 #include "Visitor.h"
 #include "CTypes.h"
+#include "PrettyPrinter.h"
 
 using namespace std;
 
@@ -11,23 +12,21 @@ ostream& operator<<( ostream& o, const string& s ) {
 	return o;
 }
 
-class CPrettyPrinter : public IVisitor
-{
-public:
-	void visit( CProgram *n ) {
+
+	void CPrettyPrinter::visit( CProgram *n ) {
 		n->mainClass->accept( this );
 		cout << " ";
 		n->classDecls->accept( this );
-	}
+	};
 	
-	void visit( CClassDecls *n ) {
+	void CPrettyPrinter::visit( CClassDecls *n ) {
 		for( int i = 0; i < n->a.size(); i++ ) {
 			n->a[i]->accept( this );
 			cout << " ";
 		}
 	
 	}
-	void visit( CMainClass *n ) {
+	void CPrettyPrinter::visit( CMainClass *n ) {
 		cout << "class" << " " << n->id1 << " " << "{\n" << "public static void main ( string[] ";
 		cout << n->id2 << " ";
 		cout << ")" << " " << "{\n" << " ";
@@ -35,7 +34,7 @@ public:
 		cout << "\n}" << " " << "\n}";
 	}
 	
-	void visit( CClassDecl * n ) {
+	void CPrettyPrinter::visit( CClassDecl * n ) {
 		cout << "class" << " " << n->id << " ";
 		cout << " { ";
 		n->varDecls->accept( this );
@@ -44,7 +43,7 @@ public:
 		cout << " } ";
 	}
 
-	void visit( CClassDeclInheritance *n ) {
+	void CPrettyPrinter::visit( CClassDeclInheritance *n ) {
 		cout << "class " << n->id1 << " extends " << n->id2 << " ";
 		cout << " { ";
 		n->varDecls->accept( this );
@@ -54,7 +53,7 @@ public:
 	}
 
 
-	void visit( CVarDecls *n ) {
+	void CPrettyPrinter::visit( CVarDecls *n ) {
 		for( int i = 0; i < n->a.size(); i++ ) {
 			n->a[i]->accept( this );
 			cout << " ";
@@ -63,19 +62,19 @@ public:
 
 	
 
-	void visit( CMethodDecls *n ) {
+	void CPrettyPrinter::visit( CMethodDecls *n ) {
 		for( int i = 0; i < n->a.size(); i++ ) {
 			n->a[i]->accept( this );
 			cout << " ";
 		}
 	}
 	
-	void visit( CVarDecl *n ) {
+	void CPrettyPrinter::visit( CVarDecl *n ) {
 		cout << " ";
 		n->type->accept(this);
 		cout << " " << n->id << " ";
 	}
-	void visit( CMethodDecl *n ) {
+	void CPrettyPrinter::visit( CMethodDecl *n ) {
 		cout << " ";
 		n->type->accept( this );
 		cout << " " << n->id << " ( " << " { ";
@@ -85,14 +84,14 @@ public:
 		cout << " return ";
 		n->exp->accept( this );
 	}
-	void visit( CStatements *n ) {
+	void CPrettyPrinter::visit( CStatements *n ) {
 		for( int i = 0; i < n->a.size(); i++ ) {
 			n->a[i]->accept( this );
 			cout << " ";
 		}
 	}
 
-	void visit(CStatementIF* n)
+	void CPrettyPrinter::visit(CStatementIF* n)
 	{
 		cout << "if ( ";
 		n->exp->accept(this);
@@ -102,14 +101,14 @@ public:
 		n->statement2->accept(this);
 	};
 
-	void visit(CStatementBRACKETS* n)
+	void CPrettyPrinter::visit(CStatementBRACKETS* n)
 	{
 		cout << "{ ";
 		n->statement->accept(this);
 		cout << " }";
 	};
 
-	void visit(CStatementSQUEREASIGNMENT* n)
+	void CPrettyPrinter::visit(CStatementSQUEREASIGNMENT* n)
 	{
 		cout << n->id;
 		cout << "[ ";
@@ -119,7 +118,7 @@ public:
 		cout << ";\n";
 	};
 
-	void visit(CStatementASIGNMENT* n)
+	void CPrettyPrinter::visit(CStatementASIGNMENT* n)
 	{
 		cout << n->id;
 		cout << " = ";
@@ -127,14 +126,14 @@ public:
 		cout << ";\n";
 	};
 
-	void visit(CStatementPRINTLN* n)
+	void CPrettyPrinter::visit(CStatementPRINTLN* n)
 	{
 		cout << "( ";
 		n->exp->accept(this);
 		cout << ")";
 	};
 
-	void visit(CStatementWHILE* n)
+	void CPrettyPrinter::visit(CStatementWHILE* n)
 	{
 		cout << " ";
 		cout << "while ( ";
@@ -144,24 +143,24 @@ public:
 		cout << " ";
 	};
 
-	void visit(CExpBinary* n)
+	void CPrettyPrinter::visit(CExpBinary* n)
 	{
 		n->exp1->accept(this);
 		cout << n->op;
 		n->exp2->accept(this);
 	}
-	void visit(CExpInSquareBrackets *n) {
+	void CPrettyPrinter::visit(CExpInSquareBrackets *n) {
 		n->exp1->accept(this);
 		cout << '[';
 		n->exp2->accept(this);
 		cout << ']';
 	}
-	void visit(CExpPointLENGTH *n) {
+	void CPrettyPrinter::visit(CExpPointLENGTH *n) {
 		n->exp->accept(this);
 		cout << '.';
 		cout << "length()";
 	}
-	void visit(CExpPointID *n) {
+	void CPrettyPrinter::visit(CExpPointID *n) {
 		n->exp->accept(this);
 		cout << '.';
 		cout<<n->id;
@@ -169,40 +168,40 @@ public:
 		n->exp->accept(this);
 		cout << ')';
 	}
-	void visit(CExpINTEGER_LITERAL *n) {
+	void CPrettyPrinter::visit(CExpINTEGER_LITERAL *n) {
 		cout << n->integer_literal;
 	}
-	void visit(CExpSingleOp *n) {
+	void CPrettyPrinter::visit(CExpSingleOp *n) {
 		cout << n->val;
 	}
-	void visit(CExpID *n) {
+	void CPrettyPrinter::visit(CExpID *n) {
 		cout <<  n->id;
 	}
-	void visit(CExpTHIS *n) {
+	void CPrettyPrinter::visit(CExpTHIS *n) {
 		cout << "this" ;
 	}
-	void visit(CExpNEWINT *n) {
+	void CPrettyPrinter::visit(CExpNEWINT *n) {
 		cout << "new int";
 		cout << '[';
 		n->exp->accept(this);
 		cout << ']';
 	}
-	void visit(CExpNEWID *n) {
+	void CPrettyPrinter::visit(CExpNEWID *n) {
 		cout << n->id;
 		cout << '(' << ')';
 	}
-	void visit(CExpExclamationMark *n) {
+	void CPrettyPrinter::visit(CExpExclamationMark *n) {
 		cout << '!';
 		n->exp->accept( this );
 	}
-	void visit( CExpCircleBrackets *n ) {
+	void CPrettyPrinter::visit( CExpCircleBrackets *n ) {
 		cout << '(';
 		n->exp->accept(this);
 		cout << ')';
 	}
 	
 	
-	void visit( CFormalList *n ) {
+	void CPrettyPrinter::visit( CFormalList *n ) {
 		cout << " ";
 		n->type->accept( this );
 		cout << " " << n->id << " " ;
@@ -210,18 +209,18 @@ public:
 		cout << " ";
 		
 	}
-	void visit( CFormalRest *n ) {
+	void CPrettyPrinter::visit( CFormalRest *n ) {
 		cout << " ,";
 		n->type->accept( this );
 		cout << n->id << " ";
 	}
-	void visit( CFormalRests *n ) {
+	void CPrettyPrinter::visit( CFormalRests *n ) {
 		for( int i = 0; i < n->a.size(); i++ ) {
 			n->a[i]->accept( this );
 			cout << " ";
 		}
 	}
-	void visit( CType *n ) {
+	void CPrettyPrinter::visit( CType *n ) {
 		if( n->inputType == CType:: _mas ) {
 			cout << "int [] ";
 		}
@@ -235,30 +234,30 @@ public:
 			cout << n->id;
 		}
 	}
-	void visit( CExpList *n ) {
+	void CPrettyPrinter::visit( CExpList *n ) {
 		cout << " ";
 		n->exp->accept( this );
 		cout << " ";
 		n->expRests->accept( this );
 	}
-	void visit( CExpRests *n ) {
+	void CPrettyPrinter::visit( CExpRests *n ) {
 		for( int i = 0; i < n->a.size(); i++ ) {
 			n->a[i]->accept( this );
 			cout << " ";
 		}
 	}
-	void visit( CExpRest *n ) {
+	void CPrettyPrinter::visit( CExpRest *n ) {
 		cout << " ,";
 		n->exp->accept( this );
 		cout << " ";
 
 	}
-	void visit( CExpUnaryMinus *n ) {
+	void CPrettyPrinter::visit( CExpUnaryMinus *n ) {
 		cout << " - ";
 		n->exp->accept( this );
 		cout << " ";
 	}
 
-};
+
 
 

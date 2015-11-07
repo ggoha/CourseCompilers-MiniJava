@@ -142,7 +142,10 @@ public:
 		id1 = _id1;
 		id2 = _id2;
 		statement = _statement;
-	}
+	};
+	virtual void accept(IVisitor* v) {
+		v->visit(this);
+	};
 };
 class CClassDecl :public IRoot{
 public:
@@ -217,7 +220,12 @@ public:
 	string id;
 	CFormalRests* formalRests;
 	CFormalList(CType* _type, string _id, CFormalRests* _formalRests) :
-		type(_type), id(_id), formalRests(_formalRests) {};
+		type(_type), id(_id) {
+		if (_formalRests == 0)
+			formalRests = new CFormalRests();
+		else
+			formalRests = _formalRests;
+	};
 	virtual void accept(IVisitor* v){
 		v->visit(this);
 	};
@@ -486,8 +494,13 @@ class CExpList : public IRoot{
 public:
 	CExp* exp;
 	CExpRests* expRests;
-	CExpList(CExp* _exp, CExpRests* _expRests) :
-		exp(_exp), expRests(_expRests) {};
+	CExpList(CExp* _exp, CExpRests* _expRests = 0) :
+		exp(_exp){
+		if (_expRests == 0)
+			expRests = new CExpRests();
+		else
+			expRests = _expRests;
+	};
 	virtual void accept(IVisitor* v){
 		v->visit(this);
 	};
