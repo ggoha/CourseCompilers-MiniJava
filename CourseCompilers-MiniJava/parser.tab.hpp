@@ -78,14 +78,32 @@ extern int yydebug;
 typedef union YYSTYPE
 {
 /* Line 2058 of yacc.c  */
-#line 16 "parser.y"
+#line 18 "parser.y"
 
 	int ival;
 	char sval[255];
+	CProgram* program;
+	IStatement* statement;
+	CClassDecls* classdecls; 
+	CClassDecl* classdecl; 
+	CMainClass* cmain;
+	CMethodDecl* cmethoddecl;
+	CMethodDecls* cmethoddecls;
+	CVarDecl* cvardecl;
+	CVarDecls* cvardecls;
+	CStatements* cstatements;
+	CFormalList* cformallist;
+	CFormalRests* cformalrests;
+	CFormalRest* cformalrest;
+	CType* ctype;
+	CExp* cexp;
+	CExpList* cexplist;
+	CExpRests* cexprests;
+	CexpRest* cexprest;
 
 
 /* Line 2058 of yacc.c  */
-#line 89 "parser.tab.hpp"
+#line 107 "parser.tab.hpp"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
