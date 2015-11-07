@@ -6,6 +6,7 @@
 #include "parser.tab.hpp"
 #include "PrettyPrinter.h"
 #include "CTypes.h"
+extern FILE* yyin;
 extern "C" int yylex();
 void yyerror( int*, const char* );
 %}

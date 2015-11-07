@@ -5,10 +5,13 @@ using std::invalid_argument;
 using std::cout;
 using std::endl;
 extern "C" int yylex();
-int yyparse(int*);
+extern FILE* yyin;
+extern int yyparse();
 
 int main(int argc, char** argv) {
-	while (yyparse(0));
+	FILE* f = fopen("input.txt","r");
+	yyin = f;
+	yyparse();
 	return 0;
 }
 /*
