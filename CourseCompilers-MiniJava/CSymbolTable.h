@@ -11,7 +11,7 @@ using std::string;
 	struct CVarInfo{
 		string name;
 		string type;
-		CVarInfo(const string& _name, const string& _type) :
+		CVarInfo(  string _name,   string _type) :
 			name(_name), type(_type){}
 	};
 
@@ -20,7 +20,7 @@ using std::string;
 		vector<CVarInfo> vars;
 		vector<CVarInfo> params;
 		string returnType;
-		CMethodInfo(const string& _name, const string& _returnType) :
+		CMethodInfo(  string _name,   string _returnType) :
 			name(_name), returnType(_returnType), vars(), params(){}
 	};
 
@@ -29,7 +29,7 @@ using std::string;
 		string parent;
 		vector<CVarInfo> vars;
 		vector<CMethodInfo> methods;
-		CClassInfo(const string& _name) :
+		CClassInfo(  string _name) :
 			name(_name), vars(), methods(){}
 	};
 
@@ -47,13 +47,13 @@ using std::string;
 
 
 
-		void visit(const CProgram* node){
+		void visit(  CProgram* node){
 			node->mainClass->accept(this);
 			if (node->classDecls != 0) {
 				node->classDecls->accept(this);
 			}
 		}
-		void visit(const CMainClass* node){
+		void visit(  CMainClass* node){
 			inMethod = 0;
 			table.classInfo.push_back(CClassInfo(node->id1));
 			CMethodInfo mainMthd("main", "void");
@@ -63,12 +63,12 @@ using std::string;
 				node->statement->accept(this);
 			}
 		}
-		void visit(const CClassDecls* node){
+		void visit(  CClassDecls* node){
 			for (int i = 0; i < node->a.size(); i++) {
 				node->a[i]->accept(this);
 			}
 		}
-		void visit(const CClassDecl* node){
+		void visit(  CClassDecl* node){
 			inMethod = 0;
 			table.classInfo.push_back(CClassInfo(node->id));
 			if (node->methodDecls != 0) {
@@ -79,18 +79,18 @@ using std::string;
 			}
 		}
 
-		void visit(const CVarDecls* node){
+		void visit(  CVarDecls* node){
 			for (int i = 0; i < node->a.size(); i++) {
 				node->a[i]->accept(this);
 			}
 		}
 
-		void visit(const CMethodDecls* node){
+		void visit(  CMethodDecls* node){
 			for (int i = 0; i < node->a.size(); i++) {
 				node->a[i]->accept(this);
 			}
 		}
-		void visit(const CVarDecl* node){
+		void visit(  CVarDecl* node){
 			node->type->accept(this);
 			if (inMethod) {
 				table.classInfo.back().methods.back().vars.push_back(CVarInfo(node->id, lastTypeValue));
@@ -99,7 +99,7 @@ using std::string;
 				table.classInfo.back().vars.push_back(CVarInfo(node->id, lastTypeValue));
 			}
 		}
-		void visit(const CMethodDecl* node){
+		void visit(  CMethodDecl* node){
 			node->type->accept(this);
 			table.classInfo.back().methods.push_back(CMethodInfo(node->id, lastTypeValue));
 			if (node->formalList != 0) {
@@ -112,55 +112,63 @@ using std::string;
 			}
 		}
 
-		void visit(const CStatements* node){}
-
-		void visit(const CFormalList* node){
+		void visit(  CFormalList* node){
 			if (node->formalRests != 0) {
 				node->formalRests->accept(this);
 			}
 		}
-		void visit(const CFormalRests* node){
+		void visit(  CFormalRests* node){
 			for (int i = 0; i < node->a.size(); i++) {
 				node->a[i]->accept(this);
 			}
 		}
-		void visit(const CFormalRest* node){
+		void visit(  CFormalRest* node){
 		}
 
-		void visit(const class CExpList *node){
+		void visit(  class CExpList *node){
 			if (node->expRests != 0) {
 				node->expRests->accept(this);
 			}
 		}
 
-		void visit(const CExpRests* node){
+		void visit(  CExpRests* node){
 			for (int i = 0; i < node->a.size(); i++) {
 				node->a[i]->accept(this);
 			}
 		}
-		void visit(const CExpRest* node){
+		void visit(  CExpRest* node){
 		}
 
-		void visit(const CStatementIF* node){}
-		void visit(const CStatementBRACKETS* node){}
-		void visit(const CStatementSQUEREASIGNMENT* node){}
-		void visit(const CStatementASIGNMENT* node){}
-		void visit(const CStatementPRINTLN* node){}
-		void visit(const CStatementWHILE* node){}
+		  void visit(CStatementIF* n) { }
+		  void visit(CStatementBRACKETS* n) { }
 
+		  void visit(CStatementSQUEREASIGNMENT* n) { }
 
+		  void visit(CStatementASIGNMENT* n) { }
 
-		void visit(const CExpBinary* node){}
-		void visit(const CExpInSquareBrackets* node){}
-		void visit(const CExpPointLENGTH* node){}
-		void visit(const CExpUnaryMinus* node){}
-		void visit(const CExpPointID* node){}
-		void visit(const CExpINTEGER_LITERAL* node){}
-		void visit(const CExpSingleOp* node){}
-		void visit(const CExpNEWINT* node){}
-		void visit(const CExpID* node){}
-		void visit(const CExpNEWINT* node){}
-		void visit(const CExpExclamationMark* node){}
-		void visit(const CExpTHIS* node){}
-		void visit(const CExpCircleBrackets* node){}
+		  void visit(CStatementPRINTLN* n) { }
+
+		  void visit(CStatementWHILE* n) { }
+
+		  void visit(CExpBinary* n) { }
+
+		  void visit(CExpInSquareBrackets *n) { }
+
+		  void visit(CExpPointLENGTH *n) { }
+
+		  void visit(CExpPointID *n) { }
+
+		  void visit(CExpINTEGER_LITERAL *n) { }
+
+		  void visit(CExpSingleOp *n) { }
+		  void visit(CExpID *n) { }
+		  void visit(CExpTHIS *n) { }
+		  void visit(CExpNEWINT *n) { }
+		  void visit(CExpNEWID *n) { }
+		  void visit(CExpExclamationMark *n) { }
+		  void visit(CExpCircleBrackets *n) { }
+		  void visit(CClassDeclInheritance *n) { }
+		  void visit(CStatements *n) { }
+		  void visit(CType *n) { }
+		  void visit(CExpUnaryMinus *n) { }
 	};

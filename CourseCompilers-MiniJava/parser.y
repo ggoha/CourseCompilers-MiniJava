@@ -5,6 +5,7 @@
 #include <iostream>
 #include "parser.tab.hpp"
 #include "PrettyPrinter.h"
+#include "CSymbolTable.h"
 #include "CTypes.h"
 extern FILE* yyin;
 extern "C" int yylex();
@@ -104,8 +105,9 @@ void yyerror( int*, const char* );
 Program:
 	MainClass {
 	 $$ = new CProgram( $1 );
-	 CPrettyPrinter pp;
-	 pp.visit($$);
+	 //CPrettyPrinter pp;
+	 CSymbolTableBuilder st;
+	 st.visit($$);
 	 }
 	| MainClass ClassDecls {
 	 $$ = new CProgram( $1, $2 );

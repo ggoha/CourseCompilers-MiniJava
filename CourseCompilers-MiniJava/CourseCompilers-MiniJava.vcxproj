@@ -86,6 +86,7 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CSymbolTable.h" />
     <ClInclude Include="CTypes.h" />
     <ClInclude Include="parser.tab.hpp" />
     <ClInclude Include="PrettyPrinter.h" />

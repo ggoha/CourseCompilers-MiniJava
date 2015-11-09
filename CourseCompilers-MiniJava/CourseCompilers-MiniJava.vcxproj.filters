@@ -50,5 +50,8 @@
     <ClInclude Include="PrettyPrinter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CSymbolTable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
