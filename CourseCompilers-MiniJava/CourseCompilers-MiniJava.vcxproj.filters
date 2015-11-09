@@ -53,5 +53,8 @@
     <ClInclude Include="CSymbolTable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CTypeChecker.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

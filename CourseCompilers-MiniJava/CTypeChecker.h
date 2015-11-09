@@ -1,6 +1,5 @@
 #pragma once
-#ifndef CTYPECHECKER_H_INCLUDED
-#define CTYPECHECKER_H_INCLUDED
+
 #include <iostream>
 #include "Visitor.h"
 #include "CTypes.h"
@@ -256,136 +255,150 @@ public:
 
 	}
 
-	void visit( const CInvokeExpressionNode* node ) {
-		if( node->firstExp != NULL )
-			node->firstExp->accept( this );
 
-		if( lastTypeValue != "int[]" )
-			cout << "Trying to access non-existent array" << endl;
 
-		if( node->secondExp != NULL )
-			node->secondExp->accept( this );
 
-		if( lastTypeValue != "int" )
-			cout << "Array index is not int" << endl;
+	void visit(CExpBinary* n)
+	{
+		n->exp1->accept(this);
+		string typeExp1 = lastTypeValue;
+		n->exp2->accept(this);
+		if (typeExp1 != lastTypeValue)
+			cout << "exception in "  << n->op;
+		if (n->op == '&')
+		{
+			if (lastTypeValue != "boolean")
+				cout << "exception in "  << n->op << " arguments is not boolean" << '\n';
+			lastTypeValue = "boolean";
+		}
+		else
+		{
+			if (lastTypeValue != "boolean")
+				cout << "exception in "  << n->op  << " arguments is not int" << '\n';
+			if (n->op == '<')
+				lastTypeValue = "boolean";
+			else
+				lastTypeValue = "int";
+		};
+	}
 
+	void visit(CExpInSquareBrackets *n)
+	{
+		n->exp1->accept(this);
+		if (lastTypeValue[lastTypeValue.length() - 1] != ']' || lastTypeValue[lastTypeValue.length() - 2] != '[')
+			cout << "exception in array assigment:" << lastTypeValue << " is not array" << '\n';
+		return ;
+		string t = lastTypeValue.substr(0, lastTypeValue.length() - 2);
+		n->exp2->accept(this);
+		if (t != lastTypeValue)
+			cout << "exception in array assigment: " << t << "=" << lastTypeValue << '\n';
+	}
+
+	void visit(CExpPointLENGTH *n)
+	{
+		n->exp->accept(this);
+		if (lastTypeValue != "String")
+			cout << "esception length is not attribute of " << lastTypeValue<<'\n';
 		lastTypeValue = "int";
 	}
+	void visit(CExpPointID *n)
+	{
+		n->exp->accept(this);
+		n->expList->accept(this);
 
-	void visit( const CLengthExpressionNode* node ) {
-
-		if( node->expr != NULL )
-			node->expr->accept( this );
-		lastTypeValue = "int";
-	}
-
-	void visit( const CArithmeticExpressionNode* node ) {
-		node->firstExp->accept( this );
-		if( (lastTypeValue != "int") && (lastTypeValue != "bool") )
-			cout << "Error in arithmetic expression" << endl;
-
-		node->secondExp->accept( this );
-		if( (lastTypeValue != "int") && (lastTypeValue != "bool") )
-			cout << "Error in arithmetic expression" << endl;
-
-		lastTypeValue = "int";
-	}
-
-	void visit( const CUnaryExpressionNode* node ) {
-		node->expr->accept( this );
-
-		if( lastTypeValue != "int" )
-			cout << "Error in unary expression" << endl;
-
-		lastTypeValue = "int";
-	}
-
-	void visit( const CCompareExpressionNode* node ) {
-		node->firstExp->accept( this );
-		if( (lastTypeValue != "int") && (lastTypeValue != "bool") )
-			cout << "Error in compare expression" << endl;
-
-		node->secondExp->accept( this );
-		if( (lastTypeValue != "int") && (lastTypeValue != "bool") )
-			cout << "Error in compare expression" << endl;
-
-		lastTypeValue = "bool";
-	}
-
-	void visit( const CNotExpressionNode* node ) {
-		node->expr->accept( this );
-
-		if( lastTypeValue != "int" )
-			cout << "Error in NOT expression";
-
-		lastTypeValue = "bool";
-	}
-
-	void visit( const CNewArrayExpressionNode* node ) {
-		if( node->expr != NULL )
-			node->expr->accept( this );
-
-		if( lastTypeValue != "int" )
-			cout << "Array index is not int in new array" << lastTypeValue << endl;
-		lastTypeValue = "int[]";
-	}
-
-	void visit( const CNewObjectExpressionNode* node ) {
-		if( (node->objType != "int") && (node->objType != "bool") )
-			if( !checkClassExistence( node->objType ) )
-				cout << "No such type: " << node->objType << endl;
-	}
-
-	void visit( const CIntExpressionNode* node ) {
-		lastTypeValue = "int";
-
-	}
-	void visit( const CBooleanExpressionNode* node ) {
-		lastTypeValue = "bool";
-	}
-
-	void visit( const CIdentExpressionNode* node ) {
-		std::string tmp;
-		assignType( node->name, tmp );
-		if( tmp != "" )
-			lastTypeValue = tmp;
-	}
-
-	void visit( const CThisExpressionNode* node ) {
-	}
-
-	void visit( const CParenExpressionNode* node ) {
-		if( node->expr != NULL )
-			node->expr->accept( this );
-
-		if( (lastTypeValue != "int") && (lastTypeValue != "bool") )
-			cout << "Expression in brackets is not valid" << endl;
-	}
-	void visit( const CInvokeMethodExpressionNode* node ) {
-		if( node->args != NULL )
-			node->args->accept( this );
-		if( node->expr != NULL )
-			node->expr->accept( this );
-
-		for( int i = 0; i < table.classInfo[this->classPos].methods.size(); i++ )
-			if( table.classInfo[this->classPos].methods[i].name == node->name ) {
+		for (int i = 0; i < table.classInfo[this->classPos].methods.size(); i++)
+			if (table.classInfo[this->classPos].methods[i].name == n->id) {
 				lastTypeValue = table.classInfo[this->classPos].methods[i].returnType;
 			}
 	}
-	void visit( const CFewArgsExpressionNode* node ) {
-		if( node->expr != NULL )
-			node->expr->accept( this );
+
+	void visit(CExpINTEGER_LITERAL *n)
+	{
+		lastTypeValue = "int";
 	}
 
-	void visit( const CListExpressionNode* node ) {
-		if( node->prevExps != NULL )
-			node->prevExps->accept( this );
-		if( node->nextExp != NULL )
-			node->nextExp->accept( this );
+	void visit(CExpSingleOp *n)
+	{
+		lastTypeValue = "boolean";
 	}
-	void visit( const CLastListExpressionNode* node ) {
-		if( node->expr != NULL )
-			node->expr->accept( this );
+	void visit(CExpID *n)
+	{
+		string t = "";
+		if (assignType(n->id, t))
+			lastTypeValue = t;
+		else
+			cout << n->id << "doesn't exist\n";
+	}
+	void visit(CExpTHIS *n)
+	{
+	}
+	void visit(CExpNEWINT *n)
+	{
+		n->exp->accept(this);
+		if (lastTypeValue != "int")
+			cout << "array index must be int\n";
+		lastTypeValue = "int[]";
+	}
+	void visit(CExpNEWID *n)
+	{
+		if ((n->id != "int") && (n->id != "boolean"))
+			if (!checkClassExistence(n->id))
+				cout << "No such type: " << n->id << endl;
+	}
+	void visit(CExpExclamationMark *n)
+	{
+		n->exp->accept(this);
+		if (lastTypeValue != "boolean")
+			cout << "! just for boolean but called with type " << lastTypeValue << '\n';
+		lastTypeValue = "boolean";
+	}
+	void visit(CExpCircleBrackets *n)
+	{
+		n->exp->accept(this);
+	}
+
+	void visit(CExpUnaryMinus *n)
+	{
+		n->exp->accept(this);
+		if (lastTypeValue != "int")
+			cout << "unary minus must be used with int but called with " << lastTypeValue;
+		lastTypeValue = "int";
+	}
+
+	void visit( CExpList * node ) {
+		if( node->exp != 0 )
+			node->exp->accept( this );
+		if( node->expRests != 0 ) {
+			node->expRests->accept( this );
+		}
+	}
+
+	void visit( CExpRests * node ) {
+		for( int i = 0; i < node->a.size(); i++ ) {
+			node->a[i]->accept( this );
+		}
+	}
+
+	void visit( CExpRest * node ) {
+		node->exp->accept( this );
+	}
+
+	void visit(CType *n)
+	{
+		if (n->inputType == n->_int)
+			lastTypeValue = "int";
+
+		if (n->inputType == n->_bool)
+			lastTypeValue = "boolean";
+
+		if (n->inputType == n->_mas)
+			lastTypeValue = "int[]";
+
+		if (n->inputType == n->_id)
+		{
+			lastTypeValue = n->id;
+			if (!checkClassExistence(lastTypeValue))
+				cout << "class " << n->id << " doesn't exist in the current context\n";
+		};
 	}
 };
-#endif
