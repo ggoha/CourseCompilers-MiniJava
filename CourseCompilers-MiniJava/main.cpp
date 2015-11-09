@@ -14,6 +14,7 @@ int main(int argc, char** argv) {
 	yyin = f;
 	yyparse((int*)f);
 	return 0;
+	std::string abv = "fd";
 }
 /*
 class CClassDeclList {
