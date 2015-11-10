@@ -80,7 +80,8 @@ ostream& operator<<( ostream& o, const string& s ) {
 		cout << " ";
 		cout << n->id;
 		cout << " (";
-		n->formalList->accept(this);
+		if(n->formalList)
+			n->formalList->accept(this);
 		cout<< " )  { ";
 		n->varDecls->accept( this );
 		cout << " ";

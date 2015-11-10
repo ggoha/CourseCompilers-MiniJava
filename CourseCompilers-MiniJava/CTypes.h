@@ -333,9 +333,6 @@ class CExp : public IRoot
 { 
 public:
 	CExp() {};
-	virtual void accept(IVisitor *v)
-	{
-	}
 };
 
 class CExpList : public IRoot {
@@ -512,11 +509,7 @@ public:
 class CExpCircleBrackets : public CExp {
 public:
 	CExp* exp;
-	CExpCircleBrackets(CExp* _exp) {
-		if (_exp)
-			exp = _exp;
-		else
-			exp = new CExp();
+	CExpCircleBrackets(CExp* _exp) : exp(_exp){
 	};
 
 	virtual void accept( IVisitor* v ) {

@@ -161,6 +161,10 @@ MethodDecl:
 	| PUBLIC Type ID '(' FormalList  ')' '{' VarDecls RETURN Exp ';' '}' { $$ = new CMethodDecl( $2, $3, $5, $8,0, $10); }
 	| PUBLIC Type ID '(' FormalList  ')' '{' Statements RETURN Exp ';' '}' { $$ = new CMethodDecl( $2, $3, $5, 0,$8, $10); }
 	| PUBLIC Type ID '(' FormalList  ')' '{' RETURN Exp ';' '}' { $$ = new CMethodDecl( $2, $3, $5, 0,0,$9); }
+	| PUBLIC Type ID '('   ')' '{' VarDecls Statements RETURN Exp ';' '}' { $$ = new CMethodDecl( $2, $3, 0, $7, $8, $10 ); }
+	| PUBLIC Type ID '('   ')' '{' VarDecls RETURN Exp ';' '}' { $$ = new CMethodDecl( $2, $3, 0, $7,0, $9); }
+	| PUBLIC Type ID '('   ')' '{' Statements RETURN Exp ';' '}' { $$ = new CMethodDecl( $2, $3,0, 0,$7, $9); }
+	| PUBLIC Type ID '('   ')' '{' RETURN Exp ';' '}' { $$ = new CMethodDecl( $2, $3, 0, 0,0,$8); }
 	;
 Statements:
 	Statement { $$ = new CStatements($1); }
