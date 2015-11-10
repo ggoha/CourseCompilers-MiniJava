@@ -32,7 +32,7 @@ letter        [a-zA-Z]
 {letter}+({letter}|{digit}|\_)*		{ strcpy_s(yylval.sval, yytext); return ID; }
 {digit}+  { yylval.ival = atoi( yytext ); return INTEGER_LITERAL; }
 "//"[^"\n"]*  {}
-\&\&|<|\+|-|\*|\{|\}|\(|\)|\[|\]|\;|\!|\=|\.	{ return yytext[0]; }
+\&\&|<|\+|-|\*|\{|\}|\(|\)|\[|\]|\;|\!|\=|\.|\,	{ return yytext[0]; }
 [\ \n\t\r]+ {}
 %%
 
