@@ -28,7 +28,11 @@ public:
 			flag = flag || (table.classInfo[i].name == name);
 			i++;
 		}
-
+		i = 0;
+		while (!flag && (i < table.baseType.size())){
+			flag = flag || (table.baseType[i] == name);
+			i++;
+		}
 		if( !flag )
 			return false;
 		else

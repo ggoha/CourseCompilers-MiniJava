@@ -57,7 +57,12 @@ using std::string;
 
 	struct CTable{
 		vector<CClassInfo> classInfo;
-		CTable() : classInfo(){}
+		vector<std::string> baseType;
+		CTable() : classInfo(){
+			baseType.push_back("int");
+			baseType.push_back("int[]");
+			baseType.push_back("boolean");
+		}
 	};
 
 	class CSymbolTableBuilder : public IVisitor{
