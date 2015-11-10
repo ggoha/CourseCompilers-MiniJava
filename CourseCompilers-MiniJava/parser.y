@@ -107,6 +107,7 @@ Program:
 	 $$ = new CProgram( $1 );
 	 //CPrettyPrinter pp;
 	 CSymbolTableBuilder st;
+	 st.Print();
 	 st.visit($$);
 	 }
 	| MainClass ClassDecls {
