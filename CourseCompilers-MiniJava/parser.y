@@ -177,9 +177,9 @@ FormalRest:
 	',' Type ID { $$ = new CFormalRest($2,$3); }
 	;
 Type:
-	INT '['']' {$$ = new CType( CType::_mas ); }
-	| BOOLEAN { $$ = new CType( CType::_bool ); }
-	| INT { $$ = new CType( CType::_int ); }
+	INT '['']' {$$ = new CType( CType::_mas,string() ); }
+	| BOOLEAN { $$ = new CType( CType::_bool,string() ); }
+	| INT { $$ = new CType( CType::_int, string() ); }
 	| ID { $$ = new CType( CType::_id, $1 );}
 	;
 

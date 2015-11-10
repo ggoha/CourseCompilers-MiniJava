@@ -28,10 +28,11 @@ letter        [a-zA-Z]
 "false" {return FALSE; }
 "this" {return THIS; }
 "new" {return NEW; }
+"int" { return INT; }
 {letter}+({letter}|{digit}|\_)*		{ strcpy_s(yylval.sval, yytext); return ID; }
 {digit}+  { yylval.ival = atoi( yytext ); return INTEGER_LITERAL; }
-(\/\/.*\n)|(\/\*.*\*\/)	{ return COMMENT; }
+"//"[^"\n"]*  {}
 \&\&|<|\+|-|\*|\{|\}|\(|\)|\[|\]|\;|\!|\=|\.	{ return yytext[0]; }
-"int" { return INT; }
+[\ \n\t\r]+ {}
 %%
 

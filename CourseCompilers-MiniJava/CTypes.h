@@ -251,7 +251,7 @@ public:
 	static const int  _id = 3;
 	int inputType;
 	string id;
-	CType(int _type, string ID = 0) : inputType(_type), id(ID) {};
+	CType(int _type, string ID = "") : inputType(_type), id(ID) {};
 
 	virtual void accept(IVisitor* v){
 		v->visit(this);
