@@ -333,6 +333,25 @@ class CExp : public IRoot
 { 
 public:
 	CExp() {};
+	virtual void accept(IVisitor *v)
+	{
+	}
+};
+
+class CExpList : public IRoot {
+public:
+	CExp* exp;
+	CExpRests* expRests;
+	CExpList(CExp* _exp = 0, CExpRests* _expRests = 0) :
+		exp(_exp) {
+		if (_expRests == 0)
+			expRests = new CExpRests();
+		else
+			expRests = _expRests;
+	};
+	virtual void accept(IVisitor* v) {
+		v->visit(this);
+	};
 };
 
 class CExpBinary : public CExp
@@ -394,7 +413,13 @@ public:
 	string id;
 	CExp* exp;
 	CExpPointID(CExp* _exp, string _id, CExpList* _expList) :
-		exp(_exp), id(_id), expList(_expList) {};
+		exp(_exp), id(_id)
+	{
+		if (_expList)
+			expList = _expList;
+		else
+			expList = new CExpList(0,0);
+	};
 
 	virtual void accept( IVisitor* v ) {
 		v->visit( this );
@@ -487,25 +512,15 @@ public:
 class CExpCircleBrackets : public CExp {
 public:
 	CExp* exp;
-	CExpCircleBrackets(CExp* _exp) : exp(_exp) {};
+	CExpCircleBrackets(CExp* _exp) {
+		if (_exp)
+			exp = _exp;
+		else
+			exp = new CExp();
+	};
 
 	virtual void accept( IVisitor* v ) {
 		v->visit( this );
-	};
-};
-class CExpList : public IRoot{
-public:
-	CExp* exp;
-	CExpRests* expRests;
-	CExpList(CExp* _exp, CExpRests* _expRests = 0) :
-		exp(_exp){
-		if (_expRests == 0)
-			expRests = new CExpRests();
-		else
-			expRests = _expRests;
-	};
-	virtual void accept(IVisitor* v){
-		v->visit(this);
 	};
 };
 

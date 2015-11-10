@@ -201,6 +201,7 @@ Exp:
 	| Exp '[' Exp ']' { $$ = new CExpInSquareBrackets($1, $3); }
 	| Exp'.' LENGTH { $$ = new CExpPointLENGTH($1); }
 	| Exp '.' ID '(' ExpList ')' {$$ = new CExpPointID($1, $3, $5); }
+	| Exp '.' ID '('')' {$$ = new CExpPointID($1, $3, 0); }
 	| INTEGER_LITERAL { $$ = new CExpINTEGER_LITERAL( $1 ); }
 	| TRUE { $$ = new CExpSingleOp(true); }
 	| FALSE { $$ = new CExpSingleOp(false); }

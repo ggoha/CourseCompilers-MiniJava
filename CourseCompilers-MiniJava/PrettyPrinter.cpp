@@ -241,7 +241,8 @@ ostream& operator<<( ostream& o, const string& s ) {
 	}
 	void CPrettyPrinter::visit( CExpList *n ) {
 		cout << " ";
-		n->exp->accept( this );
+		if(n->exp)
+			n->exp->accept( this );
 		cout << " ";
 		n->expRests->accept( this );
 	}
