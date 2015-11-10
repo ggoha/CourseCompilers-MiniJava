@@ -83,24 +83,24 @@ public:
 		return type;
 	}
 
-	void visit( const CProgram* node ) {
+	void visit( CProgram* node ) {
 		if( node->mainClass != NULL )
 			node->mainClass->accept( this );
 
 		if( node->classDecls != NULL )
 			node->classDecls->accept( this );
 	}
-	void visit( const CMainClass* node ) {
+	void visit( CMainClass* node ) {
 		if( node->statement != NULL )
 			node->statement->accept( this );
 	}
-	void visit( const CClassDecls* node ) {
+	void visit( CClassDecls* node ) {
 		for( int i = 0; i < node->a.size(); i++ ) {
 			node->a[i]->accept( this );
 		}
 	}
 
-	void visit( const CClassDecl* node ) {
+	void visit( CClassDecl* node ) {
 		this->classPos++;
 
 		if( node->varDecls != NULL )
@@ -110,7 +110,7 @@ public:
 			node->methodDecls->accept( this );
 	}
 
-	void visit( const CClassDeclInheritance* node ) {
+	void visit(  CClassDeclInheritance* node ) {
 		this->classPos++;
 		
 		std::string parent = node->id;
@@ -136,19 +136,19 @@ public:
 			node->methodDecls->accept( this );
 	}
 
-	void visit( const CVarDecls* node ) {
+	void visit( CVarDecls* node ) {
 		for( int i = 0; i < node->a.size(); i++ ) {
 			node->a[i]->accept( this );
 		}
 	}
 
-	void visit( const CMethodDecls* node ) {
+	void visit( CMethodDecls* node ) {
 		for( int i = 0; i < node->a.size(); i++ ) {
 			node->a[i]->accept( this );
 		}
 	}
 
-	void visit( const CVarDecl* node ) {
+	void visit( CVarDecl* node ) {
 		CType* tmp = (node->type);
 		if( (tmp->inputType != 0) && (tmp->inputType != 1) && (tmp->inputType != 2) )
 			if( !checkClassExistence( tmp->id ) )
@@ -158,7 +158,7 @@ public:
 		delete tmp;
 	}
 
-	void visit( const CMethodDecl* node ) {
+	void visit( CMethodDecl* node ) {
 		this->methodPos++;
 		CType* tmp = (node->type);
 		if( (tmp->inputType != 0) && (tmp->inputType != 1) && (tmp->inputType != 2) ) {
@@ -183,13 +183,13 @@ public:
 	}
 
 
-	void visit( const CStatements* node ) {
+	void visit( CStatements* node ) {
 		for( int i = 0; i < node->a.size(); i++ ) {
 			node->a[i]->accept( this );
 		}
 	}
 
-	void visit( const CFormalList* node ) {
+	void visit( CFormalList* node ) {
 		CType* tmp = (node->type);
 		if( (tmp->inputType != 0) && (tmp->inputType != 1) && (tmp->inputType != 2) ) {
 			bool flag = false;
@@ -205,12 +205,12 @@ public:
 		}
 	}
 
-	void visit( const CStatementBRACKETS* node ) {
+	void visit( CStatementBRACKETS* node ) {
 		if( node->statement != NULL )
 			node->statement->accept( this );
 	}
 
-	void visit( const CStatementIF* node ) {
+	void visit( CStatementIF* node ) {
 		node->exp->accept( this );
 		if( lastTypeValue != "bool" )
 			cout << "Error in if/else statement expression" << endl;
@@ -218,27 +218,27 @@ public:
 		node->statement2->accept( this );
 	}
 
-	void visit( const CStatementWHILE* node ) {
+	void visit(  CStatementWHILE* node ) {
 		node->exp->accept( this );
 		if( lastTypeValue != "bool" )
 			cout << "Error in while statement expression" << endl;
 		node->statement->accept( this );
 	}
 
-	void visit( const CStatementPRINTLN* node ) {
+	void visit( CStatementPRINTLN* node ) {
 		node->exp->accept( this );
 		if( lastTypeValue != "int" )
 			cout << "Error in print expression" << endl;
 	}
 
-	void visit( const CStatementASIGNMENT* node ) {
+	void visit( CStatementASIGNMENT* node ) {
 		if( node->exp != NULL )
 			node->exp->accept( this );
 
 		checkAssignment( node->id );
 	}
 
-	void visit( const CStatementSQUEREASIGNMENT* node ) {
+	void visit( CStatementSQUEREASIGNMENT* node ) {
 		if( node->exp1 != NULL )
 			node->exp1->accept( this );
 
@@ -255,8 +255,15 @@ public:
 
 	}
 
-
-
+	void visit(CFormalRest *n)
+	{
+		n->type->accept(this);
+	}
+	void visit(CFormalRests *n)
+	{
+		for (int i = 0; i < n->a.size();++i)
+			n->a[i]->accept(this);
+	}
 
 	void visit(CExpBinary* n)
 	{
