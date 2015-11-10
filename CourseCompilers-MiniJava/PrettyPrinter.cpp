@@ -35,7 +35,7 @@ ostream& operator<<( ostream& o, const string& s ) {
 	}
 	
 	void CPrettyPrinter::visit( CClassDecl * n ) {
-		cout << "class" << " " << n->id << " ";
+		cout << "public class" << " " << n->id << " ";
 		cout << " { ";
 		n->varDecls->accept( this );
 		cout << " ";
@@ -87,6 +87,7 @@ ostream& operator<<( ostream& o, const string& s ) {
 		n->statements->accept( this );
 		cout << "; return ";
 		n->exp->accept( this );
+		cout << ';';
 	}
 	void CPrettyPrinter::visit( CStatements *n ) {
 		for( int i = 0; i < n->a.size(); i++ ) {
@@ -169,7 +170,7 @@ ostream& operator<<( ostream& o, const string& s ) {
 		cout << '.';
 		cout<<n->id;
 		cout << '(';
-		n->exp->accept(this);
+		n->expList->accept(this);
 		cout << ')';
 	}
 	void CPrettyPrinter::visit(CExpINTEGER_LITERAL *n) {
@@ -191,7 +192,7 @@ ostream& operator<<( ostream& o, const string& s ) {
 		cout << ']';
 	}
 	void CPrettyPrinter::visit(CExpNEWID *n) {
-		cout << n->id;
+		cout <<"new "<< n->id;
 		cout << '(' << ')';
 	}
 	void CPrettyPrinter::visit(CExpExclamationMark *n) {
