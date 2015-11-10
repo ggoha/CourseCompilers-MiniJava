@@ -109,9 +109,10 @@ Program:
 	 CPrettyPrinter pp;
 	 pp.visit($$);
 	 CSymbolTableBuilder st;
-	 st.Print();
 	 st.visit($$);
+	 st.Print();
 	 CTypeChecker typeChecker;
+	 typeChecker.table = st.table;
 	 typeChecker.visit($$);
 	 }
 	| MainClass ClassDecls {
@@ -120,7 +121,9 @@ Program:
 	 pp.visit($$);
 	 CSymbolTableBuilder st;
 	 st.visit($$);
+	 st.Print();
 	 CTypeChecker typeChecker;
+	 typeChecker.table = st.table;
 	 typeChecker.visit($$);
 	 }
 	;

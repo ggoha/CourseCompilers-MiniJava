@@ -68,7 +68,7 @@ using std::string;
 		CSymbolTableBuilder() : inMethod(0) {}
 
 		void Print(){
-			for (int i = 0; i < table.classInfo.size; ++i)
+			for (int i = 0; i < table.classInfo.size(); ++i)
 			{
 				table.classInfo[i].Print();
 			}
