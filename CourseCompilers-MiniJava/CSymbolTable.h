@@ -91,8 +91,8 @@ using std::string;
 			CMethodInfo mainMthd("main", "void");
 			mainMthd.params.push_back(CVarInfo(node->id2, "String[]"));
 			table.classInfo.back().methods.push_back(mainMthd);
-			if (node->statement != 0) {
-				node->statement->accept(this);
+			if (node->statements != 0) {
+				node->statements->accept(this);
 			}
 		}
 		void visit(  CClassDecls* node){

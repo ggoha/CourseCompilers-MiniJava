@@ -95,8 +95,8 @@ public:
 			node->classDecls->accept( this );
 	}
 	void visit( CMainClass* node ) {
-		if( node->statement != NULL )
-			node->statement->accept( this );
+		if( node->statements != NULL )
+			node->statements->accept( this );
 	}
 	void visit( CClassDecls* node ) {
 		for( int i = 0; i < node->a.size(); i++ ) {
@@ -210,8 +210,8 @@ public:
 	}
 
 	void visit( CStatementBRACKETS* node ) {
-		if( node->statement != NULL )
-			node->statement->accept( this );
+		if( node->statements != NULL )
+			node->statements->accept( this );
 	}
 
 	void visit( CStatementIF* node ) {

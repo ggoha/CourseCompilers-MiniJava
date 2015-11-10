@@ -132,7 +132,8 @@ ClassDecls:
 	| ClassDecls ClassDecl { $$ = $1; $1->addNext($2); }
 	;
 MainClass:
-	CLASS ID '{' PUBLIC STATIC VOID MAIN '(' STRING '[' ']' ID ')' '{' Statement '}' '}' { $$ = new CMainClass( $2, $12, $15 );}
+	CLASS ID '{' PUBLIC STATIC VOID MAIN '(' STRING '[' ']' ID ')' '{' Statements '}' '}' { $$ = new CMainClass( $2, $12, $15 );}	
+	| CLASS ID '{' PUBLIC STATIC VOID MAIN '(' STRING '[' ']' ID ')' '{'  '}' '}' { $$ = new CMainClass( $2, $12, new CStatements() );}
 	;
 ClassDecl:
 	CLASS ID '{'VarDecls MethodDecls'}' { $$ = new CClassDecl($2, $4, $5); }
@@ -184,7 +185,8 @@ Type:
 	;
 
 Statement:
-	'{'Statement'}' {$$ = new CStatementBRACKETS($2); }
+	'{'Statements'}' {$$ = new CStatementBRACKETS(new CStatements()); }
+	| '{'Statements'}' {$$ = new CStatementBRACKETS($2); }
 	| IF '(' Exp ')' Statement ELSE Statement { $$ = new CStatementIF($3,$5,$7); }
 	| WHILE '(' Exp ')' Statement { $$ = new CStatementWHILE($3,$5); }
 	| PRINTLN '(' Exp ')'';' {$$ = new CStatementPRINTLN($3); }

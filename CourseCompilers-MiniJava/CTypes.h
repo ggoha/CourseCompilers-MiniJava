@@ -137,11 +137,11 @@ class CMainClass :public IRoot {
 public:
 	string id1;
 	string id2;
-	IStatement * statement;
-	CMainClass( string _id1, string _id2, IStatement* _statement ) {
+	CStatements * statements;
+	CMainClass( string _id1, string _id2, CStatements* _statements ) {
 		id1 = _id1;
 		id2 = _id2;
-		statement = _statement;
+		statements = _statements;
 	};
 	virtual void accept(IVisitor* v) {
 		v->visit(this);
@@ -321,8 +321,8 @@ public:
 class CStatementBRACKETS : public IStatement
 {
 public:
-	IStatement* statement;
-	CStatementBRACKETS(IStatement* _statement) : statement(_statement){};
+	CStatements* statements;
+	CStatementBRACKETS(CStatements* _statements) : statements(_statements){};
 	virtual void accept(IVisitor* v){
 		v->visit(this);
 	};

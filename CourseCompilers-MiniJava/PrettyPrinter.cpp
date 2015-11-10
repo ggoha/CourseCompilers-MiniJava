@@ -30,7 +30,7 @@ ostream& operator<<( ostream& o, const string& s ) {
 		cout << "class" << " " << n->id1 << " " << "{\n" << "public static void main ( String[] ";
 		cout << n->id2 << " ";
 		cout << ")" << " " << "{\n" << " ";
-		n->statement->accept( this );
+		n->statements->accept( this );
 		cout << "\n}" << " " << "\n}";
 	}
 	
@@ -109,7 +109,7 @@ ostream& operator<<( ostream& o, const string& s ) {
 	void CPrettyPrinter::visit(CStatementBRACKETS* n)
 	{
 		cout << "{ ";
-		n->statement->accept(this);
+		n->statements->accept(this);
 		cout << " }";
 	};
 
