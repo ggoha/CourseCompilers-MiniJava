@@ -109,6 +109,7 @@ Program:
 	 CPrettyPrinter pp;
 	 pp.visit($$);
 	 CSymbolTableBuilder st;
+	 st.Print();
 	 st.visit($$);
 	 CTypeChecker typeChecker;
 	 typeChecker.visit($$);

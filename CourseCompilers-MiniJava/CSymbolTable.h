@@ -14,6 +14,9 @@ using std::string;
 		string type;
 		CVarInfo(  string _name,   string _type) :
 			name(_name), type(_type){}
+		void Print(){
+			std::cout << "Var" << type << " " << name << std::endl;
+		}
 	};
 
 	struct CMethodInfo{
@@ -23,6 +26,15 @@ using std::string;
 		string returnType;
 		CMethodInfo(  string _name,   string _returnType) :
 			name(_name), returnType(_returnType), vars(), params(){}
+		void Print(){
+			std::cout << "Method" << name << std::endl;
+			std::cout << "Params ";
+			for (int i = 0; i < params.size(); ++i)
+				params[i].Print();
+			std::cout << "Vars ";
+			for (int i = 0; i < vars.size(); ++i)
+				vars[i].Print();
+		}
 	};
 
 	struct CClassInfo{
@@ -32,6 +44,15 @@ using std::string;
 		vector<CMethodInfo> methods;
 		CClassInfo(  string _name) :
 			name(_name), vars(), methods(){}
+		void Print(){
+			std::cout << "Class" << name << ":" << parent << std::endl;
+			std::cout << "Methods ";
+			for (int i = 0; i < methods.size(); ++i)
+				methods[i].Print();
+			std::cout << "Vars ";
+			for (int i = 0; i < vars.size(); ++i)
+				vars[i].Print();
+		}
 	};
 
 	struct CTable{
@@ -46,7 +67,12 @@ using std::string;
 		string lastTypeValue;
 		CSymbolTableBuilder() : inMethod(0) {}
 
-
+		void Print(){
+			for (int i = 0; i < table.classInfo.size; ++i)
+			{
+				table.classInfo[i].Print();
+			}
+		}
 
 		void visit(  CProgram* node){
 			node->mainClass->accept(this);
@@ -138,7 +164,7 @@ using std::string;
 			}
 		}
 		void visit(  CExpRest* node){
-		}
+		}	
 
 		  void visit(CStatementIF* n) { }
 		  void visit(CStatementBRACKETS* n) { }
