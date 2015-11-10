@@ -150,11 +150,13 @@ public:
 class CClassDecl :public IRoot{
 public:
 	string id;
+	string id2;
 	CMethodDecls* methodDecls;
 	CVarDecls* varDecls;
 	CClassDecl(string _id, CVarDecls* _varDecls, CMethodDecls* _methodDecls) :
 		id(_id)
 	{
+		id2 = "";
 		if (_varDecls == 0)
 			varDecls = new CVarDecls();
 		else
@@ -164,6 +166,7 @@ public:
 		else
 			methodDecls = _methodDecls;
 	};
+
 	virtual void accept(IVisitor* v){
 		v->visit(this);
 	};
