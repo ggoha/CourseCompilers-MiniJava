@@ -15,14 +15,14 @@ ostream& operator<<( ostream& o, const string& s ) {
 
 	void CPrettyPrinter::visit( CProgram *n ) {
 		n->mainClass->accept( this );
-		cout << " ";
+		cout << "\n";
 		n->classDecls->accept( this );
 	};
 	
 	void CPrettyPrinter::visit( CClassDecls *n ) {
 		for( int i = 0; i < n->a.size(); i++ ) {
 			n->a[i]->accept( this );
-			cout << " ";
+			cout << "\n";
 		}
 	
 	}
@@ -36,20 +36,20 @@ ostream& operator<<( ostream& o, const string& s ) {
 	
 	void CPrettyPrinter::visit( CClassDecl * n ) {
 		cout << "public class" << " " << n->id << " ";
-		cout << " { ";
+		cout << " {\n ";
 		n->varDecls->accept( this );
 		cout << " ";
 		n->methodDecls->accept( this );
-		cout << " } ";
+		cout << "\n}\n ";
 	}
 
 	void CPrettyPrinter::visit( CClassDeclInheritance *n ) {
 		cout << "class " << n->id1 << " extends " << n->id2 << " ";
-		cout << " { ";
+		cout << " {\n";
 		n->varDecls->accept( this );
 		cout << " ";
 		n->methodDecls->accept( this );
-		cout << " } ";
+		cout << "\n}\n";
 	}
 
 
@@ -72,7 +72,7 @@ ostream& operator<<( ostream& o, const string& s ) {
 	void CPrettyPrinter::visit( CVarDecl *n ) {
 		cout << " ";
 		n->type->accept(this);
-		cout << " " << n->id << "; ";
+		cout << " " << n->id << ";\n";
 	}
 	void CPrettyPrinter::visit( CMethodDecl *n ) {
 		cout << " ";
@@ -82,18 +82,18 @@ ostream& operator<<( ostream& o, const string& s ) {
 		cout << " (";
 		if(n->formalList)
 			n->formalList->accept(this);
-		cout<< " )  { ";
+		cout<< " )  {\n";
 		n->varDecls->accept( this );
 		cout << " ";
 		n->statements->accept( this );
-		cout << "; return ";
+		cout << ";\n return ";
 		n->exp->accept( this );
-		cout << ';';
+		cout << ';\n}\n';
 	}
 	void CPrettyPrinter::visit( CStatements *n ) {
 		for( int i = 0; i < n->a.size(); i++ ) {
 			n->a[i]->accept( this );
-			cout << " ";
+			cout << "\n";
 		}
 	}
 
@@ -101,17 +101,17 @@ ostream& operator<<( ostream& o, const string& s ) {
 	{
 		cout << "if ( ";
 		n->exp->accept(this);
-		cout << ") ";
+		cout << ")\n ";
 		n->statement1->accept(this);
-		cout << " else ";
+		cout << "\nelse\n";
 		n->statement2->accept(this);
 	};
 
 	void CPrettyPrinter::visit(CStatementBRACKETS* n)
 	{
-		cout << "{ ";
+		cout << "{\n";
 		n->statements->accept(this);
-		cout << " }";
+		cout << "\n}\n";
 	};
 
 	void CPrettyPrinter::visit(CStatementSQUEREASIGNMENT* n)
@@ -136,7 +136,7 @@ ostream& operator<<( ostream& o, const string& s ) {
 	{
 		cout << "System.out.println( ";
 		n->exp->accept(this);
-		cout << ");";
+		cout << ");\n";
 	};
 
 	void CPrettyPrinter::visit(CStatementWHILE* n)
