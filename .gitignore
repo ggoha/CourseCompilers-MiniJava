@@ -4,6 +4,7 @@
 #win and bison
 win_flex_bison/
 *.output
+*parser.tab.*pp
 
 # User-specific files
 *.suo
