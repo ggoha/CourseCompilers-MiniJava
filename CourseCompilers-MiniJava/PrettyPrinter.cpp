@@ -88,7 +88,7 @@ ostream& operator<<( ostream& o, const string& s ) {
 		n->statements->accept( this );
 		cout << ";\n return ";
 		n->exp->accept( this );
-		cout << ';\n}\n';
+		cout << ";\n}\n";
 	}
 	void CPrettyPrinter::visit( CStatements *n ) {
 		for( int i = 0; i < n->a.size(); i++ ) {

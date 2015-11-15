@@ -69,6 +69,7 @@ public:
 				}
 			}
 		}
+		return false;
 	}
 
 	std::string checkAssignment( std::string name ) {
