@@ -295,8 +295,10 @@ public:
 	{
 		n->exp1->accept(this);
 		if (lastTypeValue[lastTypeValue.length() - 1] != ']' || lastTypeValue[lastTypeValue.length() - 2] != '[')
+		{
 			cout << "exception in array assigment:" << lastTypeValue << " is not array" << '\n';
-		return ;
+			return;
+		}
 		string t = lastTypeValue.substr(0, lastTypeValue.length() - 2);
 		n->exp2->accept(this);
 		if (t != lastTypeValue)
