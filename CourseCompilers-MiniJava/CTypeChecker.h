@@ -315,12 +315,28 @@ public:
 	void visit(CExpPointID *n)
 	{
 		n->exp->accept(this);
-		n->expList->accept(this);
-
-		for (int i = 0; i < table.classInfo[this->classPos].methods.size(); i++)
-			if (table.classInfo[this->classPos].methods[i].name == n->id) {
-				lastTypeValue = table.classInfo[this->classPos].methods[i].returnType;
+		string t = lastTypeValue;
+		int clPos = -1;
+		for (int i = 0; i < table.classInfo.size();++i)
+			if (t == table.classInfo[i].name)
+			{
+				clPos = i;
+				break;
 			}
+		if (clPos > 0)
+		{
+			n->expList->accept(this);
+
+			for (int i = 0; i < table.classInfo[clPos].methods.size(); i++)
+				if (table.classInfo[clPos].methods[i].name == n->id) {
+					lastTypeValue = table.classInfo[clPos].methods[i].returnType;
+				}
+		}
+		else
+		{
+			cout << "too many errors\n";
+			return;
+		}
 	}
 
 	void visit(CExpINTEGER_LITERAL *n)
@@ -342,6 +358,7 @@ public:
 	}
 	void visit(CExpTHIS *n)
 	{
+		lastTypeValue = table.classInfo[classPos].name;
 	}
 	void visit(CExpNEWINT *n)
 	{
@@ -355,6 +372,7 @@ public:
 		if ((n->id != "int") && (n->id != "boolean"))
 			if (!checkClassExistence(n->id))
 				cout << "No such type: " << n->id << endl;
+		lastTypeValue = n->id;
 	}
 	void visit(CExpExclamationMark *n)
 	{
