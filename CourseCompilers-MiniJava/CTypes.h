@@ -251,7 +251,14 @@ public:
 	static const int  _id = 3;
 	int inputType;
 	string id;
-	CType(int _type, string ID = "") : inputType(_type), id(ID) {};
+	CType(int _type, string ID = "") : inputType(_type), id(ID) {
+		if (inputType == _bool)
+			id = "bool";
+		if (inputType == _int)
+			id = "int";
+		if (inputType == _mas)
+			id = "int[]";
+	};
 
 	virtual void accept(IVisitor* v){
 		v->visit(this);

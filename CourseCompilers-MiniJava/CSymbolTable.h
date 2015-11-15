@@ -72,6 +72,17 @@ using std::string;
 		string lastTypeValue;
 		CSymbolTableBuilder() : inMethod(0) {}
 
+		template <typename T>
+		void checkItemAlreadyExists(const std::vector<T>& items, const string& itemName) {
+			typename std::vector<T>::const_iterator it = items.cbegin();
+			typename std::vector<T>::const_iterator itEnd = items.cend();
+			for (; it != itEnd; ++it) {
+				if (it->name == itemName) {
+					std::cerr << "redefinition: " << itemName << std::endl;
+				}
+			}
+		}
+
 		void Print(){
 			for (int i = 0; i < table.classInfo.size(); ++i)
 			{
@@ -145,6 +156,9 @@ using std::string;
 		}
 
 		void visit(  CFormalList* node){
+			node->type->accept(this);
+			checkItemAlreadyExists<CVarInfo>(table.classInfo.back().methods.back().params, node->id);
+			table.classInfo.back().methods.back().params.push_back(CVarInfo(node->id, lastTypeValue));
 			if (node->formalRests != 0) {
 				node->formalRests->accept(this);
 			}
@@ -154,7 +168,10 @@ using std::string;
 				node->a[i]->accept(this);
 			}
 		}
-		void visit(  CFormalRest* node){
+		void visit(  CFormalRest* node) {
+			node->type->accept(this);
+			checkItemAlreadyExists<CVarInfo>(table.classInfo.back().methods.back().params, node->id);
+			table.classInfo.back().methods.back().params.push_back(CVarInfo(node->id, lastTypeValue));
 		}
 
 		void visit(  class CExpList *node){
@@ -201,6 +218,8 @@ using std::string;
 		  void visit(CExpCircleBrackets *n) { }
 		  void visit(CClassDeclInheritance *n) { }
 		  void visit(CStatements *n) { }
-		  void visit(CType *n) { }
+		  void visit(CType *n) { 
+			  lastTypeValue = n->id;
+		  }
 		  void visit(CExpUnaryMinus *n) { }
 	};
