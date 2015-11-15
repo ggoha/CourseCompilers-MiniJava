@@ -143,16 +143,18 @@ using std::string;
 			}
 		}
 		void visit(  CMethodDecl* node){
+			inMethod = true;
 			node->type->accept(this);
 			table.classInfo.back().methods.push_back(CMethodInfo(node->id, lastTypeValue));
+
 			if (node->formalList != 0) {
 				node->formalList->accept(this);
 			}
-			if (node->exp != 0) {
-				inMethod = 1;
+			if (node->varDecls)
+				node->varDecls->accept(this);
+			if (node->exp != 0)
 				node->exp->accept(this);
-				inMethod = 0;
-			}
+			inMethod = false;
 		}
 
 		void visit(  CFormalList* node){
