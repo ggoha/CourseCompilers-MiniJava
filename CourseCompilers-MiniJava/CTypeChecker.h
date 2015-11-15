@@ -158,9 +158,6 @@ public:
 		if( (tmp->inputType != 0) && (tmp->inputType != 1) && (tmp->inputType != 2) )
 			if( !checkClassExistence( tmp->id ) )
 				cout << "No such type: " << tmp->id << endl;
-
-
-		delete tmp;
 	}
 
 	void visit( CMethodDecl* node ) {
@@ -183,8 +180,7 @@ public:
 			node->statements->accept( this );
 		if( node->exp != NULL )
 			node->exp->accept( this );
-
-		delete tmp;
+		--methodPos;
 	}
 
 
@@ -285,7 +281,7 @@ public:
 		}
 		else
 		{
-			if (lastTypeValue != "boolean")
+			if (lastTypeValue != "int")
 				cout << "exception in "  << n->op  << " arguments is not int" << '\n';
 			if (n->op == '<')
 				lastTypeValue = "boolean";
