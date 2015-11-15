@@ -202,7 +202,7 @@ Exp:
 	| Exp '-' Exp { $$ = new CExpBinary($1,'-', $3); }
 	| Exp '*' Exp { $$ = new CExpBinary($1,'*', $3); }
 	| '-' Exp %prec UMINUS { $$ = new CExpUnaryMinus($2); }
-	| Exp '&' '&' Exp { $$ = new CExpBinary($1,'&', $4); }
+	| Exp '&' Exp { $$ = new CExpBinary($1,'&', $3); }
 	| Exp '<' Exp { $$ = new CExpBinary($1,'<', $3); }
 	| Exp '[' Exp ']' { $$ = new CExpInSquareBrackets($1, $3); }
 	| Exp'.' LENGTH { $$ = new CExpPointLENGTH($1); }
