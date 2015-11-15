@@ -99,7 +99,6 @@ public:
 		++methodPos;
 		if( node->statements != NULL )
 			node->statements->accept( this );
-		--methodPos;
 	}
 	void visit( CClassDecls* node ) {
 		for( int i = 0; i < node->a.size(); i++ ) {
@@ -109,6 +108,7 @@ public:
 
 	void visit( CClassDecl* node ) {
 		this->classPos++;
+		methodPos = -1;
 
 		if( node->varDecls != NULL )
 			node->varDecls->accept( this );
@@ -119,7 +119,7 @@ public:
 
 	void visit(  CClassDeclInheritance* node ) {
 		this->classPos++;
-		
+		methodPos = -1;
 		std::string parent = node->id;
 		do {
 			int i = 0;
@@ -182,7 +182,6 @@ public:
 			node->statements->accept( this );
 		if( node->exp != NULL )
 			node->exp->accept( this );
-		--methodPos;
 	}
 
 
@@ -307,8 +306,8 @@ public:
 	void visit(CExpPointLENGTH *n)
 	{
 		n->exp->accept(this);
-		if (lastTypeValue != "String")
-			cout << "esception length is not attribute of " << lastTypeValue<<'\n';
+		if (lastTypeValue.substr(lastTypeValue.length()-2,2) != "[]")
+			cout << "Error in length :" << lastTypeValue<<"is not array\n";
 		lastTypeValue = "int";
 	}
 	void visit(CExpPointID *n)
