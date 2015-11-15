@@ -189,7 +189,7 @@ Type:
 	;
 
 Statement:
-	'{'Statements'}' {$$ = new CStatementBRACKETS(new CStatements()); }
+	'{''}' {$$ = new CStatementBRACKETS(new CStatements()); }
 	| '{'Statements'}' {$$ = new CStatementBRACKETS($2); }
 	| IF '(' Exp ')' Statement ELSE Statement { $$ = new CStatementIF($3,$5,$7); }
 	| WHILE '(' Exp ')' Statement { $$ = new CStatementWHILE($3,$5); }

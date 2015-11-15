@@ -21,7 +21,7 @@ letter        [a-zA-Z]
 "boolean" {return BOOLEAN; }
 "if" {return IF; }
 "else" {return ELSE; }
-"while " {return WHILE; }
+"while" {return WHILE; }
 "System.out.println" { return PRINTLN; }
 "length" {return LENGTH; }
 "true" {return TRUE; }

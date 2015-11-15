@@ -96,8 +96,10 @@ public:
 			node->classDecls->accept( this );
 	}
 	void visit( CMainClass* node ) {
+		++methodPos;
 		if( node->statements != NULL )
 			node->statements->accept( this );
+		--methodPos;
 	}
 	void visit( CClassDecls* node ) {
 		for( int i = 0; i < node->a.size(); i++ ) {
@@ -213,7 +215,7 @@ public:
 
 	void visit( CStatementIF* node ) {
 		node->exp->accept( this );
-		if( lastTypeValue != "bool" )
+		if( lastTypeValue != "boolean" )
 			cout << "Error in if/else statement expression" << endl;
 		node->statement1->accept( this );
 		node->statement2->accept( this );
@@ -221,7 +223,7 @@ public:
 
 	void visit(  CStatementWHILE* node ) {
 		node->exp->accept( this );
-		if( lastTypeValue != "bool" )
+		if( lastTypeValue != "boolean" )
 			cout << "Error in while statement expression" << endl;
 		node->statement->accept( this );
 	}
