@@ -30,6 +30,9 @@
     <ClCompile Include="PrettyPrinter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="IRBuilder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="lexer.l">
@@ -56,10 +59,16 @@
     <ClInclude Include="CTypeChecker.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Exp.h">
+    <ClInclude Include="Frame.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Frame.h">
+    <ClInclude Include="IRExp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IRBuilder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IRStm.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

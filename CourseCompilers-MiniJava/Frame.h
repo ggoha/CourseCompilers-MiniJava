@@ -4,6 +4,9 @@
 using namespace std;
 
 
+class IRNode
+{};
+
 // Метка - точка перехода в коде
 class CLabel {
 public:
