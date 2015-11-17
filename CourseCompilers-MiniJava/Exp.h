@@ -5,21 +5,21 @@ class IRExp : IRNode {
 	IExp() {}
 }
 
-class CONST:IRExp{
+class IRExpCONST:IRExp{
 	
-	class CONST {
-		CONST( int value ) {
+	class IRExpCONST {
+		IRExpCONST( int value ) {
 
 		}
 	}
 
-	class NAME:IRExp {
-		NAME( CLabel* label ) {
+	class IRExpNAME:IRExp {
+		IRExpNAME( CLabel* label ) {
 
 		}
 	}
-	class TEMP:IRExp {
-		TEMP( CTemp* temp ) {
+	class IRExpTEMP:IRExp {
+		IRExpTEMP( CTemp* temp ) {
 
 		}
 	}
