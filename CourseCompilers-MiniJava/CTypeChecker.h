@@ -121,17 +121,19 @@ public:
 		this->classPos++;
 		methodPos = -1;
 		std::string parent = node->id2;
+		int _count = 0;
 		do {
-			int i = 0;
-			while( (table.classInfo[i].name != parent) && (i < table.classInfo.size()) )
-				i++;
-
-			if( i == table.classInfo.size() )
-				parent = "";
-			else
-				parent = table.classInfo[i].parent;
+			if (_count > table.classInfo.size())
+				break;
+			++_count;
+			int i = table.getClassIndex(parent);
+			if (i == -1) {
+				cout << "error in extends: no such class " << parent << '\n';
+				break;
+			};
+			parent = table.classInfo[i].parent;
 		}
-		while( (parent != "") || (parent != node->id2) );
+		while( (parent != "") && (parent != node->id) );
 
 		if( parent != "" )
 			cout << "Cyclic inheritance with " << node->id << endl;
@@ -316,25 +318,26 @@ public:
 	{
 		n->exp->accept(this);
 		string t = lastTypeValue;
-		int clPos = -1;
-		for (int i = 0; i < table.classInfo.size();++i)
-			if (t == table.classInfo[i].name)
+		n->expList->accept(this);
+		int clPos = table.getClassIndex(t);
+		int mPos = -1;
+		int _count = 0;
+		while(clPos > 0)
+		{
+			if (_count > table.classInfo.size())
+				break;
+			++_count;
+			mPos = table.classInfo[clPos].getMethodIndex(n->id);
+			if (mPos >= 0)
 			{
-				clPos = i;
+				lastTypeValue = table.classInfo[clPos].methods[mPos].returnType;
 				break;
 			}
-		if (clPos > 0)
-		{
-			n->expList->accept(this);
-
-			for (int i = 0; i < table.classInfo[clPos].methods.size(); i++)
-				if (table.classInfo[clPos].methods[i].name == n->id) {
-					lastTypeValue = table.classInfo[clPos].methods[i].returnType;
-				}
+			clPos = table.getClassIndex(table.classInfo[clPos].parent);
 		}
-		else
+		if(mPos == -1)
 		{
-			cout << "too many errors\n";
+			cout << "no method "<<n->id<<" in class "<<t<<"\n";
 			return;
 		}
 	}

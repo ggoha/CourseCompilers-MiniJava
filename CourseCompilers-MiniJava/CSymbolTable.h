@@ -42,6 +42,12 @@ using std::string;
 		string parent;
 		vector<CVarInfo> vars;
 		vector<CMethodInfo> methods;
+		int getMethodIndex(string name) {
+			for (int i = 0; i < methods.size(); ++i)
+				if (methods[i].name == name)
+					return i;
+			return -1;
+		}
 		CClassInfo(  string _name) :
 			name(_name), vars(), methods(){}
 		void Print(){
@@ -58,6 +64,12 @@ using std::string;
 	struct CTable{
 		vector<CClassInfo> classInfo;
 		vector<std::string> baseType;
+		int getClassIndex(string name) {
+			for (int i = 0; i < classInfo.size(); ++i)
+				if (classInfo[i].name == name)
+					return i;
+			return -1;
+		}
 		CTable() : classInfo(){
 			baseType.push_back("int");
 			baseType.push_back("int[]");
@@ -119,18 +131,6 @@ using std::string;
 			}
 			if (node->varDecls != 0) {
 				node->varDecls->accept(this);
-			}
-		}
-
-
-		void visit( CClassDeclInheritance *n ) {
-			inMethod = 0;
-			table.classInfo.push_back( CClassInfo( n->id1 ) );
-			if( node->methodDecls != 0 ) {
-				node->methodDecls->accept( this );
-			}
-			if( node->varDecls != 0 ) {
-				node->varDecls->accept( this );
 			}
 		}
 
@@ -230,6 +230,17 @@ using std::string;
 		  void visit(CExpNEWID *n) { }
 		  void visit(CExpExclamationMark *n) { }
 		  void visit(CExpCircleBrackets *n) { }
+		  void visit(CClassDeclInheritance *node) {
+			  inMethod = 0;
+			  table.classInfo.push_back(CClassInfo(node->id));
+			  table.classInfo.back().parent = node->id2;
+			  if (node->methodDecls != 0) {
+				  node->methodDecls->accept(this);
+			  }
+			  if (node->varDecls != 0) {
+				  node->varDecls->accept(this);
+			  }
+		  }
 		  void visit(CStatements *n) { }
 		  void visit(CType *n) { 
 			  lastTypeValue = n->id;

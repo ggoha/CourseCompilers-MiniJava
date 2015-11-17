@@ -13,255 +13,255 @@ ostream& operator<<( ostream& o, const string& s ) {
 }
 
 
-	void CPrettyPrinter::visit( CProgram *n ) {
-		n->mainClass->accept( this );
-		cout << "\n";
-		n->classDecls->accept( this );
+	void CPrettyPrinter::visit( CProgram *node ) {
+		node->mainClass->accept( this );
+		cout << "\node";
+		node->classDecls->accept( this );
 	};
 	
-	void CPrettyPrinter::visit( CClassDecls *n ) {
-		for( int i = 0; i < n->a.size(); i++ ) {
-			n->a[i]->accept( this );
-			cout << "\n";
+	void CPrettyPrinter::visit( CClassDecls *node ) {
+		for( int i = 0; i < node->a.size(); i++ ) {
+			node->a[i]->accept( this );
+			cout << "\node";
 		}
 	
 	}
-	void CPrettyPrinter::visit( CMainClass *n ) {
-		cout << "class" << " " << n->id1 << " " << "{\n" << "public static void main ( String[] ";
-		cout << n->id2 << " ";
-		cout << ")" << " " << "{\n" << " ";
-		n->statements->accept( this );
-		cout << "\n}" << " " << "\n}";
+	void CPrettyPrinter::visit( CMainClass *node ) {
+		cout << "class" << " " << node->id1 << " " << "{\node" << "public static void main ( String[] ";
+		cout << node->id2 << " ";
+		cout << ")" << " " << "{\node" << " ";
+		node->statements->accept( this );
+		cout << "\node}" << " " << "\node}";
 	}
 	
-	void CPrettyPrinter::visit( CClassDecl * n ) {
-		cout << "public class" << " " << n->id << " ";
-		cout << " {\n ";
-		n->varDecls->accept( this );
+	void CPrettyPrinter::visit( CClassDecl * node ) {
+		cout << "public class" << " " << node->id << " ";
+		cout << " {\node ";
+		node->varDecls->accept( this );
 		cout << " ";
-		n->methodDecls->accept( this );
-		cout << "\n}\n ";
+		node->methodDecls->accept( this );
+		cout << "\node}\node ";
 	}
 
-	void CPrettyPrinter::visit( CClassDeclInheritance *n ) {
-		cout << "class " << n->id1 << " extends " << n->id2 << " ";
-		cout << " {\n";
-		n->varDecls->accept( this );
+	void CPrettyPrinter::visit( CClassDeclInheritance *node ) {
+		cout << "class " << node->id1 << " extends " << node->id2 << " ";
+		cout << " {\node";
+		node->varDecls->accept( this );
 		cout << " ";
-		n->methodDecls->accept( this );
-		cout << "\n}\n";
+		node->methodDecls->accept( this );
+		cout << "\node}\node";
 	}
 
 
-	void CPrettyPrinter::visit( CVarDecls *n ) {
-		for( int i = 0; i < n->a.size(); i++ ) {
-			n->a[i]->accept( this );
+	void CPrettyPrinter::visit( CVarDecls *node ) {
+		for( int i = 0; i < node->a.size(); i++ ) {
+			node->a[i]->accept( this );
 			cout << " ";
 		}
 	}
 
 	
 
-	void CPrettyPrinter::visit( CMethodDecls *n ) {
-		for( int i = 0; i < n->a.size(); i++ ) {
-			n->a[i]->accept( this );
+	void CPrettyPrinter::visit( CMethodDecls *node ) {
+		for( int i = 0; i < node->a.size(); i++ ) {
+			node->a[i]->accept( this );
 			cout << " ";
 		}
 	}
 	
-	void CPrettyPrinter::visit( CVarDecl *n ) {
+	void CPrettyPrinter::visit( CVarDecl *node ) {
 		cout << " ";
-		n->type->accept(this);
-		cout << " " << n->id << ";\n";
+		node->type->accept(this);
+		cout << " " << node->id << ";\node";
 	}
-	void CPrettyPrinter::visit( CMethodDecl *n ) {
+	void CPrettyPrinter::visit( CMethodDecl *node ) {
 		cout << " ";
-		n->type->accept( this );
+		node->type->accept( this );
 		cout << " ";
-		cout << n->id;
+		cout << node->id;
 		cout << " (";
-		if(n->formalList)
-			n->formalList->accept(this);
-		cout<< " )  {\n";
-		n->varDecls->accept( this );
+		if(node->formalList)
+			node->formalList->accept(this);
+		cout<< " )  {\node";
+		node->varDecls->accept( this );
 		cout << " ";
-		n->statements->accept( this );
-		cout << ";\n return ";
-		n->exp->accept( this );
-		cout << ";\n}\n";
+		node->statements->accept( this );
+		cout << ";\node return ";
+		node->exp->accept( this );
+		cout << ";\node}\node";
 	}
-	void CPrettyPrinter::visit( CStatements *n ) {
-		for( int i = 0; i < n->a.size(); i++ ) {
-			n->a[i]->accept( this );
-			cout << "\n";
+	void CPrettyPrinter::visit( CStatements *node ) {
+		for( int i = 0; i < node->a.size(); i++ ) {
+			node->a[i]->accept( this );
+			cout << "\node";
 		}
 	}
 
-	void CPrettyPrinter::visit(CStatementIF* n)
+	void CPrettyPrinter::visit(CStatementIF* node)
 	{
 		cout << "if ( ";
-		n->exp->accept(this);
-		cout << ")\n ";
-		n->statement1->accept(this);
-		cout << "\nelse\n";
-		n->statement2->accept(this);
+		node->exp->accept(this);
+		cout << ")\node ";
+		node->statement1->accept(this);
+		cout << "\nelse\node";
+		node->statement2->accept(this);
 	};
 
-	void CPrettyPrinter::visit(CStatementBRACKETS* n)
+	void CPrettyPrinter::visit(CStatementBRACKETS* node)
 	{
-		cout << "{\n";
-		n->statements->accept(this);
-		cout << "\n}\n";
+		cout << "{\node";
+		node->statements->accept(this);
+		cout << "\node}\node";
 	};
 
-	void CPrettyPrinter::visit(CStatementSQUEREASIGNMENT* n)
+	void CPrettyPrinter::visit(CStatementSQUEREASIGNMENT* node)
 	{
-		cout << n->id;
+		cout << node->id;
 		cout << "[ ";
-		n->exp1->accept(this);
+		node->exp1->accept(this);
 		cout << " ] = ";
-		n->exp2->accept(this);
-		cout << ";\n";
+		node->exp2->accept(this);
+		cout << ";\node";
 	};
 
-	void CPrettyPrinter::visit(CStatementASIGNMENT* n)
+	void CPrettyPrinter::visit(CStatementASIGNMENT* node)
 	{
-		cout << n->id;
+		cout << node->id;
 		cout << " = ";
-		n->exp->accept(this);
-		cout << ";\n";
+		node->exp->accept(this);
+		cout << ";\node";
 	};
 
-	void CPrettyPrinter::visit(CStatementPRINTLN* n)
+	void CPrettyPrinter::visit(CStatementPRINTLN* node)
 	{
 		cout << "System.out.println( ";
-		n->exp->accept(this);
-		cout << ");\n";
+		node->exp->accept(this);
+		cout << ");\node";
 	};
 
-	void CPrettyPrinter::visit(CStatementWHILE* n)
+	void CPrettyPrinter::visit(CStatementWHILE* node)
 	{
 		cout << " ";
 		cout << "while ( ";
-		n->exp->accept(this);
-		cout << ") \n";
-		n->statement->accept(this);
+		node->exp->accept(this);
+		cout << ") \node";
+		node->statement->accept(this);
 		cout << " ";
 	};
 
-	void CPrettyPrinter::visit(CExpBinary* n)
+	void CPrettyPrinter::visit(CExpBinary* node)
 	{
-		n->exp1->accept(this);
-		cout << n->op;
-		n->exp2->accept(this);
+		node->exp1->accept(this);
+		cout << node->op;
+		node->exp2->accept(this);
 	}
-	void CPrettyPrinter::visit(CExpInSquareBrackets *n) {
-		n->exp1->accept(this);
+	void CPrettyPrinter::visit(CExpInSquareBrackets *node) {
+		node->exp1->accept(this);
 		cout << '[';
-		n->exp2->accept(this);
+		node->exp2->accept(this);
 		cout << ']';
 	}
-	void CPrettyPrinter::visit(CExpPointLENGTH *n) {
-		n->exp->accept(this);
+	void CPrettyPrinter::visit(CExpPointLENGTH *node) {
+		node->exp->accept(this);
 		cout << '.';
 		cout << "length()";
 	}
-	void CPrettyPrinter::visit(CExpPointID *n) {
-		n->exp->accept(this);
+	void CPrettyPrinter::visit(CExpPointID *node) {
+		node->exp->accept(this);
 		cout << '.';
-		cout<<n->id;
+		cout<<node->id;
 		cout << '(';
-		n->expList->accept(this);
+		node->expList->accept(this);
 		cout << ')';
 	}
-	void CPrettyPrinter::visit(CExpINTEGER_LITERAL *n) {
-		cout << n->integer_literal;
+	void CPrettyPrinter::visit(CExpINTEGER_LITERAL *node) {
+		cout << node->integer_literal;
 	}
-	void CPrettyPrinter::visit(CExpSingleOp *n) {
-		cout << n->val;
+	void CPrettyPrinter::visit(CExpSingleOp *node) {
+		cout << node->val;
 	}
-	void CPrettyPrinter::visit(CExpID *n) {
-		cout <<  n->id;
+	void CPrettyPrinter::visit(CExpID *node) {
+		cout <<  node->id;
 	}
-	void CPrettyPrinter::visit(CExpTHIS *n) {
+	void CPrettyPrinter::visit(CExpTHIS *node) {
 		cout << "this" ;
 	}
-	void CPrettyPrinter::visit(CExpNEWINT *n) {
+	void CPrettyPrinter::visit(CExpNEWINT *node) {
 		cout << "new int";
 		cout << '[';
-		n->exp->accept(this);
+		node->exp->accept(this);
 		cout << ']';
 	}
-	void CPrettyPrinter::visit(CExpNEWID *n) {
-		cout <<"new "<< n->id;
+	void CPrettyPrinter::visit(CExpNEWID *node) {
+		cout <<"new "<< node->id;
 		cout << '(' << ')';
 	}
-	void CPrettyPrinter::visit(CExpExclamationMark *n) {
+	void CPrettyPrinter::visit(CExpExclamationMark *node) {
 		cout << '!';
-		n->exp->accept( this );
+		node->exp->accept( this );
 	}
-	void CPrettyPrinter::visit( CExpCircleBrackets *n ) {
+	void CPrettyPrinter::visit( CExpCircleBrackets *node ) {
 		cout << '(';
-		n->exp->accept(this);
+		node->exp->accept(this);
 		cout << ')';
 	}
 	
 	
-	void CPrettyPrinter::visit( CFormalList *n ) {
+	void CPrettyPrinter::visit( CFormalList *node ) {
 		cout << " ";
-		n->type->accept( this );
-		cout << " " << n->id << " " ;
-		n->formalRests->accept( this );
+		node->type->accept( this );
+		cout << " " << node->id << " " ;
+		node->formalRests->accept( this );
 		cout << " ";
 		
 	}
-	void CPrettyPrinter::visit( CFormalRest *n ) {
+	void CPrettyPrinter::visit( CFormalRest *node ) {
 		cout << " ,";
-		n->type->accept( this );
-		cout << n->id << " ";
+		node->type->accept( this );
+		cout << node->id << " ";
 	}
-	void CPrettyPrinter::visit( CFormalRests *n ) {
-		for( int i = 0; i < n->a.size(); i++ ) {
-			n->a[i]->accept( this );
+	void CPrettyPrinter::visit( CFormalRests *node ) {
+		for( int i = 0; i < node->a.size(); i++ ) {
+			node->a[i]->accept( this );
 			cout << " ";
 		}
 	}
-	void CPrettyPrinter::visit( CType *n ) {
-		if( n->inputType == CType:: _mas ) {
+	void CPrettyPrinter::visit( CType *node ) {
+		if( node->inputType == CType:: _mas ) {
 			cout << "int [] ";
 		}
-		if( n->inputType == CType::_bool ) {
+		if( node->inputType == CType::_bool ) {
 			cout << " bool ";
 		}
-		if( n->inputType == CType::_int ) {
+		if( node->inputType == CType::_int ) {
 			cout << " int ";
 		}
-		if( n->inputType == CType::_id ) {
-			cout << n->id;
+		if( node->inputType == CType::_id ) {
+			cout << node->id;
 		}
 	}
-	void CPrettyPrinter::visit( CExpList *n ) {
+	void CPrettyPrinter::visit( CExpList *node ) {
 		cout << " ";
-		if(n->exp)
-			n->exp->accept( this );
+		if(node->exp)
+			node->exp->accept( this );
 		cout << " ";
-		n->expRests->accept( this );
+		node->expRests->accept( this );
 	}
-	void CPrettyPrinter::visit( CExpRests *n ) {
-		for( int i = 0; i < n->a.size(); i++ ) {
-			n->a[i]->accept( this );
+	void CPrettyPrinter::visit( CExpRests *node ) {
+		for( int i = 0; i < node->a.size(); i++ ) {
+			node->a[i]->accept( this );
 			cout << " ";
 		}
 	}
-	void CPrettyPrinter::visit( CExpRest *n ) {
+	void CPrettyPrinter::visit( CExpRest *node ) {
 		cout << " ,";
-		n->exp->accept( this );
+		node->exp->accept( this );
 		cout << " ";
 
 	}
-	void CPrettyPrinter::visit( CExpUnaryMinus *n ) {
+	void CPrettyPrinter::visit( CExpUnaryMinus *node ) {
 		cout << " - ";
-		n->exp->accept( this );
+		node->exp->accept( this );
 		cout << " ";
 	}
 
