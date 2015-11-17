@@ -1,6 +1,6 @@
 #pragma once
 #include "CTypes.h"
-
+#include "Frame.h"
 class IRExp : IRNode {
 	IExp() {}
 }
@@ -8,19 +8,21 @@ class IRExp : IRNode {
 class IRExpCONST:IRExp{
 	
 	class IRExpCONST {
-		IRExpCONST( int value ) {
-
-		}
+		int value;
+	public:
+		IRExpCONST( int _value ): value(_value) {}
 	}
 
 	class IRExpNAME:IRExp {
-		IRExpNAME( CLabel* label ) {
-
+	public:
+		const CLabel* label;
+		IRExpNAME( const CLabel* _label ): label(_label) {
 		}
 	}
 	class IRExpTEMP:IRExp {
-		IRExpTEMP( CTemp* temp ) {
-
+	public:
+		const CTemp* temp
+		IRExpTEMP( const CTemp* _temp ):temp(_temp) {
 		}
 	}
 	class IRExpBINOP:IRExp{
@@ -28,25 +30,23 @@ class IRExpCONST:IRExp{
 		char binop;
 		const IRExp* left;
 		const IRExp* right;
-		IRExpBINOP( char b, const IRExp* l, const IRExp* r ) {
-			binop = b; left = l; right = r;
-		}
+		IRExpBINOP( char b, const IRExp* l, const IRExp* r ): binop(b), left(l), right(r) {}
 	}
 	class IRExpMEM:IRExp {
-		IRExpMEM( CExp* exp ) {
-			 IRExp* func;
-			 IRExpList* args;
-			 IRExpCALL( IRExp* f, IRExpList* a ) { func = f; args = a; }
-		}
+	public:
+		const IRExp* exp;
+		IRExpMEM( const IRExp* _exp ):exp(_exp) {}
 	}
 	class IRExpCALL:IRExp {
-		IRExpCALL( const CExp* func, CExpList* args ) {
-
-		}
+	public:
+		const IRExpList* arguments;
+		const IRExp* function;
+		IRExpCALL( const IRExp* func, const IRExpList* args ): function(func), arguments(args) {}
 	}
 	
 	class IRExpESEQ:IRExp {
-		IRExpESEQ( CStatement stm, IRExpexp ) {
-
-		}
+	public:
+		const IRStatements* stms;
+		const IRExp* exp;
+		IRExpESEQ( const IRStatemens* s, const IRExp* e ): stms(s), exp(e) {}
 	}
