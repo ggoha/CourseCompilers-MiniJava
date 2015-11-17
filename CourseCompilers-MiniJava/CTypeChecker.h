@@ -121,7 +121,11 @@ public:
 		this->classPos++;
 		methodPos = -1;
 		std::string parent = node->id2;
+		int _count = 0;
 		do {
+			if (_count > table.classInfo.size())
+				break;
+			++_count;
 			int i = table.getClassIndex(parent);
 			if (i == -1) {
 				cout << "error in extends: no such class " << parent << '\n';
@@ -317,8 +321,12 @@ public:
 		n->expList->accept(this);
 		int clPos = table.getClassIndex(t);
 		int mPos = -1;
+		int _count = 0;
 		while(clPos > 0)
 		{
+			if (_count > table.classInfo.size())
+				break;
+			++_count;
 			mPos = table.classInfo[clPos].getMethodIndex(n->id);
 			if (mPos >= 0)
 			{
