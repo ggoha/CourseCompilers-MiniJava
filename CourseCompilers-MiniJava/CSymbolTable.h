@@ -122,6 +122,18 @@ using std::string;
 			}
 		}
 
+
+		void visit( CClassDeclInheritance *n ) {
+			inMethod = 0;
+			table.classInfo.push_back( CClassInfo( n->id1 ) );
+			if( node->methodDecls != 0 ) {
+				node->methodDecls->accept( this );
+			}
+			if( node->varDecls != 0 ) {
+				node->varDecls->accept( this );
+			}
+		}
+
 		void visit(  CVarDecls* node){
 			for (int i = 0; i < node->a.size(); i++) {
 				node->a[i]->accept(this);
@@ -218,7 +230,6 @@ using std::string;
 		  void visit(CExpNEWID *n) { }
 		  void visit(CExpExclamationMark *n) { }
 		  void visit(CExpCircleBrackets *n) { }
-		  void visit(CClassDeclInheritance *n) { }
 		  void visit(CStatements *n) { }
 		  void visit(CType *n) { 
 			  lastTypeValue = n->id;

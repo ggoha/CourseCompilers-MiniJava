@@ -89,6 +89,7 @@
     <ClInclude Include="CSymbolTable.h" />
     <ClInclude Include="CTypeChecker.h" />
     <ClInclude Include="CTypes.h" />
+    <ClInclude Include="Exp.h" />
     <ClInclude Include="parser.tab.hpp" />
     <ClInclude Include="PrettyPrinter.h" />
     <ClInclude Include="Visitor.h" />

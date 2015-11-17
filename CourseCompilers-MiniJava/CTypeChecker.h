@@ -120,7 +120,7 @@ public:
 	void visit(  CClassDeclInheritance* node ) {
 		this->classPos++;
 		methodPos = -1;
-		std::string parent = node->id;
+		std::string parent = node->id2;
 		do {
 			int i = 0;
 			while( (table.classInfo[i].name != parent) && (i < table.classInfo.size()) )
