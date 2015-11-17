@@ -26,15 +26,17 @@ class IRExpCONST:IRExp{
 	class IRExpBINOP:IRExp{
 	public:
 		char binop;
-		CExp* left;
-		CExp* right;
-		IRExpBINOP( char b, const CExp* l, const CExp* r ) {
+		const IRExp* left;
+		const IRExp* right;
+		IRExpBINOP( char b, const IRExp* l, const IRExp* r ) {
 			binop = b; left = l; right = r;
 		}
 	}
 	class IRExpMEM:IRExp {
 		IRExpMEM( CExp* exp ) {
-
+			 IRExp* func;
+			 IRExpList* args;
+			 IRExpCALL( IRExp* f, IRExpList* a ) { func = f; args = a; }
 		}
 	}
 	class IRExpCALL:IRExp {
@@ -44,7 +46,7 @@ class IRExpCONST:IRExp{
 	}
 	
 	class IRExpESEQ:IRExp {
-		IRExpESEQ( CStatement stm, CExp exp ) {
+		IRExpESEQ( CStatement stm, IRExpexp ) {
 
 		}
 	}
