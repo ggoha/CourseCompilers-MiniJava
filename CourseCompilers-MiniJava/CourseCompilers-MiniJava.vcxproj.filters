@@ -13,63 +13,72 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="ast">
+      <UniqueIdentifier>{79b10e61-0205-4b33-9c1a-0b88a4a584ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="IRTree">
+      <UniqueIdentifier>{1a77ff37-733c-4598-8ba2-4d1e168e745a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="bizon and lexer">
+      <UniqueIdentifier>{4970a4c2-fd95-4475-b8d8-67358ffdc17f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="lexer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="parser.tab.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Visitor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="PrettyPrinter.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>ast</Filter>
     </ClCompile>
     <ClCompile Include="IRBuilder.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>IRTree</Filter>
+    </ClCompile>
+    <ClCompile Include="parser.tab.cpp">
+      <Filter>bizon and lexer</Filter>
+    </ClCompile>
+    <ClCompile Include="lexer.cpp">
+      <Filter>bizon and lexer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="lexer.l">
-      <Filter>Source Files</Filter>
-    </CustomBuild>
     <CustomBuild Include="parser.y" />
+    <CustomBuild Include="lexer.l">
+      <Filter>bizon and lexer</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="parser.tab.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CTypes.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Visitor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="PrettyPrinter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CSymbolTable.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="CTypes.h">
+      <Filter>ast</Filter>
     </ClInclude>
     <ClInclude Include="CTypeChecker.h">
-      <Filter>Header Files</Filter>
+      <Filter>ast</Filter>
+    </ClInclude>
+    <ClInclude Include="CSymbolTable.h">
+      <Filter>ast</Filter>
+    </ClInclude>
+    <ClInclude Include="PrettyPrinter.h">
+      <Filter>ast</Filter>
     </ClInclude>
     <ClInclude Include="Frame.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="IRExp.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="IRBuilder.h">
-      <Filter>Header Files</Filter>
+      <Filter>IRTree</Filter>
     </ClInclude>
     <ClInclude Include="IRStm.h">
-      <Filter>Header Files</Filter>
+      <Filter>IRTree</Filter>
+    </ClInclude>
+    <ClInclude Include="IRExp.h">
+      <Filter>IRTree</Filter>
+    </ClInclude>
+    <ClInclude Include="IRBuilder.h">
+      <Filter>IRTree</Filter>
+    </ClInclude>
+    <ClInclude Include="parser.tab.hpp">
+      <Filter>bizon and lexer</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

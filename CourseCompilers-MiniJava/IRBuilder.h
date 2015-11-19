@@ -8,25 +8,11 @@ class CIRBuilder : public IVisitor
 	const CLabel* ifFalseLabel;
 	const CLabel* ifTrueLabel;
 	const CLabel* breakLabel;
-	//class keeper old labels
-	class LabelsSaver
-	{
-		const CLabel* ifFalseLabel;
-		const CLabel* ifTrueLabel;
-		const CLabel* breakLabel;
-		CIRBuilder* irBuilder;
-	public:
-		LabelsSaver(CIRBuilder* _irBuilder): irBuilder(_irBuilder){
-			ifFalseLabel = irBuilder->ifFalseLabel;
-			ifTrueLabel = irBuilder->ifTrueLabel;
-			breakLabel = irBuilder->breakLabel;
-		};
-		~LabelsSaver() {
-			irBuilder->ifFalseLabel = ifFalseLabel;
-			irBuilder->ifTrueLabel = ifTrueLabel;
-			irBuilder->breakLabel = breakLabel;
-		}
-	};
+	//keeper current labels , create it in every visit in the first string
+	class LabelsSaver;
+	//save cast lastNode
+	IRExp* LastNodeAsIRExp();
+	IRStm* LastNodeAsIRStm();
 public:
 	CIRBuilder() {};
 	virtual void visit(CStatementIF* n);
@@ -78,3 +64,21 @@ public:
 
 };
 
+class CIRBuilder::LabelsSaver
+{
+	const CLabel* ifFalseLabel;
+	const CLabel* ifTrueLabel;
+	const CLabel* breakLabel;
+	CIRBuilder* irBuilder;
+public:
+	LabelsSaver(CIRBuilder* _irBuilder) : irBuilder(_irBuilder) {
+		ifFalseLabel = irBuilder->ifFalseLabel;
+		ifTrueLabel = irBuilder->ifTrueLabel;
+		breakLabel = irBuilder->breakLabel;
+	};
+	~LabelsSaver() {
+		irBuilder->ifFalseLabel = ifFalseLabel;
+		irBuilder->ifTrueLabel = ifTrueLabel;
+		irBuilder->breakLabel = breakLabel;
+	}
+};

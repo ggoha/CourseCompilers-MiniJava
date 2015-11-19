@@ -5,7 +5,9 @@ using namespace std;
 
 
 class IRNode
-{};
+{
+	virtual const void accept(const IVisitor* visitor) = 0;
+};
 
 // Метка - точка перехода в коде
 class CLabel {
