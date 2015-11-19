@@ -20,14 +20,14 @@ public:
 
 class CVarDecls :public IRoot {
 public:
-	std::vector<CVarDecl*> a;
+	std::vector<CVarDecl*> vars;
 	CVarDecls() {
 	};
-	CVarDecls( CVarDecl * x1 ) {
-		a.push_back( x1 );
+	CVarDecls( CVarDecl * Var ) {
+		vars.push_back( Var );
 	}
-	void addNext( CVarDecl * x1 ) {
-		a.push_back( x1 );
+	void addNext( CVarDecl * Var ) {
+		vars.push_back( Var );
 	};
 	virtual void accept( IVisitor* v ) {
 		v->visit( this );
@@ -36,14 +36,14 @@ public:
 
 class CClassDecls :public IRoot {
 public:
-	std::vector<CClassDecl*> a;
+	std::vector<CClassDecl*> classes;
 	CClassDecls() {
 	};
-	CClassDecls( CClassDecl * x1 ) {
-		a.push_back( x1 );
+	CClassDecls( CClassDecl * Class ) {
+		classes.push_back( Class );
 	}
-	void addNext( CClassDecl * x1 ) {
-		a.push_back( x1 );
+	void addNext( CClassDecl * Class ) {
+		classes.push_back( Class );
 	};
 	virtual void accept( IVisitor* v ) {
 		v->visit( this );
@@ -52,14 +52,14 @@ public:
 
 class CMethodDecls :public IRoot {
 public:
-	std::vector<CMethodDecl*> a;
+	std::vector<CMethodDecl*> methods;
 	CMethodDecls() {
 	};
-	CMethodDecls( CMethodDecl * x1 ) {
-		a.push_back( x1 );
+	CMethodDecls( CMethodDecl * Method ) {
+		methods.push_back( Method );
 	}
-	void addNext( CMethodDecl * x1 ) {
-		a.push_back( x1 );
+	void addNext( CMethodDecl * Method ) {
+		methods.push_back( Method );
 	};
 	virtual void accept( IVisitor* v ) {
 		v->visit( this );
@@ -69,14 +69,14 @@ public:
 
 class CStatements :public IRoot {
 public:
-	std::vector<IStatement*> a;
+	std::vector<IStatement*> statements;
 	CStatements() {
 	};
-	CStatements( IStatement * x1 ) {
-		a.push_back( x1 );
+	CStatements( IStatement * Statement ) {
+		statements.push_back(Statement);
 	}
-	void addNext( IStatement * x1 ) {
-		a.push_back( x1 );
+	void addNext(IStatement * Statement) {
+		statements.push_back(Statement);
 	};
 	virtual void accept( IVisitor* v ) {
 		v->visit( this );
@@ -87,14 +87,14 @@ public:
 
 class CFormalRests :public IRoot {
 public:
-	std::vector<CFormalRest*> a;
+	std::vector<CFormalRest*> parametrs;
 	CFormalRests() {
 	};
-	CFormalRests( CFormalRest * x1 ) {
-		a.push_back( x1 );
+	CFormalRests( CFormalRest * Parametr ) {
+		parametrs.push_back(Parametr);
 	}
-	void addNext( CFormalRest * x1 ) {
-		a.push_back( x1 );
+	void addNext(CFormalRest * Parametr) {
+		parametrs.push_back(Parametr);
 	};
 	virtual void accept( IVisitor* v ) {
 		v->visit( this );
@@ -103,14 +103,14 @@ public:
 
 class CExpRests :public IRoot {
 public:
-	std::vector<CExpRest*> a;
+	std::vector<CExpRest*> expressions;
 	CExpRests(){
 	};
-	CExpRests( CExpRest * x1 ) {
-		a.push_back( x1 );
+	CExpRests(CExpRest * Expression) {
+		expressions.push_back(Expression);
 	}
-	void addNext( CExpRest * x1 ) {
-		a.push_back( x1 );
+	void addNext(CExpRest * Expression) {
+		expressions.push_back(Expression);
 	};
 	virtual void accept( IVisitor* v ) {
 		v->visit( this );
@@ -121,12 +121,12 @@ class CProgram : public IRoot {
 public:
 	CMainClass *mainClass;
 	CClassDecls *classDecls;
-	CProgram( CMainClass* x1, CClassDecls * x2 ) {
-		mainClass = x1;
-		classDecls = x2;
+	CProgram( CMainClass* _mainClass, CClassDecls * _classDecls ) {
+		mainClass = _mainClass;
+		classDecls = _classDecls;
 	}
-	CProgram( CMainClass * x1 ) {
-		mainClass = x1;
+	CProgram( CMainClass * _mainClass ) {
+		mainClass = _mainClass;
 		classDecls = new CClassDecls();
 	}
 	virtual void accept( IVisitor* v ) {
@@ -135,12 +135,12 @@ public:
 };
 class CMainClass :public IRoot {
 public:
-	string id1;
-	string id2;
+	string id;
+	string idParams;
 	CStatements * statements;
-	CMainClass( string _id1, string _id2, CStatements* _statements ) {
-		id1 = _id1;
-		id2 = _id2;
+	CMainClass( string _id, string _idParams, CStatements* _statements ) {
+		id = _id;
+		idParams = _idParams;
 		statements = _statements;
 	};
 	virtual void accept(IVisitor* v) {
@@ -150,7 +150,7 @@ public:
 class CClassDecl :public IRoot{
 public:
 	string id;
-	string id2;
+	string id2; 	//есть подозрение, что не нужна
 	CMethodDecls* methodDecls;
 	CVarDecls* varDecls;
 	CClassDecl(string _id, CVarDecls* _varDecls, CMethodDecls* _methodDecls) :
@@ -174,9 +174,9 @@ public:
 
 class CClassDeclInheritance :public CClassDecl {
 public:
-	string id2, id1;
-	CClassDeclInheritance(string _id1, string _id2, CVarDecls* _varDecls, CMethodDecls* _methodDecls) :
-		CClassDecl(_id1, _varDecls, _methodDecls) , id2(_id2),id1(_id1)
+	string idParent, id;
+	CClassDeclInheritance(string _id, string _idParent, CVarDecls* _varDecls, CMethodDecls* _methodDecls) :
+		CClassDecl(_id, _varDecls, _methodDecls) , idParent(_idParent),id(_id)
 	{}
 	virtual void accept(IVisitor* v){
 		v->visit(this);
@@ -269,10 +269,10 @@ class CStatementIF : public IStatement
 {
 public:
 	CExp* exp;
-	IStatement* statement1;
-	IStatement* statement2;
-	CStatementIF(CExp* _exp, IStatement* _statement1, IStatement* _statement2) :
-		exp(_exp), statement1(_statement1), statement2(_statement2) {};
+	IStatement* statementIf;
+	IStatement* statementElse;
+	CStatementIF(CExp* _exp, IStatement* _statementIf, IStatement* _statementElse) :
+		exp(_exp), statementIf(_statementIf), statementElse(_statementElse) {};
 	virtual void accept(IVisitor* v){
 		v->visit(this);
 	};
@@ -282,9 +282,9 @@ class CStatementWHILE : public IStatement
 {
 public:
 	CExp* exp;
-	IStatement* statement;
-	CStatementWHILE(CExp* _exp, IStatement* _statement) :
-		exp(_exp), statement(_statement) {};
+	IStatement* statementWhile;
+	CStatementWHILE(CExp* _exp, IStatement* _statementWhile) :
+		exp(_exp), statementWhile(_statementWhile) {};
 	virtual void accept(IVisitor* v) {
 		v->visit(this);
 	};
@@ -316,10 +316,10 @@ class CStatementSQUEREASIGNMENT: public IStatement
 {
 public:
 	string id;
-	CExp* exp1;
-	CExp* exp2;
-	CStatementSQUEREASIGNMENT(string _id, CExp* _exp1, CExp* _exp2) :
-		id(_id), exp1(_exp1), exp2(_exp2) {};
+	CExp* expInSquareBrackets;
+	CExp* expAssigned;
+	CStatementSQUEREASIGNMENT(string _id, CExp* _expInSquareBrackets, CExp* _expAssigned) :
+		id(_id), expInSquareBrackets(_expInSquareBrackets), expAssigned(_expAssigned) {};
 	virtual void accept(IVisitor* v) {
 		v->visit(this);
 	};

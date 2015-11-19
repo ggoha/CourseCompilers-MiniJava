@@ -23,7 +23,7 @@ public:
 
 	bool checkClassExistence( std::string name ) {
 		bool flag = false;
-		int i = 0;
+		size_t i = 0;
 		while( !flag && (i < table.classInfo.size()) ) {
 			flag = flag || (table.classInfo[i].name == name);
 			i++;
@@ -42,7 +42,7 @@ public:
 
 	bool assignType( std::string name, std::string& type ) {
 		bool flagDec = false;
-		for( int i = 0; i < table.classInfo[this->classPos].methods[this->methodPos].vars.size(); i++ ) {
+		for( size_t i = 0; i < table.classInfo[this->classPos].methods[this->methodPos].vars.size(); i++ ) {
 			flagDec = flagDec || (name == table.classInfo[this->classPos].methods[this->methodPos].vars[i].name);
 			if( flagDec ) {
 				type = table.classInfo[this->classPos].methods[this->methodPos].vars[i].type;
@@ -51,7 +51,7 @@ public:
 		}
 
 		if( !flagDec ) {
-			for( int i = 0; i < table.classInfo[this->classPos].methods[this->methodPos].params.size(); i++ ) {
+			for( size_t i = 0; i < table.classInfo[this->classPos].methods[this->methodPos].params.size(); i++ ) {
 				flagDec = flagDec || (name == table.classInfo[this->classPos].methods[this->methodPos].params[i].name);
 				if( flagDec ) {
 					type = table.classInfo[this->classPos].methods[this->methodPos].params[i].type;
@@ -61,7 +61,7 @@ public:
 		}
 
 		if( !flagDec ) {
-			for( int i = 0; i < table.classInfo[this->classPos].vars.size(); i++ ) {
+			for( size_t i = 0; i < table.classInfo[this->classPos].vars.size(); i++ ) {
 				flagDec = flagDec || (name == table.classInfo[this->classPos].vars[i].name);
 				if( flagDec ) {
 					type = table.classInfo[this->classPos].vars[i].type;
@@ -101,8 +101,8 @@ public:
 			node->statements->accept( this );
 	}
 	void visit( CClassDecls* node ) {
-		for( int i = 0; i < node->a.size(); i++ ) {
-			node->a[i]->accept( this );
+		for( size_t i = 0; i < node->classes.size(); i++ ) {
+			node->classes[i]->accept( this );
 		}
 	}
 
@@ -121,7 +121,7 @@ public:
 		this->classPos++;
 		methodPos = -1;
 		std::string parent = node->id2;
-		int _count = 0;
+		size_t _count = 0;
 		do {
 			if (_count > table.classInfo.size())
 				break;
@@ -146,14 +146,14 @@ public:
 	}
 
 	void visit( CVarDecls* node ) {
-		for( int i = 0; i < node->a.size(); i++ ) {
-			node->a[i]->accept( this );
+		for( size_t i = 0; i < node->vars.size(); i++ ) {
+			node->vars[i]->accept( this );
 		}
 	}
 
 	void visit( CMethodDecls* node ) {
-		for( int i = 0; i < node->a.size(); i++ ) {
-			node->a[i]->accept( this );
+		for( size_t i = 0; i < node->methods.size(); i++ ) {
+			node->methods[i]->accept(this);
 		}
 	}
 
@@ -169,7 +169,7 @@ public:
 		CType* tmp = (node->type);
 		if( (tmp->inputType != 0) && (tmp->inputType != 1) && (tmp->inputType != 2) ) {
 			bool flag = false;
-			for( int i = 0; i < table.classInfo.size(); i++ ) {
+			for( size_t i = 0; i < table.classInfo.size(); i++ ) {
 				flag = flag || (table.classInfo[i].name == tmp->id);
 			}
 
@@ -188,8 +188,8 @@ public:
 
 
 	void visit( CStatements* node ) {
-		for( int i = 0; i < node->a.size(); i++ ) {
-			node->a[i]->accept( this );
+		for( size_t i = 0; i < node->statements.size(); i++ ) {
+			node->statements[i]->accept( this );
 		}
 	}
 
@@ -197,7 +197,7 @@ public:
 		CType* tmp = (node->type);
 		if( (tmp->inputType != 0) && (tmp->inputType != 1) && (tmp->inputType != 2) ) {
 			bool flag = false;
-			for( int i = 0; i < table.classInfo.size(); i++ ) {
+			for( size_t i = 0; i < table.classInfo.size(); i++ ) {
 				flag = flag || (table.classInfo[i].name == tmp->id);
 			}
 
@@ -218,15 +218,15 @@ public:
 		node->exp->accept( this );
 		if( lastTypeValue != "boolean" )
 			cout << "Error in if/else statement expression" << endl;
-		node->statement1->accept( this );
-		node->statement2->accept( this );
+		node->statementIf->accept( this );
+		node->statementElse->accept( this );
 	}
 
 	void visit(  CStatementWHILE* node ) {
 		node->exp->accept( this );
 		if( lastTypeValue != "boolean" )
 			cout << "Error in while statement expression" << endl;
-		node->statement->accept( this );
+		node->statementWhile->accept( this );
 	}
 
 	void visit( CStatementPRINTLN* node ) {
@@ -243,14 +243,14 @@ public:
 	}
 
 	void visit( CStatementSQUEREASIGNMENT* node ) {
-		if( node->exp1 != NULL )
-			node->exp1->accept( this );
+		if( node->expInSquareBrackets != NULL )
+			node->expInSquareBrackets->accept( this );
 
 		if( lastTypeValue != "int" )
 			cout << "Array index is not int in " << node->id << endl;
 
-		if( node->exp2 != NULL )
-			node->exp2->accept( this );
+		if( node->expAssigned != NULL )
+			node->expAssigned->accept( this );
 
 		std::string type;
 		assignType( node->id, type );
@@ -265,8 +265,8 @@ public:
 	}
 	void visit(CFormalRests *n)
 	{
-		for (int i = 0; i < n->a.size();++i)
-			n->a[i]->accept(this);
+		for (size_t i = 0; i < n->parametrs.size();++i)
+			n->parametrs[i]->accept(this);
 	}
 
 	void visit(CExpBinary* n)
@@ -321,7 +321,7 @@ public:
 		n->expList->accept(this);
 		int clPos = table.getClassIndex(t);
 		int mPos = -1;
-		int _count = 0;
+		size_t _count = 0;
 		while(clPos > 0)
 		{
 			if (_count > table.classInfo.size())
@@ -406,8 +406,8 @@ public:
 	}
 
 	void visit( CExpRests * node ) {
-		for( int i = 0; i < node->a.size(); i++ ) {
-			node->a[i]->accept( this );
+		for( size_t i = 0; i < node->expressions.size(); i++ ) {
+			node->expressions[i]->accept( this );
 		}
 	}
 

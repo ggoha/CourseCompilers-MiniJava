@@ -16,9 +16,3 @@ int main(int argc, char** argv) {
 	return 0;
 	std::string abv = "fd";
 }
-/*
-class CClassDeclList {
-	CClassDecl* cur;
-	CClassDeclList* tail;
-};
-*/

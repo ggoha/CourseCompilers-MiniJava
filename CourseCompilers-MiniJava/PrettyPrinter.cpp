@@ -20,15 +20,15 @@ ostream& operator<<( ostream& o, const string& s ) {
 	};
 	
 	void CPrettyPrinter::visit( CClassDecls *node ) {
-		for( int i = 0; i < node->a.size(); i++ ) {
-			node->a[i]->accept( this );
+		for( size_t i = 0; i < node->classes.size(); i++ ) {
+			node->classes[i]->accept( this );
 			cout << "\node";
 		}
 	
 	}
 	void CPrettyPrinter::visit( CMainClass *node ) {
-		cout << "class" << " " << node->id1 << " " << "{\node" << "public static void main ( String[] ";
-		cout << node->id2 << " ";
+		cout << "class" << " " << node->id << " " << "{\node" << "public static void main ( String[] ";
+		cout << node->idParams << " ";
 		cout << ")" << " " << "{\node" << " ";
 		node->statements->accept( this );
 		cout << "\node}" << " " << "\node}";
@@ -44,7 +44,7 @@ ostream& operator<<( ostream& o, const string& s ) {
 	}
 
 	void CPrettyPrinter::visit( CClassDeclInheritance *node ) {
-		cout << "class " << node->id1 << " extends " << node->id2 << " ";
+		cout << "class " << node->id << " extends " << node->idParent << " ";
 		cout << " {\node";
 		node->varDecls->accept( this );
 		cout << " ";
@@ -54,8 +54,8 @@ ostream& operator<<( ostream& o, const string& s ) {
 
 
 	void CPrettyPrinter::visit( CVarDecls *node ) {
-		for( int i = 0; i < node->a.size(); i++ ) {
-			node->a[i]->accept( this );
+		for( size_t i = 0; i < node->vars.size(); i++ ) {
+			node->vars[i]->accept( this );
 			cout << " ";
 		}
 	}
@@ -63,8 +63,8 @@ ostream& operator<<( ostream& o, const string& s ) {
 	
 
 	void CPrettyPrinter::visit( CMethodDecls *node ) {
-		for( int i = 0; i < node->a.size(); i++ ) {
-			node->a[i]->accept( this );
+		for( size_t i = 0; i < node->methods.size(); i++ ) {
+			node->methods[i]->accept( this );
 			cout << " ";
 		}
 	}
@@ -91,8 +91,8 @@ ostream& operator<<( ostream& o, const string& s ) {
 		cout << ";\node}\node";
 	}
 	void CPrettyPrinter::visit( CStatements *node ) {
-		for( int i = 0; i < node->a.size(); i++ ) {
-			node->a[i]->accept( this );
+		for( size_t i = 0; i < node->statements.size(); i++ ) {
+			node->statements[i]->accept(this);
 			cout << "\node";
 		}
 	}
@@ -102,9 +102,9 @@ ostream& operator<<( ostream& o, const string& s ) {
 		cout << "if ( ";
 		node->exp->accept(this);
 		cout << ")\node ";
-		node->statement1->accept(this);
+		node->statementIf->accept(this);
 		cout << "\nelse\node";
-		node->statement2->accept(this);
+		node->statementElse->accept(this);
 	};
 
 	void CPrettyPrinter::visit(CStatementBRACKETS* node)
@@ -118,9 +118,9 @@ ostream& operator<<( ostream& o, const string& s ) {
 	{
 		cout << node->id;
 		cout << "[ ";
-		node->exp1->accept(this);
+		node->expInSquareBrackets->accept(this);
 		cout << " ] = ";
-		node->exp2->accept(this);
+		node->expAssigned->accept(this);
 		cout << ";\node";
 	};
 
@@ -145,7 +145,7 @@ ostream& operator<<( ostream& o, const string& s ) {
 		cout << "while ( ";
 		node->exp->accept(this);
 		cout << ") \node";
-		node->statement->accept(this);
+		node->statementWhile->accept(this);
 		cout << " ";
 	};
 
@@ -221,8 +221,8 @@ ostream& operator<<( ostream& o, const string& s ) {
 		cout << node->id << " ";
 	}
 	void CPrettyPrinter::visit( CFormalRests *node ) {
-		for( int i = 0; i < node->a.size(); i++ ) {
-			node->a[i]->accept( this );
+		for( size_t i = 0; i < node->parametrs.size(); i++ ) {
+			node->parametrs[i]->accept( this );
 			cout << " ";
 		}
 	}
@@ -248,8 +248,8 @@ ostream& operator<<( ostream& o, const string& s ) {
 		node->expRests->accept( this );
 	}
 	void CPrettyPrinter::visit( CExpRests *node ) {
-		for( int i = 0; i < node->a.size(); i++ ) {
-			node->a[i]->accept( this );
+		for( size_t i = 0; i < node->expressions.size(); i++ ) {
+			node->expressions[i]->accept( this );
 			cout << " ";
 		}
 	}

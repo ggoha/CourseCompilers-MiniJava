@@ -29,10 +29,10 @@ using std::string;
 		void Print(){
 			std::cout << "Method" << name << std::endl;
 			std::cout << "Params ";
-			for (int i = 0; i < params.size(); ++i)
+			for (size_t i = 0; i < params.size(); ++i)
 				params[i].Print();
 			std::cout << "Vars ";
-			for (int i = 0; i < vars.size(); ++i)
+			for (size_t i = 0; i < vars.size(); ++i)
 				vars[i].Print();
 		}
 	};
@@ -43,7 +43,7 @@ using std::string;
 		vector<CVarInfo> vars;
 		vector<CMethodInfo> methods;
 		int getMethodIndex(string name) {
-			for (int i = 0; i < methods.size(); ++i)
+			for (size_t i = 0; i < methods.size(); ++i)
 				if (methods[i].name == name)
 					return i;
 			return -1;
@@ -53,10 +53,10 @@ using std::string;
 		void Print(){
 			std::cout << "Class" << name << ":" << parent << std::endl;
 			std::cout << "Methods ";
-			for (int i = 0; i < methods.size(); ++i)
+			for (size_t i = 0; i < methods.size(); ++i)
 				methods[i].Print();
 			std::cout << "Vars ";
-			for (int i = 0; i < vars.size(); ++i)
+			for (size_t i = 0; i < vars.size(); ++i)
 				vars[i].Print();
 		}
 	};
@@ -65,7 +65,7 @@ using std::string;
 		vector<CClassInfo> classInfo;
 		vector<std::string> baseType;
 		int getClassIndex(string name) {
-			for (int i = 0; i < classInfo.size(); ++i)
+			for (size_t i = 0; i < classInfo.size(); ++i)
 				if (classInfo[i].name == name)
 					return i;
 			return -1;
@@ -96,7 +96,7 @@ using std::string;
 		}
 
 		void Print(){
-			for (int i = 0; i < table.classInfo.size(); ++i)
+			for (size_t i = 0; i < table.classInfo.size(); ++i)
 			{
 				table.classInfo[i].Print();
 			}
@@ -110,17 +110,17 @@ using std::string;
 		}
 		void visit(  CMainClass* node){
 			inMethod = 0;
-			table.classInfo.push_back(CClassInfo(node->id1));
+			table.classInfo.push_back(CClassInfo(node->id));
 			CMethodInfo mainMthd("main", "void");
-			mainMthd.params.push_back(CVarInfo(node->id2, "String[]"));
+			mainMthd.params.push_back(CVarInfo(node->idParams, "String[]"));
 			table.classInfo.back().methods.push_back(mainMthd);
 			if (node->statements != 0) {
 				node->statements->accept(this);
 			}
 		}
 		void visit(  CClassDecls* node){
-			for (int i = 0; i < node->a.size(); i++) {
-				node->a[i]->accept(this);
+			for (size_t i = 0; i < node->classes.size(); i++) {
+				node->classes[i]->accept(this);
 			}
 		}
 		void visit(  CClassDecl* node){
@@ -135,14 +135,14 @@ using std::string;
 		}
 
 		void visit(  CVarDecls* node){
-			for (int i = 0; i < node->a.size(); i++) {
-				node->a[i]->accept(this);
+			for (size_t i = 0; i < node->vars.size(); i++) {
+				node->vars[i]->accept(this);
 			}
 		}
 
 		void visit(  CMethodDecls* node){
-			for (int i = 0; i < node->a.size(); i++) {
-				node->a[i]->accept(this);
+			for (size_t i = 0; i < node->methods.size(); i++) {
+				node->methods[i]->accept(this);
 			}
 		}
 		void visit(  CVarDecl* node){
@@ -178,8 +178,8 @@ using std::string;
 			}
 		}
 		void visit(  CFormalRests* node){
-			for (int i = 0; i < node->a.size(); i++) {
-				node->a[i]->accept(this);
+			for (size_t i = 0; i < node->parametrs.size(); i++) {
+				node->parametrs[i]->accept(this);
 			}
 		}
 		void visit(  CFormalRest* node) {
@@ -195,8 +195,8 @@ using std::string;
 		}
 
 		void visit(  CExpRests* node){
-			for (int i = 0; i < node->a.size(); i++) {
-				node->a[i]->accept(this);
+			for (size_t i = 0; i < node->expressions.size(); i++) {
+				node->expressions[i]->accept(this);
 			}
 		}
 		void visit(  CExpRest* node){
