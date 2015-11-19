@@ -1,10 +1,32 @@
 #pragma once
 #include "Visitor.h"
 #include "IRStm.h"
-
+#include "IRExp.h"
 class CIRBuilder : public IVisitor
 {
 	IRNode* lastNode;
+	const CLabel* ifFalseLabel;
+	const CLabel* ifTrueLabel;
+	const CLabel* breakLabel;
+	//class keeper old labels
+	class LabelsSaver
+	{
+		const CLabel* ifFalseLabel;
+		const CLabel* ifTrueLabel;
+		const CLabel* breakLabel;
+		CIRBuilder* irBuilder;
+	public:
+		LabelsSaver(CIRBuilder* _irBuilder): irBuilder(_irBuilder){
+			ifFalseLabel = irBuilder->ifFalseLabel;
+			ifTrueLabel = irBuilder->ifTrueLabel;
+			breakLabel = irBuilder->breakLabel;
+		};
+		~LabelsSaver() {
+			irBuilder->ifFalseLabel = ifFalseLabel;
+			irBuilder->ifTrueLabel = ifTrueLabel;
+			irBuilder->breakLabel = breakLabel;
+		}
+	};
 public:
 	CIRBuilder() {};
 	virtual void visit(CStatementIF* n);

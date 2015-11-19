@@ -1,7 +1,8 @@
 #pragma once
 #include "Visitor.h"
 #include "Frame.h"
-class IExp;
+
+class IRExp;
 
 class IRStm : public IRNode
 {
@@ -12,9 +13,9 @@ public:
 class IRStmMOVE : public IRStm
 {
 public:
-	const IExp* dst;
-	const IExp* src;
-	IRStmMOVE(const IExp* _dst, const IExp* _src) :dst(_dst), src(_src) {};
+	const IRExp* dst;
+	const IRExp* src;
+	IRStmMOVE(const IRExp* _dst, const IRExp* _src) :dst(_dst), src(_src) {};
 	const void accept(const IVisitor* visitor) {
 		visitor->visit(this);
 	};
@@ -23,22 +24,37 @@ public:
 class IRStmEXP : public IRStm
 {
 public:
-	const IExp* exp;
-	IRStmEXP(const IExp* _exp) : exp(_exp) {};
+	const IRExp* exp;
+	IRStmEXP(const IRExp* _exp) : exp(_exp) {};
 	const void accept(const IVisitor* visitor) {
 		visitor->visit(this);
 	};
-};
+}; 
 
 class IRStmCJUMP : public IRStm
 {
 public:
-	const IExp* left;
-	const IExp* right;
+
+	enum CJUMP : int
+	{
+		EQ,
+		NE,
+		LT,
+		GT,
+		LE,
+		GE,
+		ULT,
+		ULE,
+		UGT,
+		UGE
+	};
+	
+	const IRExp* left;
+	const IRExp* right;
 	const CLabel* iftrue;
 	const CLabel* iffalse;
 	const int relop;
-	IRStmCJUMP(int _relop, const IExp* _exp, const IExp* _left, const IExp* _right, const CLabel* _iftrue, const CLabel* _iffalse) :
+	IRStmCJUMP(int _relop, const IRExp* _left, const IRExp* _right, const CLabel* _iftrue, const CLabel* _iffalse) :
 		relop(_relop),
 		left(_left),
 		right(_right),
