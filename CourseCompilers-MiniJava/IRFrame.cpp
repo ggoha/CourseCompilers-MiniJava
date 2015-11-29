@@ -1,5 +1,6 @@
 #include "IRExp.h"
 #include "IRTemp.h"
+#include "map"
 namespace Frame {
 	// Переменная фрейма
 	class IAccess {
@@ -21,13 +22,15 @@ namespace Frame {
 	// Класс-контейнер с платформо-зависимой информацией о функции
 	class CFrame {
 	public:
-		CFrame(const Symbol::CSymbol* name, int formalsCount);
+		CFrame(const string name, int formalsCount);
 		// Доступ к формальным параметрам
 		int FormalsCount() const { return formals.size(); }
-		const IAccess* Formal(size_t index) const;
+		//		const IAccess* Formal(size_t index) const {formals[]};
+		const CTemp* GetTemp(string name) { return formals.find(name)->second; };
+		void setTemp(string name, CTemp* temp) { formals.insert(std::pair<string, CTemp*>(name, temp)); }
 
 	private:
-		// ...
+		std::map<string, CTemp*> formals;
 	};
 }
 
