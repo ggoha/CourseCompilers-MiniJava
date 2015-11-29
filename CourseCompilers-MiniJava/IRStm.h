@@ -91,3 +91,30 @@ public:
 		visitor->visit(this);
 	};
 };
+
+class IRStmLIST : public IRStm
+{
+public:
+	vector<const IRStm*> stms;
+	IRStmLIST()
+	{}
+	void add(const IRStm* stm)
+	{
+		stms.push_back(stm);
+	}
+	const void accept(const IVisitor* visitor) {
+		visitor->visit(this);
+	};
+};
+
+class IRStmJUMP : public IRStm
+{
+public:
+	const CLabel* lable;
+	IRStmJUMP(const CLabel* _lable) :
+		lable(_lable)
+	{}
+	const void accept(const IVisitor* visitor) {
+		visitor->visit(this);
+	};
+};
