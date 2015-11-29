@@ -42,6 +42,9 @@
     <ClCompile Include="lexer.cpp">
       <Filter>bizon and lexer</Filter>
     </ClCompile>
+    <ClCompile Include="IRFrame.cpp">
+      <Filter>IRTree</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="parser.y" />

@@ -40,7 +40,9 @@ void CIRBuilder::visit(CStatementIF* ASTnode)
 	IRStmSEQ* SEQ4 = new IRStmSEQ(new IRStmLABEL(ifFalseLabel), stmElse);
 	IRStmSEQ* SEQ3 = new IRStmSEQ(new IRStmLABEL(ifTrueLabel), stmIf);
 	IRStmSEQ* SEQ2 = new IRStmSEQ(SEQ3, SEQ4);
-	IRStmSEQ* SEQ2 = new IRStmSEQ(cjump, SEQ2);
+	IRStmSEQ* SEQ1 = new IRStmSEQ(cjump, SEQ2);
+	lastNode = SEQ1;
+	return;
 }
 
 
@@ -74,7 +76,7 @@ void CIRBuilder::visit(CExpBinary* n)
 		const CLabel* iftrue = ifTrueLabel;
 		ifTrueLabel = ifExp1True;
 		n->exp1->accept(this);
-		lastNode = new IRStmSEQ(LastNodeAsIRStm(), stmSEQ);///first goes exp1(with false val
+		lastNode = new IRStmSEQ(LastNodeAsIRStm(), stmSEQ);///first goes exp1(with falseCIRBuilder::val
 		ifTrueLabel = iftrue;
 		return;
 	};
@@ -113,19 +115,66 @@ void CIRBuilder::visit(CStatementWHILE* n)
 	/*
 	SEQ1
 		SEQ2
+			label labelBack
 			CJump
 			SEQ3
 				label iftrue
 				stm
+				Jump -> labelBack
 		label iffalse
 
 	*/
+	startLabel = new CLabel();
 	n->statementWhile->accept(this);
 	ifTrueLabel = new CLabel();
 	breakLabel = ifFalseLabel = new CLabel();
 	IRStmSEQ* SEQ3 = new IRStmSEQ(new IRStmLABEL(ifTrueLabel), LastNodeAsIRStm());
 	n->exp->accept(this);
 	IRStmSEQ* SEQ2 = new IRStmSEQ(LastNodeAsIRStm(), SEQ3);
-	IRStmSEQ* SEQ2 = new IRStmSEQ(SEQ3, new IRStmLABEL(ifFalseLabel));
+	IRStmSEQ* SEQ1 = new IRStmSEQ(SEQ3, new IRStmLABEL(ifFalseLabel));
 }
+
+void CIRBuilder::visit( CExpInSquareBrackets *n ){
+
+};
+	 
+void CIRBuilder::visit( CExpPointLENGTH *n ){
+	
+};
+	 
+void CIRBuilder::visit( CExpPointID *n ){
+
+};
+	 
+void CIRBuilder::visit( CExpINTEGER_LITERAL *n ){
+
+};
+	 
+void CIRBuilder::visit( CExpSingleOp *n ){
+
+};
+void CIRBuilder::visit( CExpID *n ){};
+void CIRBuilder::visit( CExpTHIS *n ){};
+void CIRBuilder::visit( CExpNEWINT *n ){};
+void CIRBuilder::visit( CExpNEWID *n ){};
+void CIRBuilder::visit( CExpExclamationMark *n ){};
+void CIRBuilder::visit( CExpCircleBrackets *n ){};
+void CIRBuilder::visit( CProgram *n ){};
+void CIRBuilder::visit( CMainClass *n ){};
+void CIRBuilder::visit( CClassDecl *n ){};
+void CIRBuilder::visit( CClassDecls *n ){};
+void CIRBuilder::visit( CClassDeclInheritance *n ){};
+void CIRBuilder::visit( CVarDecls *n ){};
+void CIRBuilder::visit( CMethodDecls *n ){};
+void CIRBuilder::visit( CVarDecl *n ){};
+void CIRBuilder::visit( CMethodDecl *n ){};
+void CIRBuilder::visit( CStatements *n ){};
+void CIRBuilder::visit( CFormalList *n ){};
+void CIRBuilder::visit( CFormalRests *n ){};
+void CIRBuilder::visit( CFormalRest *n ){};
+void CIRBuilder::visit( CExpList *n ){};
+void CIRBuilder::visit( CType *n ){};
+void CIRBuilder::visit( CExpRest *n ){};
+void CIRBuilder::visit( CExpRests *n ){};
+void CIRBuilder::visit( CExpUnaryMinus *n ){};
 

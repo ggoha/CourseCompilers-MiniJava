@@ -11,6 +11,8 @@ class IRExp : public  IRNode
 
 class IRExpList : public IRExp
 {
+public:
+
 };
 
 class IRExpCONST: public IRExp{
