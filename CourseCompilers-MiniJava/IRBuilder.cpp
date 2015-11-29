@@ -135,25 +135,38 @@ void CIRBuilder::visit(CStatementWHILE* n)
 }
 
 void CIRBuilder::visit( CExpInSquareBrackets *n ){
-
+	LabelsSaver( this );
+	n->exp1->accept( this );
+	//CTemp * mas = frame.getTemp( lastNode );
+	IRExp* mas = LastNodeAsIRExp();
+	n->exp2->accept( this );
+	IRExp* id = LastNodeAsIRExp();
+	lastNode = new IRExpBINOP( '+', mas, id );
 };
 	 
+
+ // Дописать
 void CIRBuilder::visit( CExpPointLENGTH *n ){
-	
+	LabelsSaver( this );
+	n->exp->accept( this );
 };
 	 
 void CIRBuilder::visit( CExpPointID *n ){
-
+	n->exp->accept(this);
+	if( n->expList != 0 )
+		n->expList->accept(this);
 };
 	 
-void CIRBuilder::visit( CExpINTEGER_LITERAL *n ){
-
+void CIRBuilder::visit( CExpINTEGER_LITERAL *n ){	
+	lastNode = new IRExpTEMP( new CTemp( n->integer_literal ) );
 };
 	 
 void CIRBuilder::visit( CExpSingleOp *n ){
-
+	lastNode = new IRExpTEMP( new CTemp( n->val ) );
 };
-void CIRBuilder::visit( CExpID *n ){};
+void CIRBuilder::visit( CExpID *n ){
+	lastNode = new IRExpTEMP( new CTemp( n->id ) );
+};
 void CIRBuilder::visit( CExpTHIS *n ){};
 void CIRBuilder::visit( CExpNEWINT *n ){};
 void CIRBuilder::visit( CExpNEWID *n ){};

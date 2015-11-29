@@ -2,6 +2,7 @@
 #include "Visitor.h"
 #include "IRStm.h"
 #include "IRExp.h"
+#include "CSymbolTable.h"
 class CIRBuilder : public IVisitor
 {
 	IRNode* lastNode;
@@ -70,6 +71,8 @@ class CIRBuilder::LabelsSaver
 	const CLabel* ifTrueLabel;
 	const CLabel* breakLabel;
 	CIRBuilder* irBuilder;
+	CFrame* currentFrame;
+	CTable* SymbolTable;
 public:
 	LabelsSaver(CIRBuilder* _irBuilder) : irBuilder(_irBuilder) {
 		ifFalseLabel = irBuilder->ifFalseLabel;
