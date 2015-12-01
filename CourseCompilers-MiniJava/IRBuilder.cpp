@@ -144,7 +144,9 @@ void CIRBuilder::visit( CExpInSquareBrackets *n ){
 	IRExp* mas = LastNodeAsIRExp();
 	n->exp2->accept( this );
 	IRExp* id = LastNodeAsIRExp();
-	lastNode = new IRExpBINOP( '+', mas, id );
+	IRExp* offset = new IRExpBINOP( '+', mas, id );
+	IRExp* oneExp = new IRExpCONST( 1 );
+	lastNode = new IRExpBINOP( '+', offset, oneExp );
 };
 	 
 

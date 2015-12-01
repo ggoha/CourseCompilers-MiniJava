@@ -68,9 +68,6 @@
     <ClInclude Include="PrettyPrinter.h">
       <Filter>ast</Filter>
     </ClInclude>
-    <ClInclude Include="Frame.h">
-      <Filter>IRTree</Filter>
-    </ClInclude>
     <ClInclude Include="IRStm.h">
       <Filter>IRTree</Filter>
     </ClInclude>

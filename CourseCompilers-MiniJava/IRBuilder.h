@@ -11,7 +11,7 @@ class CIRBuilder : public IVisitor
 	const CLabel* ifFalseLabel;
 	const CLabel* ifTrueLabel;
 	const CLabel* breakLabel;
-	CFrame* frame;
+	IRFrame* frame;
 	//keeper current labels , create it in every visit in the first string
 	class LabelsSaver;
 	//save cast lastNode
