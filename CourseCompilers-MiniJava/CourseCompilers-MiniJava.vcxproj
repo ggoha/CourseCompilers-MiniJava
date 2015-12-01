@@ -93,7 +93,6 @@
     <ClInclude Include="CTypes.h" />
     <ClInclude Include="IRBuilder.h" />
     <ClInclude Include="IRExp.h" />
-    <ClInclude Include="Frame.h" />
     <ClInclude Include="IRStm.h" />
     <ClInclude Include="IRTemp.h" />
     <ClInclude Include="parser.tab.hpp" />

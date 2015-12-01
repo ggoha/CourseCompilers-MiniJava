@@ -144,7 +144,9 @@ void CIRBuilder::visit( CExpInSquareBrackets *n ){
 	IRExp* mas = LastNodeAsIRExp();
 	n->exp2->accept( this );
 	IRExp* id = LastNodeAsIRExp();
-	lastNode = new IRExpBINOP( '+', mas, id );
+	IRExp* offset = new IRExpBINOP( '+', mas, id );
+	IRExp* oneExp = new IRExpCONST(1);
+	lastNode = new IRExpBINOP('+', offset, oneExp);
 };
 	 
 
@@ -177,24 +179,3 @@ void CIRBuilder::visit( CExpNEWINT *n ){};
 void CIRBuilder::visit( CExpNEWID *n ){
 	lastNode = IRExpTEMP( n->id )
 };
-void CIRBuilder::visit( CExpExclamationMark *n ){};
-void CIRBuilder::visit( CExpCircleBrackets *n ){};
-void CIRBuilder::visit( CProgram *n ){};
-void CIRBuilder::visit( CMainClass *n ){};
-void CIRBuilder::visit( CClassDecl *n ){};
-void CIRBuilder::visit( CClassDecls *n ){};
-void CIRBuilder::visit( CClassDeclInheritance *n ){};
-void CIRBuilder::visit( CVarDecls *n ){};
-void CIRBuilder::visit( CMethodDecls *n ){};
-void CIRBuilder::visit( CVarDecl *n ){};
-void CIRBuilder::visit( CMethodDecl *n ){};
-void CIRBuilder::visit( CStatements *n ){};
-void CIRBuilder::visit( CFormalList *n ){};
-void CIRBuilder::visit( CFormalRests *n ){};
-void CIRBuilder::visit( CFormalRest *n ){};
-void CIRBuilder::visit( CExpList *n ){};
-void CIRBuilder::visit( CType *n ){};
-void CIRBuilder::visit( CExpRest *n ){};
-void CIRBuilder::visit( CExpRests *n ){};
-void CIRBuilder::visit( CExpUnaryMinus *n ){};
-
