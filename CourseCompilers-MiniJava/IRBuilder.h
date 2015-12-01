@@ -3,6 +3,7 @@
 #include "IRStm.h"
 #include "IRExp.h"
 #include "CSymbolTable.h"
+#include "IRFrame.h"
 class CIRBuilder : public IVisitor
 {
 	IRNode* lastNode;
@@ -14,6 +15,9 @@ class CIRBuilder : public IVisitor
 	//save cast lastNode
 	IRExp* LastNodeAsIRExp();
 	IRStm* LastNodeAsIRStm();
+	IRFrame* currentFrame;
+	CTable* SymbolTable;
+	string LastType;
 public:
 	CIRBuilder() {};
 	virtual void visit(CStatementIF* n);
@@ -71,8 +75,6 @@ class CIRBuilder::LabelsSaver
 	const CLabel* ifTrueLabel;
 	const CLabel* breakLabel;
 	CIRBuilder* irBuilder;
-	CFrame* currentFrame;
-	CTable* SymbolTable;
 public:
 	LabelsSaver(CIRBuilder* _irBuilder) : irBuilder(_irBuilder) {
 		ifFalseLabel = irBuilder->ifFalseLabel;

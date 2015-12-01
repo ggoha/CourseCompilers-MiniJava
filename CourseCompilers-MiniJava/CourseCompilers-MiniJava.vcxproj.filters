@@ -42,7 +42,7 @@
     <ClCompile Include="lexer.cpp">
       <Filter>bizon and lexer</Filter>
     </ClCompile>
-    <ClCompile Include="IRFrame.cpp">
+    <ClCompile Include="IRFrame.h">
       <Filter>IRTree</Filter>
     </ClCompile>
   </ItemGroup>
@@ -82,6 +82,9 @@
     </ClInclude>
     <ClInclude Include="parser.tab.hpp">
       <Filter>bizon and lexer</Filter>
+    </ClInclude>
+    <ClInclude Include="IRTemp.h">
+      <Filter>IRTree</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
