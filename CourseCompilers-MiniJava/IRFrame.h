@@ -31,9 +31,10 @@ class InReg : IAccess{
 class IRFrame {
 public:
 	IRFrame(const string name, int formalsCount);
-	// Доступ к формальным параметрам
 	int FormalsCount() const { return formals.size(); }
-	//		const IAccess* Formal(size_t index) const {formals[]};
+	int LocalsCount() const { return locals.size(); }
+	int TempraryCount() const { return temprary.size(); }
+	// Доступ к формальным параметрам
 	const CTemp* GetTemp(string name) {
 		if (formals.find(name) != formals.end() )
 			return formals.find(name)->second;
