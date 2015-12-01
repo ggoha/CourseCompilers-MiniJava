@@ -72,7 +72,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="IRBuilder.cpp" />
-    <ClCompile Include="IRFrame.cpp" />
+    <ClCompile Include="IRFrame.h" />
     <ClCompile Include="lexer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="parser.tab.cpp" />
@@ -95,6 +95,7 @@
     <ClInclude Include="IRExp.h" />
     <ClInclude Include="Frame.h" />
     <ClInclude Include="IRStm.h" />
+    <ClInclude Include="IRTemp.h" />
     <ClInclude Include="parser.tab.hpp" />
     <ClInclude Include="PrettyPrinter.h" />
     <ClInclude Include="Visitor.h" />

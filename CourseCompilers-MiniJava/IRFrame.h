@@ -1,6 +1,15 @@
 #include "IRExp.h"
 #include "IRTemp.h"
 #include "map"
+using namespace std;
+
+
+class IRNode
+{
+	virtual const void accept(const IVisitor* visitor) = 0;
+};
+
+
 // Переменная фрейма
 class IAccess {
 public:
@@ -19,9 +28,9 @@ class InReg : IAccess{
 };
 
 // Класс-контейнер с платформо-зависимой информацией о функции
-class CFrame {
+class IRFrame {
 public:
-	CFrame(const string name, int formalsCount);
+	IRFrame(const string name, int formalsCount);
 	// Доступ к формальным параметрам
 	int FormalsCount() const { return formals.size(); }
 	//		const IAccess* Formal(size_t index) const {formals[]};
@@ -31,4 +40,3 @@ public:
 private:
 	std::map<string, CTemp*> formals;
 };
-
