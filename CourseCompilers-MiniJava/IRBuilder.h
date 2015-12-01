@@ -21,7 +21,7 @@ class CIRBuilder : public IVisitor
 	string LastType;
 public:
 	CIRBuilder() {};
-	virtual void visit(CStatementIF* n);
+	virtual void visit(CStatementIF* n);//done
 	virtual void visit(CStatementBRACKETS* n);
 
 	virtual void visit(CStatementSQUEREASIGNMENT* n);
@@ -30,17 +30,17 @@ public:
 
 	virtual void visit(CStatementPRINTLN* n);
 
-	virtual void visit(CStatementWHILE* n);
+	virtual void visit(CStatementWHILE* n);//done
 
-	virtual void visit(CExpBinary* n);
+	virtual void visit(CExpBinary* n);//done
 
-	virtual void visit(CExpInSquareBrackets *n);
+	virtual void visit(CExpInSquareBrackets *n);//done
 
 	virtual void visit(CExpPointLENGTH *n);
 
 	virtual void visit(CExpPointID *n);
 
-	virtual void visit(CExpINTEGER_LITERAL *n);
+	virtual void visit(CExpINTEGER_LITERAL *n);//done
 
 	virtual void visit(CExpSingleOp *n);
 	virtual void visit(CExpID *n);

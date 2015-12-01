@@ -167,7 +167,7 @@ void CIRBuilder::visit( CExpINTEGER_LITERAL *n ){
 };
 	 
 void CIRBuilder::visit( CExpSingleOp *n ){
-	lastNode = new IRExpTEMP( new CTemp( n->val ) );
+	lastNode = new IRExpCONST( (n->val) ? 1 : 0 ) );
 };
 void CIRBuilder::visit( CExpID *n ){
 	lastNode = new IRExpTEMP( new CTemp( n->id ) );
