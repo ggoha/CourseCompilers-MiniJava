@@ -17,6 +17,9 @@ public:
 		name = to_string(nextUniqueId);
 		++nextUniqueId;
 	}
+	CLabel(const string& _name) {
+		name = _name;
+	}
 	const std::string& Name() const { return name; }
 private:
 	// Счётчик для создания уникальных идентификаторов

@@ -6,6 +6,7 @@
 #include "IRFrame.h"
 class CIRBuilder : public IVisitor
 {
+	string lastType;
 	IRNode* lastNode;
 	const CLabel* ifFalseLabel;
 	const CLabel* ifTrueLabel;
@@ -17,8 +18,12 @@ class CIRBuilder : public IVisitor
 	IRExp* LastNodeAsIRExp();
 	IRStm* LastNodeAsIRStm();
 	IRFrame* currentFrame;
-	CTable* SymbolTable;
-	string LastType;
+	CTable* SymbolTable;//глобальная таблица символов
+	string className;//имя  класса метода который описывается билдером
+	string methodName;//имя метода который описывается билдером
+	pair<string, string> GetMethodType(const string&) const;
+	pair<int, string> GetFieldType(const string&)const;
+	string GetVarType(const string&)const;
 public:
 	CIRBuilder() {};
 	virtual void visit(CStatementIF* n);//done
@@ -42,7 +47,7 @@ public:
 
 	virtual void visit(CExpINTEGER_LITERAL *n);//done
 
-	virtual void visit(CExpSingleOp *n);
+	virtual void visit(CExpSingleOp *n);//done
 	virtual void visit(CExpID *n);
 	virtual void visit(CExpTHIS *n);
 	virtual void visit(CExpNEWINT *n);

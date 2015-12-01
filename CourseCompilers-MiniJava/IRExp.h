@@ -1,12 +1,13 @@
 #pragma once
-#include "CTypes.h"
-#include "Frame.h"
+#include "Visitor.h"
+#include "IRTemp.h"
 
 class IRStm;
 
 class IRExp : public  IRNode 
 {
-
+public:
+	virtual const void accept(const IVisitor* visitor) = 0;
 };
 
 class IRExpList : public IRExp

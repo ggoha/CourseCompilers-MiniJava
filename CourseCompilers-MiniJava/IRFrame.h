@@ -1,13 +1,7 @@
 #include "IRExp.h"
-#include "IRTemp.h"
 #include "map"
 using namespace std;
 
-
-class IRNode
-{
-	virtual const void accept(const IVisitor* visitor) = 0;
-};
 
 
 // Переменная фрейма
