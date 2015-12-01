@@ -1,4 +1,5 @@
 #pragma once
+#include "vector"
 #include "Visitor.h"
 #include "IRStm.h"
 #include "IRExp.h"
@@ -19,6 +20,7 @@ class CIRBuilder : public IVisitor
 	IRFrame* currentFrame;
 	CTable* SymbolTable;
 	string LastType;
+	std::vector<CExp*> lastList;
 public:
 	CIRBuilder() {};
 	virtual void visit(CStatementIF* n);

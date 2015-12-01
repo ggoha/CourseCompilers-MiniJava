@@ -1,6 +1,6 @@
 #pragma once
 #include "CTypes.h"
-#include "Frame.h"
+#include "IRFrame.h"
 
 class IRStm;
 
@@ -11,8 +11,12 @@ class IRExp : public  IRNode
 
 class IRExpList : public IRExp
 {
-public:
 
+public:
+	std::vector<CExp*> expslist;
+	IRExpList( std::vector<CExp*> & exps ) : expslist( exps ) {};
+	const void accept( const IVisitor* irb ) {
+	}
 };
 
 class IRExpCONST: public IRExp{
@@ -69,6 +73,7 @@ public:
 	const IRExp* function;
 	IRExpCALL(const IRExp* func, const IRExpList* args) : function(func), arguments(args) {};
 	const void accept( const IVisitor* irb ) {
+		irb->visit( this );
 	}
 };
 	

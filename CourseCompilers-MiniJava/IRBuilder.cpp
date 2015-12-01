@@ -190,9 +190,25 @@ void CIRBuilder::visit( CStatements *n ){};
 void CIRBuilder::visit( CFormalList *n ){};
 void CIRBuilder::visit( CFormalRests *n ){};
 void CIRBuilder::visit( CFormalRest *n ){};
-void CIRBuilder::visit( CExpList *n ){};
+void CIRBuilder::visit( CExpList *n ){
+	n->exp->accept( this );
+	n->expRests->accept( this );
+	lastNode = dynamic_cast<IRNode*>( new IRExpList( lastList ) );
+};
 void CIRBuilder::visit( CType *n ){};
-void CIRBuilder::visit( CExpRest *n ){};
-void CIRBuilder::visit( CExpRests *n ){};
-void CIRBuilder::visit( CExpUnaryMinus *n ){};
+void CIRBuilder::visit( CExpRest *n ){
+	lastList.push_back( n->exp );
+	n->accept( this );
+};
+void CIRBuilder::visit( CExpRests *n ){
+	for( int i = 0; i < n->expressions.size(); i++ ) {
+		n->expressions[i]->accept( this );
+	}
+};
+void CIRBuilder::visit( CExpUnaryMinus *n ){
+	LabelsSaver( this );
+	IRExpCONST * constNull  = new IRExpCONST( 0 );
+	n->exp->accept( this );
+	lastNode =  dynamic_cast<IRNode*>( new IRExpBINOP( '-', (IRExp*)constNull, (IRExp*)lastNode  ));
+};
 
