@@ -223,7 +223,6 @@ pair<int, string> CIRBuilder::GetFieldType(const string& name) const
 	throw invalid_argument("error in GetFieldType: can't find field " + name + "in " + lastType);
 }
 
-
 string CIRBuilder::GetVarType(const string& name)const
 {
 	int classIndex = SymbolTable->getClassIndex(className);

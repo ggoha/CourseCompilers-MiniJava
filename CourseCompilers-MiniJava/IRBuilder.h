@@ -1,4 +1,5 @@
 #pragma once
+#include "vector"
 #include "Visitor.h"
 #include "IRStm.h"
 #include "IRExp.h"
@@ -24,6 +25,7 @@ class CIRBuilder : public IVisitor
 	pair<string, string> GetMethodType(const string&) const;
 	pair<int, string> GetFieldType(const string&)const;
 	string GetVarType(const string&)const;
+	std::vector<CExp*> lastList;
 public:
 	CIRBuilder() {};
 	virtual void visit(CStatementIF* n);//done

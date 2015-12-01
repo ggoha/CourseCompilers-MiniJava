@@ -25,12 +25,24 @@ class InReg : IAccess{
 class IRFrame {
 public:
 	IRFrame(const string name, int formalsCount);
-	// Доступ к формальным параметрам
 	int FormalsCount() const { return formals.size(); }
-	//		const IAccess* Formal(size_t index) const {formals[]};
-	const CTemp* GetTemp(string name) { return formals.find(name)->second; };
-	void setTemp(string name, CTemp* temp) { formals.insert(std::pair<string, CTemp*>(name, temp)); }
+	int LocalsCount() const { return locals.size(); }
+	int TempraryCount() const { return temprary.size(); }
+	// Доступ к формальным параметрам
+	const CTemp* GetTemp(string name) {
+		if (formals.find(name) != formals.end() )
+			return formals.find(name)->second;
+		if (locals.find(name) != locals.end())
+			return locals.find(name)->second;
+		if (temprary.find(name) != temprary.end())
+			return temprary.find(name)->second;
+	};
+	void setFormalsTemp(string name, CTemp* temp) { formals.insert(std::pair<string, CTemp*>(name, temp)); }
+	void setLocalsTemp(string name, CTemp* temp) { locals.insert(std::pair<string, CTemp*>(name, temp)); }
+	void setTempraryTemp(string name, CTemp* temp) { temprary.insert(std::pair<string, CTemp*>(name, temp)); }
 
 private:
 	std::map<string, CTemp*> formals;
+	std::map<string, CTemp*> locals;
+	std::map<string, CTemp*> temprary;
 };
