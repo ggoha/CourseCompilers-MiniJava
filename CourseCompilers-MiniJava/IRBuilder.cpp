@@ -172,9 +172,7 @@ void CIRBuilder::visit( CExpSingleOp *n ){
 void CIRBuilder::visit( CExpID *n ){
 	lastNode = new IRExpTEMP( new CTemp( n->id ) );
 };
-void CIRBuilder::visit( CExpTHIS *n ){
-	lastNode = new
-};
+void CIRBuilder::visit( CExpTHIS *n ){};
 void CIRBuilder::visit( CExpNEWINT *n ){};
 void CIRBuilder::visit( CExpNEWID *n ){
 	lastNode = IRExpTEMP( n->id )

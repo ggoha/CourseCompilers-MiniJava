@@ -19,7 +19,7 @@ class IRExpCONST: public IRExp{
 		int value;
 	public:
 		IRExpCONST(int _value) : value(_value) {};
-		void accept( CIRBuilder* irb ) {
+		const void accept( const IVisitor* irb ) {
 		}
 };
 
@@ -29,7 +29,7 @@ public:
 	const CLabel* label;
 	IRExpNAME( const CLabel* _label ): label(_label) {
 	}
-	void accept( CIRBuilder* irb ) {
+	const void accept( const IVisitor* irb ) {
 	}
 };
 
@@ -39,7 +39,7 @@ public:
 	const CTemp* temp;
 	IRExpTEMP( const CTemp* _temp ):temp(_temp) {
 	};
-	void accept( CIRBuilder* irb ) {
+	const void accept( const IVisitor* irb ) {
 	}
 };
 
@@ -50,7 +50,7 @@ public:
 	const IRExp* left;
 	const IRExp* right;
 	IRExpBINOP(char b, const IRExp* l, const IRExp* r) : binop(b), left(l), right(r) {};
-	void accept( CIRBuilder* irb ) {
+	const void accept( const IVisitor* irb ) {
 	}
 };
 
@@ -58,7 +58,7 @@ class IRExpMEM: public IRExp {
 public:
 	const IRExp* exp;
 	IRExpMEM(const IRExp* _exp) :exp(_exp) {};
-	void accept( CIRBuilder* irb ) {
+	const void accept( const IVisitor* irb ) {
 	}
 };
 
@@ -68,7 +68,7 @@ public:
 	const IRExpList* arguments;
 	const IRExp* function;
 	IRExpCALL(const IRExp* func, const IRExpList* args) : function(func), arguments(args) {};
-	void accept( CIRBuilder* irb ) {
+	const void accept( const IVisitor* irb ) {
 	}
 };
 	
@@ -78,6 +78,6 @@ public:
 	const IRStm* stms;
 	const IRExp* exp;
 	IRExpESEQ(const IRStm* s, const IRExp* e) : stms(s), exp(e) {};
-	void accept( CIRBuilder* irb ) {
+	const void accept( const IVisitor* irb ) {
 	}
 };
