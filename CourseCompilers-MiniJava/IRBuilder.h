@@ -62,7 +62,7 @@ public:
 	virtual void visit(CClassDecls *n);
 	virtual void visit(CClassDeclInheritance *n);
 	virtual void visit(CVarDecls *n);
-	virtual void visit(CMethodDecls *n);
+	virtual void visit(CMethodDecls *n) {};
 	virtual void visit(CVarDecl *n);
 	virtual void visit(CMethodDecl *n);
 	virtual void visit(CStatements *n);
@@ -70,7 +70,7 @@ public:
 	virtual void visit(CFormalRests *n);
 	virtual void visit(CFormalRest *n);
 	virtual void visit(CExpList *n);
-	virtual void visit(CType *n);
+	virtual void visit(CType *n) {};
 	virtual void visit(CExpRest *n);
 	virtual void visit(CExpRests *n);
 	virtual void visit(CExpUnaryMinus *n);

@@ -205,6 +205,19 @@ void CIRBuilder::visit( CExpTHIS *n )
 	lastType = className;
 };
 
+void CIRBuilder::visit(CVarDecl *n) {
+	frame->setLocalsTemp(n->id, new CTemp(n->id));
+}
+
+void CIRBuilder::visit(CVarDecls *n)
+{
+	for (int i = 0; i < n->vars.size(); ++i)
+	{
+		n->vars[i]->accept(this);
+	}
+}
+
+
 pair<string, string> CIRBuilder::GetMethodType(const string& name) const
 {
 	int classIndex = SymbolTable->getClassIndex(lastType);
