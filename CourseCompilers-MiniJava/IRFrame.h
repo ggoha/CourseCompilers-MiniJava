@@ -37,6 +37,16 @@ public:
 		if (temprary.find(name) != temprary.end())
 			return temprary.find(name)->second;
 	};
+	CTemp* getThis(){
+	//заглушка
+		if (!formals.empty())
+			return formals.begin()->second;
+		if (!locals.empty())
+			return locals.begin()->second;
+		if (!temprary.empty())
+			return locals.begin()->second;
+		return nullptr;
+	}
 	void setFormalsTemp(string name, CTemp* temp) { formals.insert(std::pair<string, CTemp*>(name, temp)); }
 	void setLocalsTemp(string name, CTemp* temp) { locals.insert(std::pair<string, CTemp*>(name, temp)); }
 	void setTempraryTemp(string name, CTemp* temp) { temprary.insert(std::pair<string, CTemp*>(name, temp)); }
