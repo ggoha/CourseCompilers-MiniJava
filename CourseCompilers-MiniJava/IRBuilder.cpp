@@ -302,3 +302,21 @@ string CIRBuilder::GetVarType(const string& name)const
 	throw invalid_argument("error in GetVarType: can't find var " + name + "in " + className + " method "+methodName);
 }
 
+void CIRBuilder::visit( CExpList *n ) {
+	LabelsSaver oldLabels( this );
+	n->exp->accept( this );
+	n->expRests->accept( this );
+	lastNode = new IRExpList( lastList );
+}
+void CIRBuilder::visit( CExpRest *n ) {
+	LabelsSaver oldLabels( this );
+	n->exp->accept( this );
+	lastList.push_back( (IRExp*)lastNode );
+
+}
+void CIRBuilder::visit( CExpRests *n ) {
+	LabelsSaver oldLabels( this );
+	for( int i = 0; i < n->expressions.size(); i++ ) {
+		n->expressions[i]->accept( this );
+	}
+}
