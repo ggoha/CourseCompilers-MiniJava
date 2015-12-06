@@ -218,6 +218,32 @@ void CIRBuilder::visit(CVarDecls *n)
 }
 
 
+void CIRBuilder::visit(CFormalList *n)
+{
+	frame->setFormalsTemp(n->id, new CTemp(n->id));
+	n->formalRests->accept(this);
+}
+
+void CIRBuilder::visit(CFormalRests *n){
+	for (int i = 0; i < n->parametrs.size(); ++i)
+		n->parametrs[i]->accept(this);
+}
+
+void CIRBuilder::visit(CFormalRest *n) {
+	frame->setFormalsTemp(n->id, new CTemp(n->id));
+}
+
+void CIRBuilder::visit(CExpNEWINT *n) {
+	n->exp->accept(this);
+	lastNode = new IRExpCALL(new IRExpNAME(new CLabel("malloc")), new IRExpList(LastNodeAsIRExp()));
+}
+
+void CIRBuilder::visit(CExpNEWID *n) {
+	lastNode = new IRExpCALL(
+	new IRExpNAME(new CLabel("malloc")), 
+	 new IRExpList(new IRExpCONST(SymbolTable->classInfo[SymbolTable->getClassIndex(n->id)].vars.size())));
+}
+
 pair<string, string> CIRBuilder::GetMethodType(const string& name) const
 {
 	int classIndex = SymbolTable->getClassIndex(lastType);
