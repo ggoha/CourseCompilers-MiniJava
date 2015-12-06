@@ -211,7 +211,7 @@ void CIRBuilder::visit(CVarDecl *n) {
 
 void CIRBuilder::visit(CVarDecls *n)
 {
-	for (int i = 0; i < n->vars.size(); ++i)
+	for (size_t i = 0; i < n->vars.size(); ++i)
 	{
 		n->vars[i]->accept(this);
 	}
@@ -224,7 +224,7 @@ void CIRBuilder::visit(CFormalList *n)
 }
 
 void CIRBuilder::visit(CFormalRests *n){
-	for (int i = 0; i < n->parametrs.size(); ++i)
+	for (size_t i = 0; i < n->parametrs.size(); ++i)
 		n->parametrs[i]->accept(this);
 }
 
@@ -271,7 +271,7 @@ pair<string, string> CIRBuilder::GetMethodType(const string& name) const
 pair<int, string> CIRBuilder::GetFieldType(const string& name) const
 {
 	int classIndex = SymbolTable->getClassIndex(lastType);
-	for (int i = 0; i < SymbolTable->classInfo[classIndex].vars.size(); ++i)
+	for (size_t i = 0; i < SymbolTable->classInfo[classIndex].vars.size(); ++i)
 		if (SymbolTable->classInfo[classIndex].vars[i].name == name)
 		{
 			return pair<int, string>(i,SymbolTable->classInfo[classIndex].vars[i].type);
@@ -283,17 +283,17 @@ string CIRBuilder::GetVarType(const string& name)const
 {
 	int classIndex = SymbolTable->getClassIndex(className);
 	int methodIndex = SymbolTable->classInfo[classIndex].getMethodIndex(methodName);
-	for (int i = 0; i < SymbolTable->classInfo[classIndex].methods[methodIndex].params.size(); ++i)
+	for (size_t i = 0; i < SymbolTable->classInfo[classIndex].methods[methodIndex].params.size(); ++i)
 		if (SymbolTable->classInfo[classIndex].methods[methodIndex].params[i].name == name)
 		{
 			return SymbolTable->classInfo[classIndex].methods[methodIndex].params[i].type;
 		}
-	for (int i = 0; i < SymbolTable->classInfo[classIndex].methods[methodIndex].vars.size(); ++i)
+	for (size_t i = 0; i < SymbolTable->classInfo[classIndex].methods[methodIndex].vars.size(); ++i)
 		if (SymbolTable->classInfo[classIndex].methods[methodIndex].vars[i].name == name)
 		{
 			return SymbolTable->classInfo[classIndex].methods[methodIndex].vars[i].type;
 		}
-	for (int i = 0; i < SymbolTable->classInfo[classIndex].vars.size(); ++i)
+	for (size_t i = 0; i < SymbolTable->classInfo[classIndex].vars.size(); ++i)
 		if (SymbolTable->classInfo[classIndex].vars[i].name == name)
 		{
 			return SymbolTable->classInfo[classIndex].vars[i].type;
