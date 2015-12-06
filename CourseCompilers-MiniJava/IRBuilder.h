@@ -35,7 +35,7 @@ public:
 
 	virtual void visit(CStatementASIGNMENT* n);
 
-	virtual void visit(CStatementPRINTLN* n);
+	virtual void visit(CStatementPRINTLN* n);//done
 
 	virtual void visit(CStatementWHILE* n);//done
 
@@ -50,8 +50,8 @@ public:
 	virtual void visit(CExpINTEGER_LITERAL *n);//done
 
 	virtual void visit(CExpSingleOp *n);//done
-	virtual void visit(CExpID *n);
-	virtual void visit(CExpTHIS *n);
+	virtual void visit(CExpID *n);//done
+	virtual void visit(CExpTHIS *n);//done
 	virtual void visit(CExpNEWINT *n);//done
 	virtual void visit(CExpNEWID *n);//done
 	virtual void visit(CExpExclamationMark *n);

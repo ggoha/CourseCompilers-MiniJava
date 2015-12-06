@@ -217,7 +217,6 @@ void CIRBuilder::visit(CVarDecls *n)
 	}
 }
 
-
 void CIRBuilder::visit(CFormalList *n)
 {
 	frame->setFormalsTemp(n->id, new CTemp(n->id));
@@ -234,14 +233,32 @@ void CIRBuilder::visit(CFormalRest *n) {
 }
 
 void CIRBuilder::visit(CExpNEWINT *n) {
+	LabelsSaver oldLabels(this);
 	n->exp->accept(this);
 	lastNode = new IRExpCALL(new IRExpNAME(new CLabel("malloc")), new IRExpList(LastNodeAsIRExp()));
+
+	lastType = "int";
 }
 
 void CIRBuilder::visit(CExpNEWID *n) {
+	LabelsSaver oldLabels(this);
 	lastNode = new IRExpCALL(
-	new IRExpNAME(new CLabel("malloc")), 
-	 new IRExpList(new IRExpCONST(SymbolTable->classInfo[SymbolTable->getClassIndex(n->id)].vars.size())));
+							 new IRExpNAME(new CLabel("malloc")), 
+							 new IRExpList(new IRExpCONST(SymbolTable->classInfo[SymbolTable->getClassIndex(n->id)].vars.size())));
+	lastType = n->id;
+}
+
+void CIRBuilder::visit(CStatementPRINTLN* n) {
+	LabelsSaver oldLabels(this);
+	n->exp->accept(this);
+	lastNode = new IRStmEXP(new IRExpCALL(new IRExpNAME(new CLabel("printLn")), new IRExpList(LastNodeAsIRExp())));
+}
+
+
+void CIRBuilder::visit(CStatementASIGNMENT* n) {
+	LabelsSaver oldLabels(this);
+	n->exp->accept(this);
+	lastNode = new IRStmMOVE(new IRExpTEMP(frame->GetTemp(n->id)), LastNodeAsIRExp());
 }
 
 pair<string, string> CIRBuilder::GetMethodType(const string& name) const
@@ -284,3 +301,4 @@ string CIRBuilder::GetVarType(const string& name)const
 
 	throw invalid_argument("error in GetVarType: can't find var " + name + "in " + className + " method "+methodName);
 }
+
