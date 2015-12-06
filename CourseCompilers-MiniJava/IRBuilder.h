@@ -43,17 +43,17 @@ public:
 
 	virtual void visit(CExpInSquareBrackets *n);//done
 
-	virtual void visit(CExpPointLENGTH *n);
+	virtual void visit(CExpPointLENGTH *n);//done
 
-	virtual void visit(CExpPointID *n);
+	virtual void visit(CExpPointID *n);//done
 
 	virtual void visit(CExpINTEGER_LITERAL *n);//done
 
 	virtual void visit(CExpSingleOp *n);//done
 	virtual void visit(CExpID *n);
 	virtual void visit(CExpTHIS *n);
-	virtual void visit(CExpNEWINT *n);
-	virtual void visit(CExpNEWID *n);
+	virtual void visit(CExpNEWINT *n);//done
+	virtual void visit(CExpNEWID *n);//done
 	virtual void visit(CExpExclamationMark *n);
 	virtual void visit(CExpCircleBrackets *n);
 	virtual void visit(CProgram *n);
@@ -61,14 +61,14 @@ public:
 	virtual void visit(CClassDecl *n);
 	virtual void visit(CClassDecls *n);
 	virtual void visit(CClassDeclInheritance *n);
-	virtual void visit(CVarDecls *n);
-	virtual void visit(CMethodDecls *n) {};
-	virtual void visit(CVarDecl *n);
+	virtual void visit(CVarDecls *n);//done
+	virtual void visit(CMethodDecls *n);
+	virtual void visit(CVarDecl *n);//done
 	virtual void visit(CMethodDecl *n);
 	virtual void visit(CStatements *n);
-	virtual void visit(CFormalList *n);
-	virtual void visit(CFormalRests *n);
-	virtual void visit(CFormalRest *n);
+	virtual void visit(CFormalList *n);//done
+	virtual void visit(CFormalRests *n);//done
+	virtual void visit(CFormalRest *n);//done
 	virtual void visit(CExpList *n);
 	virtual void visit(CType *n) {};
 	virtual void visit(CExpRest *n);
