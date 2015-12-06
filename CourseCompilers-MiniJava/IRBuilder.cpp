@@ -284,3 +284,5 @@ string CIRBuilder::GetVarType(const string& name)const
 
 	throw invalid_argument("error in GetVarType: can't find var " + name + "in " + className + " method "+methodName);
 }
+
+
