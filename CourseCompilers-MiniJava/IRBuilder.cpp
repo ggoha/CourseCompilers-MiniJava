@@ -7,7 +7,6 @@ IRExp* CIRBuilder::LastNodeAsIRExp() {
 		throw invalid_argument("can't cast lastNode to IRExp");
 	return res;
 }
-
 IRStm* CIRBuilder::LastNodeAsIRStm() {
 	IRStm* res = dynamic_cast<IRStm*>(lastNode);
 	if (res == NULL)
@@ -46,6 +45,7 @@ void CIRBuilder::visit(CStatementIF* ASTnode)
 	return;
 }
 
+
 void CIRBuilder::visit(CExpBinary* n)
 {
 	LabelsSaver oldLabels(this);
@@ -58,7 +58,6 @@ void CIRBuilder::visit(CExpBinary* n)
 		IRExp* expRigth = LastNodeAsIRExp();
 		relop = IRStmCJUMP::LE;
 		lastNode = new IRStmCJUMP(relop, expLeft, expRigth, ifTrueLabel, ifFalseLabel);
-		lastType = "boolean";
 		return;
 	};
 
@@ -79,7 +78,6 @@ void CIRBuilder::visit(CExpBinary* n)
 		n->exp1->accept(this);
 		lastNode = new IRStmSEQ(LastNodeAsIRStm(), stmSEQ);///first goes exp1(with falseCIRBuilder::val
 		ifTrueLabel = iftrue;
-		lastType = "boolean";
 		return;
 	};
 	if (n->op == '+')
@@ -89,7 +87,6 @@ void CIRBuilder::visit(CExpBinary* n)
 		n->exp2->accept(this);
 		IRExp* right = LastNodeAsIRExp();
 		lastNode = new IRExpBINOP('+', left, right);
-		lastType = "int";
 		return;
 	};
 	if (n->op == '*')
@@ -99,7 +96,6 @@ void CIRBuilder::visit(CExpBinary* n)
 		n->exp2->accept(this);
 		IRExp* right = LastNodeAsIRExp();
 		lastNode = new IRExpBINOP('*', left, right);
-		lastType = "int";
 		return;
 	};
 	if (n->op == '-')
@@ -109,7 +105,6 @@ void CIRBuilder::visit(CExpBinary* n)
 		n->exp2->accept(this);
 		IRExp* right = LastNodeAsIRExp();
 		lastNode = new IRExpBINOP('-', left, right);
-		lastType = "int";
 		return;
 	};
 }
@@ -145,116 +140,77 @@ void CIRBuilder::visit(CStatementWHILE* n)
 void CIRBuilder::visit( CExpInSquareBrackets *n ){
 	LabelsSaver( this );
 	n->exp1->accept( this );
-	string arrType = lastType.substr(0, lastType.length() - 2);
+	//CTemp * mas = frame.getTemp( lastNode );
 	IRExp* mas = LastNodeAsIRExp();
 	n->exp2->accept( this );
 	IRExp* id = LastNodeAsIRExp();
 	IRExp* offset = new IRExpBINOP( '+', mas, id );
-	IRExp* oneExp = new IRExpCONST(1);
-	lastNode = new IRExpMEM(new IRExpBINOP('+', offset, oneExp));
-	lastType = arrType;
+	IRExp* oneExp = new IRExpCONST( 1 );
+	lastNode = new IRExpBINOP( '+', offset, oneExp );
 };
+	 
 
+ // Дописать
 void CIRBuilder::visit( CExpPointLENGTH *n ){
 	LabelsSaver( this );
 	n->exp->accept( this );
-	lastNode = new IRExpMEM(LastNodeAsIRExp());
-	lastType = "int";
 };
 	 
 void CIRBuilder::visit( CExpPointID *n ){
-	LabelsSaver oldLabels(this);
 	n->exp->accept(this);
-	if (n->expList != 0)
-	{
-		pair<string,string> method = GetMethodType(n->id);
+	if( n->expList != 0 )
 		n->expList->accept(this);
-		lastNode = new IRExpCALL(new IRExpNAME(new CLabel(method.first)), dynamic_cast<IRExpList*>(LastNodeAsIRExp()));
-		lastType = method.second;
-	}
-	else
-	{
-		pair<int, string> field = GetFieldType(n->id);
-		lastNode = new IRExpMEM(new IRExpBINOP('+', LastNodeAsIRExp(), new IRExpCONST(field.first)));
-		lastType = field.second;
-	}
 };
 	 
-void CIRBuilder::visit( CExpINTEGER_LITERAL *n ){
-	LabelsSaver oldLabels(this);
+void CIRBuilder::visit( CExpINTEGER_LITERAL *n ){	
 	lastNode = new IRExpCONST( n->integer_literal );
-	lastType = "int";
 };
 	 
 void CIRBuilder::visit( CExpSingleOp *n ){
-	LabelsSaver oldLabels(this);
-	lastNode = new IRExpCONST( (n->val) ? 1 : 0 );
-	lastType = "int";
+	lastNode = new IRExpTEMP( new CTemp( n->val ) );
 };
-
 void CIRBuilder::visit( CExpID *n ){
-	LabelsSaver oldLabels(this);
-	lastNode = new IRExpTEMP(frame->GetTemp(n->id));
-	lastType = GetVarType(n->id);
+	lastNode = new IRExpTEMP( new CTemp( n->id ) );
 };
-
-void CIRBuilder::visit( CExpTHIS *n )
-{
-	LabelsSaver oldLabels(this);
-	lastNode = new IRExpTEMP(frame->getThis());
-	lastType = className;
+void CIRBuilder::visit( CExpTHIS *n ){};
+void CIRBuilder::visit( CExpNEWINT *n ){};
+void CIRBuilder::visit( CExpNEWID *n ){
+	lastNode = IRExpTEMP( n->id )
 };
-
-void CIRBuilder::visit(CVarDecl *n) {
-	frame->setLocalsTemp(n->id, new CTemp(n->id));
-}
-
-void CIRBuilder::visit(CVarDecls *n)
-{
-	for (int i = 0; i < n->vars.size(); ++i)
-	{
-		n->vars[i]->accept(this);
+void CIRBuilder::visit( CExpExclamationMark *n ){};
+void CIRBuilder::visit( CExpCircleBrackets *n ){};
+void CIRBuilder::visit( CProgram *n ){};
+void CIRBuilder::visit( CMainClass *n ){};
+void CIRBuilder::visit( CClassDecl *n ){};
+void CIRBuilder::visit( CClassDecls *n ){};
+void CIRBuilder::visit( CClassDeclInheritance *n ){};
+void CIRBuilder::visit( CVarDecls *n ){};
+void CIRBuilder::visit( CMethodDecls *n ){};
+void CIRBuilder::visit( CVarDecl *n ){};
+void CIRBuilder::visit( CMethodDecl *n ){};
+void CIRBuilder::visit( CStatements *n ){};
+void CIRBuilder::visit( CFormalList *n ){};
+void CIRBuilder::visit( CFormalRests *n ){};
+void CIRBuilder::visit( CFormalRest *n ){};
+void CIRBuilder::visit( CExpList *n ){
+	n->exp->accept( this );
+	n->expRests->accept( this );
+	lastNode = dynamic_cast<IRNode*>( new IRExpList( lastList ) );
+};
+void CIRBuilder::visit( CType *n ){};
+void CIRBuilder::visit( CExpRest *n ){
+	lastList.push_back( n->exp );
+	n->accept( this );
+};
+void CIRBuilder::visit( CExpRests *n ){
+	for( int i = 0; i < n->expressions.size(); i++ ) {
+		n->expressions[i]->accept( this );
 	}
-}
+};
+void CIRBuilder::visit( CExpUnaryMinus *n ){
+	LabelsSaver( this );
+	IRExpCONST * constNull  = new IRExpCONST( 0 );
+	n->exp->accept( this );
+	lastNode =  dynamic_cast<IRNode*>( new IRExpBINOP( '-', (IRExp*)constNull, (IRExp*)lastNode  ));
+};
 
-
-pair<string, string> CIRBuilder::GetMethodType(const string& name) const
-{
-	int classIndex = SymbolTable->getClassIndex(lastType);
-	int methodIndex = SymbolTable->classInfo[classIndex].getMethodIndex(name);
-	return pair<string, string>(lastType+"."+name,SymbolTable->classInfo[classIndex].methods[methodIndex].returnType);
-}
-
-pair<int, string> CIRBuilder::GetFieldType(const string& name) const
-{
-	int classIndex = SymbolTable->getClassIndex(lastType);
-	for (int i = 0; i < SymbolTable->classInfo[classIndex].vars.size(); ++i)
-		if (SymbolTable->classInfo[classIndex].vars[i].name == name)
-		{
-			return pair<int, string>(i,SymbolTable->classInfo[classIndex].vars[i].type);
-		}
-	throw invalid_argument("error in GetFieldType: can't find field " + name + "in " + lastType);
-}
-
-string CIRBuilder::GetVarType(const string& name)const
-{
-	int classIndex = SymbolTable->getClassIndex(className);
-	int methodIndex = SymbolTable->classInfo[classIndex].getMethodIndex(methodName);
-	for (int i = 0; i < SymbolTable->classInfo[classIndex].methods[methodIndex].params.size(); ++i)
-		if (SymbolTable->classInfo[classIndex].methods[methodIndex].params[i].name == name)
-		{
-			return SymbolTable->classInfo[classIndex].methods[methodIndex].params[i].type;
-		}
-	for (int i = 0; i < SymbolTable->classInfo[classIndex].methods[methodIndex].vars.size(); ++i)
-		if (SymbolTable->classInfo[classIndex].methods[methodIndex].vars[i].name == name)
-		{
-			return SymbolTable->classInfo[classIndex].methods[methodIndex].vars[i].type;
-		}
-	for (int i = 0; i < SymbolTable->classInfo[classIndex].vars.size(); ++i)
-		if (SymbolTable->classInfo[classIndex].vars[i].name == name)
-		{
-			return SymbolTable->classInfo[classIndex].vars[i].type;
-		}
-
-	throw invalid_argument("error in GetVarType: can't find var " + name + "in " + className + " method "+methodName);
-}
