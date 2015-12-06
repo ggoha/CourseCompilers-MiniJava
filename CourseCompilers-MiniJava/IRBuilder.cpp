@@ -320,3 +320,12 @@ void CIRBuilder::visit( CExpRests *n ) {
 		n->expressions[i]->accept( this );
 	}
 }
+
+
+void CIRBuilder::visit( CExpUnaryMinus *n ) {
+	LabelsSaver( this );
+	IRExpCONST * constNull = new IRExpCONST( 0 );
+	n->exp->accept( this );
+	lastNode = dynamic_cast<IRNode*>(new IRExpBINOP( '-', (IRExp*)constNull, (IRExp*)lastNode ));
+	
+}
