@@ -29,11 +29,11 @@ class CIRBuilder : public IVisitor
 public:
 	CIRBuilder() {};
 	virtual void visit(CStatementIF* n);//done
-	virtual void visit(CStatementBRACKETS* n);
+	virtual void visit(CStatementBRACKETS* n);//done
 
-	virtual void visit(CStatementSQUEREASIGNMENT* n);
+	virtual void visit(CStatementSQUEREASIGNMENT* n);//done
 
-	virtual void visit(CStatementASIGNMENT* n);
+	virtual void visit(CStatementASIGNMENT* n);//done
 
 	virtual void visit(CStatementPRINTLN* n);//done
 
@@ -55,17 +55,17 @@ public:
 	virtual void visit(CExpNEWINT *n);//done
 	virtual void visit(CExpNEWID *n);//done
 	virtual void visit(CExpExclamationMark *n);
-	virtual void visit(CExpCircleBrackets *n);
-	virtual void visit(CProgram *n);
-	virtual void visit(CMainClass *n);
-	virtual void visit(CClassDecl *n);
-	virtual void visit(CClassDecls *n);
-	virtual void visit(CClassDeclInheritance *n);
+	virtual void visit(CExpCircleBrackets *n);//done
+	virtual void visit(CProgram *n) {};
+	virtual void visit(CMainClass *n) {};
+	virtual void visit(CClassDecl *n) {};
+	virtual void visit(CClassDecls *n) {};
+	virtual void visit(CClassDeclInheritance *n) {};
 	virtual void visit(CVarDecls *n);//done
 	virtual void visit(CMethodDecls *n);
 	virtual void visit(CVarDecl *n);//done
-	virtual void visit(CMethodDecl *n);
-	virtual void visit(CStatements *n);
+	virtual void visit(CMethodDecl *n) {};
+	virtual void visit(CStatements *n);//done
 	virtual void visit(CFormalList *n);//done
 	virtual void visit(CFormalRests *n);//done
 	virtual void visit(CFormalRest *n);//done
@@ -74,7 +74,6 @@ public:
 	virtual void visit(CExpRest *n);
 	virtual void visit(CExpRests *n);
 	virtual void visit(CExpUnaryMinus *n);
-
 };
 
 class CIRBuilder::LabelsSaver

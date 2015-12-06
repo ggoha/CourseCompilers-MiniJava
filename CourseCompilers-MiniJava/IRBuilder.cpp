@@ -211,7 +211,7 @@ void CIRBuilder::visit(CVarDecl *n) {
 
 void CIRBuilder::visit(CVarDecls *n)
 {
-	for (size_t i = 0; i < n->vars.size(); ++i)
+	for (int i = 0; i < n->vars.size(); ++i)
 	{
 		n->vars[i]->accept(this);
 	}
@@ -224,7 +224,7 @@ void CIRBuilder::visit(CFormalList *n)
 }
 
 void CIRBuilder::visit(CFormalRests *n){
-	for (size_t i = 0; i < n->parametrs.size(); ++i)
+	for (int i = 0; i < n->parametrs.size(); ++i)
 		n->parametrs[i]->accept(this);
 }
 
@@ -255,10 +255,39 @@ void CIRBuilder::visit(CStatementPRINTLN* n) {
 }
 
 
+void CIRBuilder::visit(CStatementSQUEREASIGNMENT* n) {
+	LabelsSaver oldLabels(this);
+	n->expAssigned->accept(this);
+	IRExp* Val = LastNodeAsIRExp();
+	n->expInSquareBrackets->accept(this);
+	lastNode = new IRStmMOVE(new IRExpMEM(new IRExpBINOP('+',new IRExpTEMP(frame->GetTemp(n->id)), LastNodeAsIRExp())), Val);
+}
+
 void CIRBuilder::visit(CStatementASIGNMENT* n) {
 	LabelsSaver oldLabels(this);
 	n->exp->accept(this);
 	lastNode = new IRStmMOVE(new IRExpTEMP(frame->GetTemp(n->id)), LastNodeAsIRExp());
+}
+
+
+void CIRBuilder::visit(CStatementBRACKETS* n) {
+	LabelsSaver oldLabels(this);
+	n->statements->accept(this);
+}
+
+
+void CIRBuilder::visit(CStatements *n) {
+	auto stms = new IRStmLIST();
+	for (int i = 0; i < n->statements.size(); ++i)
+	{
+		n->statements[i]->accept(this);
+		stms->add(LastNodeAsIRStm());
+	}
+}
+
+
+void CIRBuilder::visit(CExpCircleBrackets *n) {
+	n->exp->accept(this);
 }
 
 pair<string, string> CIRBuilder::GetMethodType(const string& name) const
@@ -271,7 +300,7 @@ pair<string, string> CIRBuilder::GetMethodType(const string& name) const
 pair<int, string> CIRBuilder::GetFieldType(const string& name) const
 {
 	int classIndex = SymbolTable->getClassIndex(lastType);
-	for (size_t i = 0; i < SymbolTable->classInfo[classIndex].vars.size(); ++i)
+	for (int i = 0; i < SymbolTable->classInfo[classIndex].vars.size(); ++i)
 		if (SymbolTable->classInfo[classIndex].vars[i].name == name)
 		{
 			return pair<int, string>(i,SymbolTable->classInfo[classIndex].vars[i].type);
@@ -283,17 +312,17 @@ string CIRBuilder::GetVarType(const string& name)const
 {
 	int classIndex = SymbolTable->getClassIndex(className);
 	int methodIndex = SymbolTable->classInfo[classIndex].getMethodIndex(methodName);
-	for (size_t i = 0; i < SymbolTable->classInfo[classIndex].methods[methodIndex].params.size(); ++i)
+	for (int i = 0; i < SymbolTable->classInfo[classIndex].methods[methodIndex].params.size(); ++i)
 		if (SymbolTable->classInfo[classIndex].methods[methodIndex].params[i].name == name)
 		{
 			return SymbolTable->classInfo[classIndex].methods[methodIndex].params[i].type;
 		}
-	for (size_t i = 0; i < SymbolTable->classInfo[classIndex].methods[methodIndex].vars.size(); ++i)
+	for (int i = 0; i < SymbolTable->classInfo[classIndex].methods[methodIndex].vars.size(); ++i)
 		if (SymbolTable->classInfo[classIndex].methods[methodIndex].vars[i].name == name)
 		{
 			return SymbolTable->classInfo[classIndex].methods[methodIndex].vars[i].type;
 		}
-	for (size_t i = 0; i < SymbolTable->classInfo[classIndex].vars.size(); ++i)
+	for (int i = 0; i < SymbolTable->classInfo[classIndex].vars.size(); ++i)
 		if (SymbolTable->classInfo[classIndex].vars[i].name == name)
 		{
 			return SymbolTable->classInfo[classIndex].vars[i].type;
