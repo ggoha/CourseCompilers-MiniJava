@@ -73,6 +73,7 @@
   <ItemGroup>
     <ClCompile Include="IRBuilder.cpp" />
     <ClCompile Include="IRFrame.h" />
+    <ClCompile Include="IRVisitor.h" />
     <ClCompile Include="lexer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="parser.tab.cpp" />
