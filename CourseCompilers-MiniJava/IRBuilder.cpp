@@ -294,6 +294,11 @@ pair<string, string> CIRBuilder::GetMethodType(const string& name) const
 {
 	int classIndex = SymbolTable->getClassIndex(lastType);
 	int methodIndex = SymbolTable->classInfo[classIndex].getMethodIndex(name);
+	while (methodIndex < 0)
+	{
+		classIndex = SymbolTable->classInfo[classIndex].parent;
+		methodIndex = SymbolTable->classInfo[classIndex].getMethodIndex(name);
+	}
 	return pair<string, string>(lastType+"."+name,SymbolTable->classInfo[classIndex].methods[methodIndex].returnType);
 }
 

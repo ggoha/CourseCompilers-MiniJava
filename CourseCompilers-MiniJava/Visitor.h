@@ -38,9 +38,19 @@ class CExpCircleBrackets;
 class CExpUnaryMinus;
 class CClassDecls;
 
+class IRExpCALL;
+class IRExpList;
+class IRExpESEQ;
+class IRExpMEM;
+class IRExpBINOP;
+class IRExpTEMP;
+class IRExpNAME;
+class IRExpCONST;
+
 class IVisitor
 {
 public:
+	
 	virtual void visit(CStatementIF* n) = 0;
 	virtual void visit(CStatementBRACKETS* n) = 0;
 
@@ -86,5 +96,15 @@ public:
 	virtual void visit( CType *n ) = 0;
 	virtual void visit( CExpRest *n ) = 0;
 	virtual void visit( CExpRests *n ) = 0;
-	virtual void visit(CExpUnaryMinus *n) = 0;
+	virtual void visit( CExpUnaryMinus *n) = 0;
+
+	virtual void visit(IRExpCALL *n) = 0;
+	virtual void visit(IRExpList *n) = 0;
+	virtual void visit(IRExpESEQ *n) = 0;
+	virtual void visit(IRExpMEM *n) = 0;
+	virtual void visit(IRExpBINOP *n) = 0;
+	virtual void visit(IRExpTEMP *n) = 0;
+	virtual void visit(IRExpNAME *n) = 0;
+	virtual void visit(IRExpCONST *n) = 0;
+
 }; 

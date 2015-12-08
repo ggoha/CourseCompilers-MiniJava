@@ -45,6 +45,9 @@
     <ClCompile Include="IRFrame.h">
       <Filter>IRTree</Filter>
     </ClCompile>
+    <ClCompile Include="IRVisitor.h">
+      <Filter>IRTree</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="parser.y" />
