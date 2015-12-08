@@ -55,9 +55,9 @@ void CIRBuilder::visit(CExpBinary* n)
 		n->exp1->accept(this);
 		IRExp* expLeft = LastNodeAsIRExp();
 		n->exp2->accept(this);
-		IRExp* expRigth = LastNodeAsIRExp();
+		IRExp* expRight = LastNodeAsIRExp();
 		relop = IRStmCJUMP::LE;
-		lastNode = new IRStmCJUMP(relop, expLeft, expRigth, ifTrueLabel, ifFalseLabel);
+		lastNode = new IRStmCJUMP(relop, expLeft, expRight, ifTrueLabel, ifFalseLabel);
 		lastType = "boolean";
 		return;
 	};
@@ -357,4 +357,15 @@ void CIRBuilder::visit( CExpUnaryMinus *n ) {
 	n->exp->accept( this );
 	lastNode = dynamic_cast<IRNode*>(new IRExpBINOP( '-', (IRExp*)constNull, (IRExp*)lastNode ));
 	
+}
+
+void CIRBuilder::visit( CExpExclamationMark *n ) {
+	LabelsSaver( this );
+	n->exp->accept( this );
+	if( lastType != "boolean" ) {
+		cout << "wrong type for rejection";
+	}
+	else {
+
+	}
 }
