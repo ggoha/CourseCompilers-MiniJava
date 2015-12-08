@@ -47,6 +47,14 @@ class IRExpTEMP;
 class IRExpNAME;
 class IRExpCONST;
 
+class IRStmMOVE;
+class IRStmEXP;
+class IRStmCJUMP;
+class IRStmSEQ;
+class IRStmLABEL;
+class IRStmLIST;
+class IRStmJUMP;
+
 class IVisitor
 {
 public:
@@ -106,5 +114,13 @@ public:
 	virtual void visit(IRExpTEMP *n) = 0;
 	virtual void visit(IRExpNAME *n) = 0;
 	virtual void visit(IRExpCONST *n) = 0;
+
+	virtual void visit(IRStmMOVE *n) = 0;
+	virtual void visit(IRStmEXP *n) = 0;
+	virtual void visit(IRStmCJUMP *n) = 0;
+	virtual void visit(IRStmSEQ *n) = 0;
+	virtual void visit(IRStmLABEL *n) = 0;
+	virtual void visit(IRStmLIST *n) = 0;
+	virtual void visit(IRStmJUMP *n) = 0;
 
 }; 
