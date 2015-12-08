@@ -3,20 +3,19 @@
 /* Секция с кодом, который попадет в парсер.*/
 %{
 #include <iostream>
-#include "parser.tab.hpp"
-#include "PrettyPrinter.h"
-#include "CSymbolTable.h"
-#include "CTypeChecker.h"
 #include "CTypes.h"
 extern FILE* yyin;
 extern "C" int yylex();
-void yyerror( int*, const char* );
+void yyerror( CProgram* root, int*, const char* );
 %}
 
 /* Этот код будет помещен до определения Union
 Обычно используется для описания классов, реализующих синтаксическое дерево. */
 /* Параметры функции парсера. */
+%parse-param { CProgram* root }
 %parse-param { int* hasError }
+
+%code requires { #include "CTypes.h" }
 
 /* Определение возможных типов выражения. */
 %union{
@@ -108,27 +107,9 @@ void yyerror( int*, const char* );
 %%
 Program:
 	MainClass {
-	 $$ = new CProgram( $1 );
-	 CPrettyPrinter pp;
-	 pp.visit($$);
-	 CSymbolTableBuilder st;
-	 st.visit($$);
-	 st.Print();
-	 CTypeChecker typeChecker;
-	 typeChecker.table = st.table;
-	 typeChecker.visit($$);
-	 }
+	 root = new CProgram( $1 ); }
 	| MainClass ClassDecls {
-	 $$ = new CProgram( $1, $2 );
-	 CPrettyPrinter pp;
-	 pp.visit($$);
-	 CSymbolTableBuilder st;
-	 st.visit($$);
-	 st.Print();
-	 CTypeChecker typeChecker;
-	 typeChecker.table = st.table;
-	 typeChecker.visit($$);
-	 }
+	 root = new CProgram( $1, $2 ); }
 	;
 ClassDecls:
 	ClassDecl { $$ = new CClassDecls($1); }
@@ -234,7 +215,7 @@ ExpRest:
 	;
 %%
 /* Функция обработки ошибки. */
-void yyerror( int*, const char* str )
+void yyerror( CProgram* root, int*, const char* str )
 {
 	std::cout << str << std::endl;
 }

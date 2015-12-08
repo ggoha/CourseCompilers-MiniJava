@@ -105,22 +105,4 @@ public:
 	virtual void visit( CExpRest *n ) = 0;
 	virtual void visit( CExpRests *n ) = 0;
 	virtual void visit( CExpUnaryMinus *n) = 0;
-
-	virtual void visit(IRExpCALL *n) = 0;
-	virtual void visit(IRExpList *n) = 0;
-	virtual void visit(IRExpESEQ *n) = 0;
-	virtual void visit(IRExpMEM *n) = 0;
-	virtual void visit(IRExpBINOP *n) = 0;
-	virtual void visit(IRExpTEMP *n) = 0;
-	virtual void visit(IRExpNAME *n) = 0;
-	virtual void visit(IRExpCONST *n) = 0;
-
-	virtual void visit(IRStmMOVE *n) = 0;
-	virtual void visit(IRStmEXP *n) = 0;
-	virtual void visit(IRStmCJUMP *n) = 0;
-	virtual void visit(IRStmSEQ *n) = 0;
-	virtual void visit(IRStmLABEL *n) = 0;
-	virtual void visit(IRStmLIST *n) = 0;
-	virtual void visit(IRStmJUMP *n) = 0;
-
 }; 
