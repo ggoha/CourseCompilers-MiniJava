@@ -55,9 +55,9 @@ void CIRBuilder::visit(CExpBinary* n)
 		n->exp1->accept(this);
 		IRExp* expLeft = LastNodeAsIRExp();
 		n->exp2->accept(this);
-		IRExp* expRight = LastNodeAsIRExp();
+		IRExp* expRigth = LastNodeAsIRExp();
 		relop = IRStmCJUMP::LE;
-		lastNode = new IRStmCJUMP(relop, expLeft, expRight, ifTrueLabel, ifFalseLabel);
+		lastNode = new IRStmCJUMP(relop, expLeft, expRigth, ifTrueLabel, ifFalseLabel);
 		lastType = "boolean";
 		return;
 	};
@@ -167,14 +167,14 @@ void CIRBuilder::visit( CExpPointID *n ){
 	n->exp->accept(this);
 	if (n->expList != 0)
 	{
-		pair<string,string> method = GetMethodType(n->id);
+		pair<string,string> method = GetMethodType(n->id, className);
 		n->expList->accept(this);
 		lastNode = new IRExpCALL(new IRExpNAME(new CLabel(method.first)), dynamic_cast<IRExpList*>(LastNodeAsIRExp()));
 		lastType = method.second;
 	}
 	else
 	{
-		pair<int, string> field = GetFieldType(n->id);
+		pair<int, string> field = GetFieldType(n->id, className);
 		lastNode = new IRExpMEM(new IRExpBINOP('+', LastNodeAsIRExp(), new IRExpCONST(field.first)));
 		lastType = field.second;
 	}
@@ -194,7 +194,16 @@ void CIRBuilder::visit( CExpSingleOp *n ){
 
 void CIRBuilder::visit( CExpID *n ){
 	LabelsSaver oldLabels(this);
-	lastNode = new IRExpTEMP(frame->GetTemp(n->id));
+	const CTemp* temp = frame->GetTemp(n->id);
+	if (temp)
+	{
+		lastNode = new IRExpTEMP(frame->GetTemp(n->id));
+	}
+	else
+	{
+		int offset = GetFieldType(n->id, className).first;
+
+	}
 	lastType = GetVarType(n->id);
 };
 
@@ -290,50 +299,60 @@ void CIRBuilder::visit(CExpCircleBrackets *n) {
 	n->exp->accept(this);
 }
 
-pair<string, string> CIRBuilder::GetMethodType(const string& name) const
+pair<string, string> CIRBuilder::GetMethodType(const string& name, const string& _className) const
 {
 	int classIndex = SymbolTable->getClassIndex(lastType);
 	int methodIndex = SymbolTable->classInfo[classIndex].getMethodIndex(name);
 	while (methodIndex < 0)
 	{
-		classIndex = SymbolTable->classInfo[classIndex].parent;
+		classIndex = SymbolTable->getClassIndex(SymbolTable->classInfo[classIndex].parent);
 		methodIndex = SymbolTable->classInfo[classIndex].getMethodIndex(name);
 	}
 	return pair<string, string>(lastType+"."+name,SymbolTable->classInfo[classIndex].methods[methodIndex].returnType);
 }
 
-pair<int, string> CIRBuilder::GetFieldType(const string& name) const
+pair<int, string> CIRBuilder::GetFieldType(const string& name, const string& _className) const
 {
-	int classIndex = SymbolTable->getClassIndex(lastType);
-	for (size_t i = 0; i < SymbolTable->classInfo[classIndex].vars.size(); ++i)
-		if (SymbolTable->classInfo[classIndex].vars[i].name == name)
-		{
-			return pair<int, string>(i,SymbolTable->classInfo[classIndex].vars[i].type);
-		}
-	throw invalid_argument("error in GetFieldType: can't find field " + name + "in " + lastType);
+	int classIndex = SymbolTable->getClassIndex(_className);
+	int varIndex = SymbolTable->classInfo[classIndex].getVarIndex(name);
+	while (varIndex < 0)
+	{
+		classIndex = SymbolTable->getClassIndex(SymbolTable->classInfo[classIndex].parent);
+#ifdef _DEBUG
+		if(classIndex < 0)
+			throw invalid_argument("error in GetFieldType: can't find field " + name + "in " + lastType);
+#endif
+		varIndex = SymbolTable->classInfo[classIndex].getVarIndex(name);
+	}
+	string type = SymbolTable->classInfo[classIndex].vars[varIndex].type;
+	int offset = 0;
+	while (SymbolTable->classInfo[classIndex].parent != "")
+	{
+		classIndex = SymbolTable->getClassIndex(SymbolTable->classInfo[classIndex].parent);
+		offset += SymbolTable->classInfo[classIndex].vars.size();
+	}
+	return pair<int, string>(varIndex + offset, type);
 }
 
 string CIRBuilder::GetVarType(const string& name)const
 {
-	int classIndex = SymbolTable->getClassIndex(className);
+	int classIndex = SymbolTable->getClassIndex(lastType);
 	int methodIndex = SymbolTable->classInfo[classIndex].getMethodIndex(methodName);
-	for (size_t i = 0; i < SymbolTable->classInfo[classIndex].methods[methodIndex].params.size(); ++i)
-		if (SymbolTable->classInfo[classIndex].methods[methodIndex].params[i].name == name)
+	for (auto i = SymbolTable->classInfo[classIndex].methods[methodIndex].params.begin(); i != SymbolTable->classInfo[classIndex].methods[methodIndex].params.end(); ++i)
+	{
+		if (i->name == name)
 		{
-			return SymbolTable->classInfo[classIndex].methods[methodIndex].params[i].type;
+			return i->type;
 		}
-	for (size_t i = 0; i < SymbolTable->classInfo[classIndex].methods[methodIndex].vars.size(); ++i)
-		if (SymbolTable->classInfo[classIndex].methods[methodIndex].vars[i].name == name)
+	}
+	for (auto i = SymbolTable->classInfo[classIndex].methods[methodIndex].vars.begin(); i != SymbolTable->classInfo[classIndex].methods[methodIndex].vars.end(); ++i)
+	{
+		if (i->name == name)
 		{
-			return SymbolTable->classInfo[classIndex].methods[methodIndex].vars[i].type;
+			return i->type;
 		}
-	for (size_t i = 0; i < SymbolTable->classInfo[classIndex].vars.size(); ++i)
-		if (SymbolTable->classInfo[classIndex].vars[i].name == name)
-		{
-			return SymbolTable->classInfo[classIndex].vars[i].type;
-		}
-
-	throw invalid_argument("error in GetVarType: can't find var " + name + "in " + className + " method "+methodName);
+	}
+	return GetFieldType(name, className).second;
 }
 
 void CIRBuilder::visit( CExpList *n ) {
@@ -357,6 +376,7 @@ void CIRBuilder::visit( CExpRests *n ) {
 
 
 void CIRBuilder::visit( CExpUnaryMinus *n ) {
+
 	LabelsSaver( this );
 	IRExpCONST * constNull = new IRExpCONST( 0 );
 	n->exp->accept( this );
@@ -364,13 +384,7 @@ void CIRBuilder::visit( CExpUnaryMinus *n ) {
 	
 }
 
-void CIRBuilder::visit( CExpExclamationMark *n ) {
-	LabelsSaver( this );
-	n->exp->accept( this );
-	if( lastType != "boolean" ) {
-		cout << "wrong type for rejection";
-	}
-	else {
-
-	}
+void CIRBuilder::visit(CMethodDecl *n) {
+	LabelsSaver oldLabels(this);
+	
 }
