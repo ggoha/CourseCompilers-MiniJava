@@ -8,6 +8,7 @@
 #include "CSymbolTable.h"
 #include "CTypeChecker.h"
 #include "CTypes.h"
+#include "IRForest.h"
 extern FILE* yyin;
 extern "C" int yylex();
 void yyerror( int*, const char* );
@@ -111,23 +112,27 @@ Program:
 	 $$ = new CProgram( $1 );
 	 CPrettyPrinter pp;
 	 pp.visit($$);
-	 CSymbolTableBuilder st;
-	 st.visit($$);
-	 st.Print();
+	 CSymbolTableBuilder symbolTableBuilder;
+	 symbolTableBuilder.visit($$);
+	 symbolTableBuilder.Print();
 	 CTypeChecker typeChecker;
-	 typeChecker.table = st.table;
+	 typeChecker.table = symbolTableBuilder.table;
 	 typeChecker.visit($$);
+	 IRForest iRForest;
+	 iRForest.build($$,&symbolTableBuilder.table);
 	 }
 	| MainClass ClassDecls {
 	 $$ = new CProgram( $1, $2 );
 	 CPrettyPrinter pp;
 	 pp.visit($$);
-	 CSymbolTableBuilder st;
-	 st.visit($$);
-	 st.Print();
+	 CSymbolTableBuilder symbolTableBuilder;
+	 symbolTableBuilder.visit($$);
+	 symbolTableBuilder.Print();
 	 CTypeChecker typeChecker;
-	 typeChecker.table = st.table;
+	 typeChecker.table = symbolTableBuilder.table;
 	 typeChecker.visit($$);
+	 IRForest iRForest;
+	 iRForest.build($$,&symbolTableBuilder.table);
 	 }
 	;
 ClassDecls:

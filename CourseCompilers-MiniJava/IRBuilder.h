@@ -10,6 +10,7 @@ class CIRBuilder : public IVisitor
 {
 	string lastType;
 	IRNode* lastNode;
+	IRNode* root;
 	const CLabel* ifFalseLabel;
 	const CLabel* ifTrueLabel;
 	const CLabel* breakLabel;
@@ -26,12 +27,17 @@ class CIRBuilder : public IVisitor
 	pair<string, string> GetMethodType(const string& method_name, const string& _className) const;
 	pair<int, string> GetFieldType(const string& var_name, const string& _className)const;
 	string GetVarType(const string& )const;
-	int GetVarOffset(const string& name)const;
 	std::vector<const IRExp*> lastList;
 public:
 	CIRBuilder(const string& _className, const string& _methodName, const CTable* _symbolTable) :
 		className(_className), methodName(_methodName), SymbolTable(_symbolTable), lastNode(0){
 	};
+	IRNode* getRoot() const{
+		return root;
+	}
+	IRFrame* getFrame() const {
+		return frame;
+	}
 	virtual void visit(CStatementIF* n);//done
 	virtual void visit(CStatementBRACKETS* n);//done
 
@@ -58,10 +64,10 @@ public:
 	virtual void visit(CExpTHIS *n);//done
 	virtual void visit(CExpNEWINT *n);//done
 	virtual void visit(CExpNEWID *n);//done
-	virtual void visit(CExpExclamationMark *n) {};
+	virtual void visit(CExpExclamationMark *n);
 	virtual void visit(CExpCircleBrackets *n);//done
 	virtual void visit(CProgram *n) {};
-	virtual void visit(CMainClass *n) {};
+	virtual void visit(CMainClass *n);
 	virtual void visit(CClassDecl *n) {};
 	virtual void visit(CClassDecls *n) {};
 	virtual void visit(CClassDeclInheritance *n) {};
@@ -99,34 +105,3 @@ public:
 	}
 };
 
-
-class CIRForest
-{
-	vector<IRNode* > IRForest;
-	vector< IRFrame* > Frames;
-public:
-
-	IRFrame* initFrame(const string& className, const string& methodName)
-	{
-		IRFrame* frame = new IRFrame();
-		frame->
-	}
-
-	void build(CProgram* program, CTable* symbolTabel )
-	{
-		for (int i = 0; i < program->classDecls->classes.size(); ++i)
-		{
-			for (int j = 0; j < program->classDecls->classes[i]->methodDecls->methods.size(); ++j)
-			{
-				CIRBuilder *IRBilder = new CIRBuilder(program->classDecls->classes[i]->id, program->classDecls->classes[i]->methodDecls->methods[j]->id, symbolTabel);
-				IRBilder->visit(program->classDecls->classes[i]->methodDecls->methods[j]);
-
-			}
-			program->classDecls->classes[0]->id;
-		};
-
-
-	}
-
-
-};

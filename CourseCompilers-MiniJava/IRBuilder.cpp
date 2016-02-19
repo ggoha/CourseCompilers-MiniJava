@@ -377,14 +377,44 @@ void CIRBuilder::visit( CExpRests *n ) {
 
 void CIRBuilder::visit( CExpUnaryMinus *n ) {
 
-	LabelsSaver( this );
+	LabelsSaver oldLabels( this );
 	IRExpCONST * constNull = new IRExpCONST( 0 );
 	n->exp->accept( this );
 	lastNode = dynamic_cast<IRNode*>(new IRExpBINOP( '-', (IRExp*)constNull, (IRExp*)lastNode ));
 	
 }
 
-void CIRBuilder::visit(CMethodDecl *n) {
+
+//not done!!!!!!!!!!!
+//initialisation of IFrame requered!!!
+void CIRBuilder::visit(CMethodDecl *n) 
+{
+	auto root = new IRStmLIST();
+	for (size_t i = 0; i < n->statements->statements.size(); ++i)
+	{
+		n->statements->statements[i]->accept(this);
+		root->add(LastNodeAsIRStm());
+	}
+}
+
+
+//not done!!!!!!!!!!!
+//initialisation of IFrame requered!!!
+void CIRBuilder::visit(CMainClass *n)
+{
+	auto root = new IRStmLIST();
+	for (size_t i = 0; i < n->statements->statements.size(); ++i)
+	{
+		n->statements->statements[i]->accept(this);
+		root->add(LastNodeAsIRStm());
+	}
+
+}
+
+void CIRBuilder::visit(CExpExclamationMark *n)
+{
 	LabelsSaver oldLabels(this);
-	
+	n->exp->accept(this);
+	lastNode = new IRExpBINOP('^', LastNodeAsIRExp(), new IRExpCONST(1));
+
 }
