@@ -14,7 +14,7 @@ using std::string;
 		string type;
 		CVarInfo(  string _name,   string _type) :
 			name(_name), type(_type){}
-		void Print(){
+		void Print() const{
 			std::cout << "Var" << type << " " << name << std::endl;
 		}
 	};
@@ -26,7 +26,7 @@ using std::string;
 		string returnType;
 		CMethodInfo(  string _name,   string _returnType) :
 			name(_name), returnType(_returnType), vars(), params(){}
-		void Print(){
+		void Print() const{
 			std::cout << "Method" << name << std::endl;
 			std::cout << "Params ";
 			for (size_t i = 0; i < params.size(); ++i)
@@ -42,15 +42,23 @@ using std::string;
 		string parent;
 		vector<CVarInfo> vars;
 		vector<CMethodInfo> methods;
-		int getMethodIndex(string name) {
+		int getMethodIndex(const string& name) const {
 			for (size_t i = 0; i < methods.size(); ++i)
 				if (methods[i].name == name)
 					return i;
 			return -1;
 		}
+
+		int getVarIndex(const string& name) const {
+			for (size_t i = 0; i < methods.size(); ++i)
+				if (vars[i].name == name)
+					return i;
+			return -1;
+		}
+
 		CClassInfo(  string _name) :
 			name(_name), vars(), methods(){}
-		void Print(){
+		void Print() const{
 			std::cout << "Class" << name << ":" << parent << std::endl;
 			std::cout << "Methods ";
 			for (size_t i = 0; i < methods.size(); ++i)
@@ -64,7 +72,7 @@ using std::string;
 	struct CTable{
 		vector<CClassInfo> classInfo;
 		vector<std::string> baseType;
-		int getClassIndex(string name) {
+		int getClassIndex(const string& name) const {
 			for (size_t i = 0; i < classInfo.size(); ++i)
 				if (classInfo[i].name == name)
 					return i;

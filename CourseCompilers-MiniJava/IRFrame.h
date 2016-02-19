@@ -36,6 +36,7 @@ public:
 			return locals.find(name)->second;
 		if (temprary.find(name) != temprary.end())
 			return temprary.find(name)->second;
+		return nullptr;
 	};
 	CTemp* getThis(){
 	//заглушка
