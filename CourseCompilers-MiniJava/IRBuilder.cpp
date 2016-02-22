@@ -67,7 +67,7 @@ void CIRBuilder::visit(CExpBinary* n)
 		cjump(exp1,ifFalseLabel, iftrue)
 		IRStmSEQ
 			label iftrue
-			cjump(exp1,ifFalseLabel, ifTrueLabel)
+			cjump(exp2,ifFalseLabel, ifTrueLabel)
 	*/
 	if (n->op == '&')
 	{
