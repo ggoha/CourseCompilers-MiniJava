@@ -4,6 +4,7 @@
 %{
 #include <iostream>
 #include "CTypes.h"
+#include "IRForest.h"
 extern FILE* yyin;
 extern "C" int yylex();
 void yyerror( CProgram* root, int*, const char* );
@@ -107,9 +108,31 @@ void yyerror( CProgram* root, int*, const char* );
 %%
 Program:
 	MainClass {
-	 root = new CProgram( $1 ); }
+	 $$ = new CProgram( $1 );
+	 CPrettyPrinter pp;
+	 pp.visit($$);
+	 CSymbolTableBuilder symbolTableBuilder;
+	 symbolTableBuilder.visit($$);
+	 symbolTableBuilder.Print();
+	 CTypeChecker typeChecker;
+	 typeChecker.table = symbolTableBuilder.table;
+	 typeChecker.visit($$);
+	 IRForest iRForest;
+	 iRForest.build($$,&symbolTableBuilder.table);
+	 }
 	| MainClass ClassDecls {
-	 root = new CProgram( $1, $2 ); }
+	 $$ = new CProgram( $1, $2 );
+	 CPrettyPrinter pp;
+	 pp.visit($$);
+	 CSymbolTableBuilder symbolTableBuilder;
+	 symbolTableBuilder.visit($$);
+	 symbolTableBuilder.Print();
+	 CTypeChecker typeChecker;
+	 typeChecker.table = symbolTableBuilder.table;
+	 typeChecker.visit($$);
+	 IRForest iRForest;
+	 iRForest.build($$,&symbolTableBuilder.table);
+	 }
 	;
 ClassDecls:
 	ClassDecl { $$ = new CClassDecls($1); }

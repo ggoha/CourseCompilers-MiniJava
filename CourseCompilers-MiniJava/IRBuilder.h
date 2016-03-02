@@ -5,10 +5,12 @@
 #include "IRExp.h"
 #include "CSymbolTable.h"
 #include "IRFrame.h"
+#include <memory>
 class CIRBuilder : public IVisitor
 {
 	string lastType;
 	IRNode* lastNode;
+	IRNode* root;
 	const CLabel* ifFalseLabel;
 	const CLabel* ifTrueLabel;
 	const CLabel* breakLabel;
@@ -19,15 +21,23 @@ class CIRBuilder : public IVisitor
 	IRExp* LastNodeAsIRExp();
 	IRStm* LastNodeAsIRStm();
 	IRFrame* currentFrame;
-	CTable* SymbolTable;//глобальная таблица символов
+	const CTable* SymbolTable;//глобальная таблица символов
 	string className;//имя  класса метода который описывается билдером
 	string methodName;//имя метода который описывается билдером
-	pair<string, string> GetMethodType(const string&) const;
-	pair<int, string> GetFieldType(const string&)const;
-	string GetVarType(const string&)const;
+	pair<string, string> GetMethodType(const string& method_name, const string& _className) const;
+	pair<int, string> GetFieldType(const string& var_name, const string& _className)const;
+	string GetVarType(const string& )const;
 	std::vector<const IRExp*> lastList;
 public:
-	CIRBuilder() {};
+	CIRBuilder(const string& _className, const string& _methodName, const CTable* _symbolTable) :
+		className(_className), methodName(_methodName), SymbolTable(_symbolTable), lastNode(0){
+	};
+	IRNode* getRoot() const{
+		return root;
+	}
+	IRFrame* getFrame() const {
+		return frame;
+	}
 	virtual void visit(CStatementIF* n);//done
 	virtual void visit(CStatementBRACKETS* n);//done
 
@@ -57,12 +67,12 @@ public:
 	virtual void visit(CExpExclamationMark *n);
 	virtual void visit(CExpCircleBrackets *n);//done
 	virtual void visit(CProgram *n) {};
-	virtual void visit(CMainClass *n) {};
+	virtual void visit(CMainClass *n);
 	virtual void visit(CClassDecl *n) {};
 	virtual void visit(CClassDecls *n) {};
 	virtual void visit(CClassDeclInheritance *n) {};
 	virtual void visit(CVarDecls *n);//done
-	virtual void visit(CMethodDecls *n);
+	virtual void visit(CMethodDecls *n) {};
 	virtual void visit(CVarDecl *n);//done
 	virtual void visit(CMethodDecl *n) {};
 	virtual void visit(CStatements *n);//done
@@ -94,3 +104,4 @@ public:
 		irBuilder->breakLabel = breakLabel;
 	}
 };
+
