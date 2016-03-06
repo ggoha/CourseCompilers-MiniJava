@@ -123,5 +123,4 @@ public:
 	virtual void visit(IRStmLIST *n) = 0;
 	virtual void visit(IRStmJUMP *n) = 0;
 	*/
-
 }; 

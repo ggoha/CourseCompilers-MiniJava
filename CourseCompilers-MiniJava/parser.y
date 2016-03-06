@@ -3,21 +3,20 @@
 /* Секция с кодом, который попадет в парсер.*/
 %{
 #include <iostream>
-#include "parser.tab.hpp"
-#include "PrettyPrinter.h"
-#include "CSymbolTable.h"
-#include "CTypeChecker.h"
 #include "CTypes.h"
 #include "IRForest.h"
 extern FILE* yyin;
 extern "C" int yylex();
-void yyerror( int*, const char* );
+void yyerror( CProgram* root, int*, const char* );
 %}
 
 /* Этот код будет помещен до определения Union
 Обычно используется для описания классов, реализующих синтаксическое дерево. */
 /* Параметры функции парсера. */
+%parse-param { CProgram* root }
 %parse-param { int* hasError }
+
+%code requires { #include "CTypes.h" }
 
 /* Определение возможных типов выражения. */
 %union{
@@ -239,7 +238,7 @@ ExpRest:
 	;
 %%
 /* Функция обработки ошибки. */
-void yyerror( int*, const char* str )
+void yyerror( CProgram* root, int*, const char* str )
 {
 	std::cout << str << std::endl;
 }
