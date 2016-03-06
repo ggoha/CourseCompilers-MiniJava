@@ -30,6 +30,9 @@ class IRExpCONST: public IRExp{
 		const void accept(const IRVisitor* irb ) {
 			irb->visit(this);
 		}
+		int Value(){
+			return value;
+		}
 };
 
 class IRExpNAME: public IRExp

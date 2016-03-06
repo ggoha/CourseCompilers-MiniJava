@@ -386,7 +386,7 @@ void CIRBuilder::visit( CExpUnaryMinus *n ) {
 
 
 //not done!!!!!!!!!!!
-//initialisation of IFrame requered!!!
+//initialization of IFrame required!!!
 void CIRBuilder::visit(CMethodDecl *n) 
 {
 	auto root = new IRStmLIST();
@@ -399,7 +399,7 @@ void CIRBuilder::visit(CMethodDecl *n)
 
 
 //not done!!!!!!!!!!!
-//initialisation of IFrame requered!!!
+//initialization of IFrame required!!!
 void CIRBuilder::visit(CMainClass *n)
 {
 	auto root = new IRStmLIST();

@@ -45,7 +45,10 @@
     <ClCompile Include="IRFrame.h">
       <Filter>IRTree</Filter>
     </ClCompile>
-    <ClCompile Include="IRVisitor.h">
+    <ClCompile Include="Graph.cpp">
+      <Filter>IRTree</Filter>
+    </ClCompile>
+    <ClCompile Include="IRVisitor.cpp">
       <Filter>IRTree</Filter>
     </ClCompile>
   </ItemGroup>
@@ -84,6 +87,12 @@
       <Filter>bizon and lexer</Filter>
     </ClInclude>
     <ClInclude Include="IRTemp.h">
+      <Filter>IRTree</Filter>
+    </ClInclude>
+    <ClInclude Include="Graph.h">
+      <Filter>IRTree</Filter>
+    </ClInclude>
+    <ClInclude Include="IRVisitor.h">
       <Filter>IRTree</Filter>
     </ClInclude>
   </ItemGroup>
