@@ -1,3 +1,4 @@
+#pragma once
 #include "Graph.h"
 
 class IRVisitor : public IVisitor {
