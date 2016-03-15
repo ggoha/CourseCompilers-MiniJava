@@ -45,10 +45,10 @@
     <ClCompile Include="IRFrame.h">
       <Filter>IRTree</Filter>
     </ClCompile>
-    <ClCompile Include="Graph.cpp">
+    <ClCompile Include="IRVisitor.cpp">
       <Filter>IRTree</Filter>
     </ClCompile>
-    <ClCompile Include="IRVisitor.cpp">
+    <ClCompile Include="Graph.cpp">
       <Filter>IRTree</Filter>
     </ClCompile>
   </ItemGroup>
@@ -89,10 +89,10 @@
     <ClInclude Include="IRTemp.h">
       <Filter>IRTree</Filter>
     </ClInclude>
-    <ClInclude Include="Graph.h">
+    <ClInclude Include="IRVisitor.h">
       <Filter>IRTree</Filter>
     </ClInclude>
-    <ClInclude Include="IRVisitor.h">
+    <ClInclude Include="Graph.h">
       <Filter>IRTree</Filter>
     </ClInclude>
   </ItemGroup>

@@ -71,8 +71,8 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="IRVisitor.cpp" />
     <ClCompile Include="Graph.cpp" />
+    <ClCompile Include="IRVisitor.cpp" />
     <ClCompile Include="IRBuilder.cpp" />
     <ClCompile Include="IRFrame.h" />
     <ClCompile Include="lexer.cpp" />
@@ -90,11 +90,11 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Graph.h" />
     <ClInclude Include="IRVisitor.h" />
     <ClInclude Include="CSymbolTable.h" />
     <ClInclude Include="CTypeChecker.h" />
     <ClInclude Include="CTypes.h" />
-    <ClInclude Include="Graph.h" />
     <ClInclude Include="IRBuilder.h" />
     <ClInclude Include="IRExp.h" />
     <ClInclude Include="IRStm.h" />
