@@ -1,9 +1,7 @@
 #pragma once
 #include "IRVisitor.h"
-#include "IRBuilder.h"
 #include "IRStm.h"
 #include "IRExp.h"
-
 using namespace std;
 
 
@@ -110,7 +108,7 @@ void IRVisitor::visit(const IRExpBINOP* node)
 	case '-':
 		nextNameWithId("binop__Minus");
 		break;
-	case 'xor': // добавить
+	case '^': // добавить
 		nextNameWithId("binop__Xor");
 		break;
 	case '<':
@@ -123,7 +121,7 @@ void IRVisitor::visit(const IRExpBINOP* node)
 		nextNameWithId("binop__And");
 		break;
 	default:
-		assert(false);
+		//assert(false);
 		break;
 	}
 	treeRepresentation.AddEdge(lastNodeName, rightString, "right");
@@ -164,7 +162,7 @@ void IRVisitor::visit(const IRExpList* node)
 {
 	/*I'm not sure about this code!*/
 	if (node->expslist.size() != 0) {
-		for (int i = 0; i < node->expslist.size(); ++i)
+		for (unsigned i = 0; i < node->expslist.size(); ++i)
 			node->expslist[i]->accept(this);
 	}
 	else {
@@ -175,7 +173,7 @@ void IRVisitor::visit(const IRExpList* node)
 
 void IRVisitor::visit(const IRStmLABEL* node)
 {
-	nextNameWithId(string("label:") + node->lable->Name);
+	nextNameWithId(string("label:") + node->lable->Name());
 }
 
 void IRVisitor::nextNameWithId(std::string label)
@@ -207,6 +205,6 @@ void IRVisitor::LinkedVisit(const IRExp* node)
 void IRVisitor::visit(const IRStmLIST *node)
 {
 	/*I'm not sure about this code!*/
-	for (int i = 0; i < node->stms.size(); ++i)
+	for (unsigned i = 0; i < node->stms.size(); ++i)
 		node->stms[i]->accept(this);
 }

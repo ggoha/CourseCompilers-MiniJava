@@ -384,30 +384,29 @@ void CIRBuilder::visit( CExpUnaryMinus *n ) {
 	
 }
 
-
-//not done!!!!!!!!!!!
-//initialization of IFrame required!!!
-void CIRBuilder::visit(CMethodDecl *n) 
-{
-	auto root = new IRStmLIST();
-	for (size_t i = 0; i < n->statements->statements.size(); ++i)
-	{
-		n->statements->statements[i]->accept(this);
-		root->add(LastNodeAsIRStm());
-	}
-}
-
-
-//not done!!!!!!!!!!!
-//initialization of IFrame required!!!
 void CIRBuilder::visit(CMainClass *n)
 {
+	frame->setFormalsTemp(string(n->idParams), new CTemp(n->idParams));
 	auto root = new IRStmLIST();
 	for (size_t i = 0; i < n->statements->statements.size(); ++i)
 	{
 		n->statements->statements[i]->accept(this);
 		root->add(LastNodeAsIRStm());
 	}
+
+}
+
+void CIRBuilder::visit(CMethodDecl *n)
+{
+	n->formalList->accept(this);
+	n->varDecls->accept(this);
+	auto root = new IRStmLIST();
+	for (size_t i = 0; i < n->statements->statements.size(); ++i)
+	{
+		n->statements->statements[i]->accept(this);
+		root->add(LastNodeAsIRStm());
+	}
+	n->exp->accept(this);
 
 }
 

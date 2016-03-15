@@ -74,7 +74,7 @@ public:
 	virtual void visit(CVarDecls *n);//done
 	virtual void visit(CMethodDecls *n) {};
 	virtual void visit(CVarDecl *n);//done
-	virtual void visit(CMethodDecl *n) {};
+	virtual void visit(CMethodDecl *n);//done
 	virtual void visit(CStatements *n);//done
 	virtual void visit(CFormalList *n);//done
 	virtual void visit(CFormalRests *n);//done

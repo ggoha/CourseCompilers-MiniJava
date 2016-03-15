@@ -5,6 +5,12 @@
 #include <iostream>
 #include "CTypes.h"
 #include "IRForest.h"
+#include "IRVisitor.h"
+#include "IRBuilder.h"
+#include "CSymbolTable.h"
+#include "CTypeChecker.h"
+#include "PrettyPrinter.h"
+
 extern FILE* yyin;
 extern "C" int yylex();
 void yyerror( CProgram* root, int*, const char* );

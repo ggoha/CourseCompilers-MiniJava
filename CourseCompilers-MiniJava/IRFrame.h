@@ -2,6 +2,9 @@
 #include "map"
 using namespace std;
 
+class IRFrame;
+class InFrame;
+class InReg; 
 
 // Переменная фрейма
 class IAccess {
@@ -10,24 +13,6 @@ public:
 	virtual ~IAccess() {}
 };
 
-//Реализация на стеке
-class InFrame : IAccess{
-	InFrame(int _offset) : offset( _offset) {};
-	const IRExp* GetExp(const CTemp framePtr) { 
-		int machineOffset = offset * IRFrame::WORD_SIZE;
-		return new IRExpMEM(new IRExpBINOP('+', new IRExpTEMP(&framePtr), new IRExpCONST(machineOffset)));
-	}
-	int offset;
-};
-
-//Реализация на регистрах
-class InReg : IAccess{
-	InReg() { temp = &CTemp(); };
-	const IRExp* GetExp(const CTemp temp) {
-		return new IRExpTEMP(&temp );
-	}
-	CTemp* temp;
-};
 
 // Класс-контейнер с платформо-зависимой информацией о функции
 class IRFrame {
@@ -49,8 +34,7 @@ public:
 			return temprary.find(name)->second;
 		return nullptr;
 	};
-	/*
-	CTemp* getThis(){
+	CTemp* getThis()const {
 	//заглушка
 		if (!formals.empty())
 			return formals.begin()->second;
@@ -60,7 +44,6 @@ public:
 			return locals.begin()->second;
 		return nullptr;
 	}
-	*/
 	void setFormalsTemp(string name, CTemp* temp) { formals.insert(std::pair<string, CTemp*>(name, temp)); }
 	void setLocalsTemp(string name, CTemp* temp) { locals.insert(std::pair<string, CTemp*>(name, temp)); }
 	void setTempraryTemp(string name, CTemp* temp) { temprary.insert(std::pair<string, CTemp*>(name, temp)); }
@@ -97,4 +80,23 @@ private:
 	CTemp* thisPtr;
 	//Указатель на возврааемое значение
 	CTemp* returnPtr;
+};
+
+//Реализация на стеке
+class InFrame : IAccess {
+	InFrame(int _offset) : offset(_offset) {};
+	const IRExp* GetExp(const CTemp framePtr) {
+		int machineOffset = offset * IRFrame::WORD_SIZE;
+		return new IRExpMEM(new IRExpBINOP('+', new IRExpTEMP(&framePtr), new IRExpCONST(machineOffset)));
+	}
+	int offset;
+};
+
+//Реализация на регистрах
+class InReg : IAccess {
+	InReg() { temp = &CTemp(); };
+	const IRExp* GetExp(const CTemp temp) {
+		return new IRExpTEMP(&temp);
+	}
+	CTemp* temp;
 };

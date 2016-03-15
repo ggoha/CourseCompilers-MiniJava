@@ -1,9 +1,27 @@
 #pragma once
 #include "Graph.h"
+class IRExpCALL;
+class IRExpList;
+class IRExpESEQ;
+class IRExpMEM;
+class IRExpBINOP;
+class IRExpNAME;
+class IRExpNAME;
+class IRExpTEMP;
+class IRExpCONST;
+class IRStmMOVE;
+class IRStmCJUMP;
+class IRStmSEQ;
+class IRStmLABEL;
+class IRStmLIST;
+class IRStmJUMP;
+class IRStmEXP;
+class IRStm;
+class IRExp;
 
-class IRVisitor : public IVisitor {
+class IRVisitor {
 public:
-	IRVisitor(std::string treeFileName) : treeRepresentation(treeFileName), minId(0) {}
+	IRVisitor(std::string treeFileName) : treeRepresentation(treeFileName), minId(0) {};
 
 	// ћетоды позвол€ют строить линейно св€занные деревь€
 	void LinkedVisit(const IRStm* node);
@@ -26,7 +44,7 @@ public:
 	virtual void visit(const IRStmLIST *n);
 	virtual void visit(const IRStmJUMP *n);
 
-	void Flush() { treeRepresentation.Flush(); }
+	void Flush() { treeRepresentation.Flush(); };
 
 private:
 

@@ -1,8 +1,7 @@
 #pragma once
-#include "IRVisitor.h"
+#include <vector>
 #include "IRTemp.h"
 
-class IRExp;
 
 class IRStm : public IRNode
 {

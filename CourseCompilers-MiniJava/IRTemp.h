@@ -1,12 +1,12 @@
 #pragma once
 #include <string>
+#include "IRVisitor.h"
 
 using namespace std;
 
-
 class IRNode
 {
-	virtual const void accept(const IRVisitor* visitor) = 0;
+	virtual void accept(IRVisitor* visitor) const = 0;
 };
 
 // Метка - точка перехода в коде
