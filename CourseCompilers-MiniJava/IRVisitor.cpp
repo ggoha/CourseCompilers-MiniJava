@@ -162,7 +162,7 @@ void IRVisitor::visit(IRExpESEQ* node)
 void IRVisitor::visit(IRExpList* node)
 {
 	
-	if (node->head != nullptr) {
+	if (node->expslist.size() != 0) {
 		node->head->accept(this);
 		string headString = lastNodeName;
 		if (node->tail != nullptr) {
