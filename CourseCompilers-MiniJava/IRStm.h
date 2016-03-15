@@ -7,7 +7,7 @@ class IRExp;
 class IRStm : public IRNode
 {
 public:
-	virtual const void accept(const IRVisitor* visitor) = 0;
+	virtual void accept(IRVisitor* visitor)  const = 0;
 };
 
 class IRStmMOVE : public IRStm
@@ -16,7 +16,7 @@ public:
 	const IRExp* dst;
 	const IRExp* src;
 	IRStmMOVE(const IRExp* _dst, const IRExp* _src) :dst(_dst), src(_src) {};
-	const void accept(const IRVisitor* visitor) {
+	void accept(IRVisitor* visitor)  const {
 		visitor->visit(this);
 	};
 };
@@ -26,7 +26,7 @@ class IRStmEXP : public IRStm
 public:
 	const IRExp* exp;
 	IRStmEXP(const IRExp* _exp) : exp(_exp) {};
-	const void accept(const IRVisitor* visitor) {
+	void accept(IRVisitor* visitor)  const {
 		visitor->visit(this);
 	};
 }; 
@@ -61,7 +61,7 @@ public:
 		iftrue(_iftrue),
 		iffalse(_iffalse)
 	{};
-	const void accept(const IRVisitor* visitor) {
+	void accept(IRVisitor* visitor)  const {
 		visitor->visit(this);
 	};
 };
@@ -75,7 +75,7 @@ public:
 		left(_left),
 		right(_right)
 	{};
-	const void accept(const IRVisitor* visitor) {
+	void accept(IRVisitor* visitor)  const {
 		visitor->visit(this);
 	};
 };
@@ -87,7 +87,7 @@ public:
 	IRStmLABEL(const CLabel* _lable) :
 		lable(_lable)
 	{}
-	const void accept(const IRVisitor* visitor) {
+	void accept(IRVisitor* visitor)  const {
 		visitor->visit(this);
 	};
 };
@@ -102,7 +102,7 @@ public:
 	{
 		stms.push_back(stm);
 	}
-	const void accept(const IRVisitor* visitor) {
+	void accept(IRVisitor* visitor)  const {
 		visitor->visit(this);
 	};
 };
@@ -114,7 +114,7 @@ public:
 	IRStmJUMP(const CLabel* _lable) :
 		lable(_lable)
 	{}
-	const void accept(const IRVisitor* visitor) {
+	void accept(IRVisitor* visitor)  const {
 		visitor->visit(this);
 	};
 };
