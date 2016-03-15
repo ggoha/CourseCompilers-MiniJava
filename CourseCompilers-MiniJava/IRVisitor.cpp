@@ -1,3 +1,4 @@
+#pragma once
 #include "IRVisitor.h"
 #include "IRBuilder.h"
 #include "IRStm.h"
@@ -7,7 +8,7 @@ using namespace std;
 
 
 
-void IRVisitor::visit( IRStmMOVE* node)
+void IRVisitor::visit(const IRStmMOVE* node)
 {
 	node->dst->accept(this);
 	string destString = lastNodeName;
@@ -33,7 +34,7 @@ void IRVisitor::visit(const IRStmEXP* node)
 void IRVisitor::visit(const IRStmJUMP* node)
 {
 	nextNameWithId("jump");
-	treeRepresentation.AddEdge(lastNodeName, node->label->Name(), "to_label");
+	treeRepresentation.AddEdge(lastNodeName, node->lable->Name(), "to_label");
 }
 
 void IRVisitor::visit(const IRStmCJUMP* node)
@@ -73,22 +74,22 @@ void IRVisitor::visit(const IRStmSEQ* node)
 	}
 }
 
-void IRVisitor::visit(IRExpCONST* node)
+void IRVisitor::visit(const IRExpCONST* node)
 {
 	nextNameWithId(string("const_") + to_string(node->Value()));
 }
 
-void IRVisitor::visit(IRExpNAME* node)
+void IRVisitor::visit(const IRExpNAME* node)
 {
 	nextNameWithId(string("name_") + node->label->Name());
 }
 
-void IRVisitor::visit(IRExpTEMP* node)
+void IRVisitor::visit(const IRExpTEMP* node)
 {
 	nextNameWithId(string("temp_") + node->temp->Name());
 }
 
-void IRVisitor::visit( IRExpBINOP* node)
+void IRVisitor::visit(const IRExpBINOP* node)
 {
 	node->left->accept(this);
 	string leftString = lastNodeName;
@@ -141,14 +142,14 @@ void IRVisitor::visit(const IRExpCALL* node)
 {
 	node->function->accept(this);
 	string funcString = lastNodeName;
-	node->arguments.accept(this);
+	node->arguments->accept(this);
 	string argsString = lastNodeName;
 	nextNameWithId("call");
 	treeRepresentation.AddEdge(lastNodeName, funcString, "func");
 	treeRepresentation.AddEdge(lastNodeName, argsString, "args");
 }
 
-void IRVisitor::visit(IRExpESEQ* node)
+void IRVisitor::visit(const IRExpESEQ* node)
 {
 	node->stms->accept(this);
 	string stmString = lastNodeName;
@@ -159,23 +160,12 @@ void IRVisitor::visit(IRExpESEQ* node)
 	treeRepresentation.AddEdge(lastNodeName, stmString, "stm");
 }
 
-void IRVisitor::visit(IRExpList* node)
+void IRVisitor::visit(const IRExpList* node)
 {
-	
-	if (node->head != nullptr) {
-		node->head->accept(this);
-		string headString = lastNodeName;
-		if (node->tail != nullptr) {
-			node->tail->accept(this);
-			string tailString = lastNodeName;
-			nextNameWithId("expList");
-			treeRepresentation.AddEdge(lastNodeName, headString, "head");
-			treeRepresentation.AddEdge(lastNodeName, tailString, "tail");
-		}
-		else {
-			nextNameWithId("expList");
-			treeRepresentation.AddEdge(lastNodeName, headString, "head");
-		}
+	/*I'm not sure about this code!*/
+	if (node->expslist.size() != 0) {
+		for (int i = 0; i < node->expslist.size(); ++i)
+			node->expslist[i]->accept(this);
 	}
 	else {
 		nextNameWithId("expList");
@@ -183,12 +173,9 @@ void IRVisitor::visit(IRExpList* node)
 
 }
 
-void IRVisitor::visit(CLabel* node)
+void IRVisitor::visit(const IRStmLABEL* node)
 {
-	if (node->Name() == "tempLabel1") {
-		int a = 1;
-	}
-	nextNameWithId(string("label:") + node->Name());
+	nextNameWithId(string("label:") + node->lable->Name);
 }
 
 void IRVisitor::nextNameWithId(std::string label)
@@ -197,7 +184,7 @@ void IRVisitor::nextNameWithId(std::string label)
 	treeRepresentation.SetNodeLabel(lastNodeName, label);
 }
 
-void IRVisitor::LinkedVisit(IRStm* node)
+void IRVisitor::LinkedVisit(const IRStm* node)
 {
 	string fromName = lastNodeName;
 	node->accept(this);
@@ -207,7 +194,7 @@ void IRVisitor::LinkedVisit(IRStm* node)
 	}
 }
 
-void IRVisitor::LinkedVisit(IRExp* node)
+void IRVisitor::LinkedVisit(const IRExp* node)
 {
 	string fromName = lastNodeName;
 	node->accept(this);
@@ -217,3 +204,9 @@ void IRVisitor::LinkedVisit(IRExp* node)
 	}
 }
 
+void IRVisitor::visit(const IRStmLIST *node)
+{
+	/*I'm not sure about this code!*/
+	for (int i = 0; i < node->stms.size(); ++i)
+		node->stms[i]->accept(this);
+}

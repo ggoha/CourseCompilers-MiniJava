@@ -5,25 +5,25 @@ public:
 	IRVisitor(std::string treeFileName) : treeRepresentation(treeFileName), minId(0) {}
 
 	// ћетоды позвол€ют строить линейно св€занные деревь€
-	void LinkedVisit(IRStm* node);
-	void LinkedVisit(IRExp* node);
+	void LinkedVisit(const IRStm* node);
+	void LinkedVisit(const IRExp* node);
 
-	virtual void visit( IRExpCALL* n);
-	virtual void visit( IRExpList* n);
-	virtual void visit( IRExpESEQ* n);
-	virtual void visit( IRExpMEM *n);
-	virtual void visit( IRExpBINOP* n);
-	virtual void visit( IRExpNAME* n);
-	virtual void visit( IRExpTEMP* n);
-	virtual void visit( IRExpCONST *n);
+	virtual void visit(const IRExpCALL* n);
+	virtual void visit(const IRExpList* n);
+	virtual void visit(const IRExpESEQ* n);
+	virtual void visit(const IRExpMEM *n);
+	virtual void visit(const IRExpBINOP* n);
+	virtual void visit(const IRExpNAME* n);
+	virtual void visit(const IRExpTEMP* n);
+	virtual void visit(const IRExpCONST *n);
 
-	virtual void visit( IRStmMOVE *n);
-	virtual void visit( IRStmEXP *n);
-	virtual void visit( IRStmCJUMP *n);
-	virtual void visit( IRStmSEQ *n);
-	virtual void visit( IRStmLABEL *n);
-	virtual void visit( IRStmLIST *n);
-	virtual void visit( IRStmJUMP *n);
+	virtual void visit(const IRStmMOVE *n);
+	virtual void visit(const IRStmEXP *n);
+	virtual void visit(const IRStmCJUMP *n);
+	virtual void visit(const IRStmSEQ *n);
+	virtual void visit(const IRStmLABEL *n);
+	virtual void visit(const IRStmLIST *n);
+	virtual void visit(const IRStmJUMP *n);
 
 	void Flush() { treeRepresentation.Flush(); }
 
