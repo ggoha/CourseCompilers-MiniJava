@@ -3,9 +3,9 @@
 
 class IRForest
 {
+public:
 	vector<IRNode* > iRForest;
 	vector< IRFrame* > Frames;
-public:
 
 	void build(CProgram* program, CTable* symbolTabel)
 	{

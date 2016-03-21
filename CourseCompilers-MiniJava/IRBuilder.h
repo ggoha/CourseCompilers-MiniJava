@@ -10,7 +10,7 @@ class CIRBuilder : public IVisitor
 {
 	string lastType;
 	IRNode* lastNode;
-	IRNode* root;
+	IRStmLIST* root;
 	const CLabel* ifFalseLabel;
 	const CLabel* ifTrueLabel;
 	const CLabel* breakLabel;
@@ -92,16 +92,19 @@ class CIRBuilder::LabelsSaver
 	const CLabel* ifTrueLabel;
 	const CLabel* breakLabel;
 	CIRBuilder* irBuilder;
+	vector< const IRExp* > lastList;
 public:
 	LabelsSaver(CIRBuilder* _irBuilder) : irBuilder(_irBuilder) {
 		ifFalseLabel = irBuilder->ifFalseLabel;
 		ifTrueLabel = irBuilder->ifTrueLabel;
 		breakLabel = irBuilder->breakLabel;
+		lastList = irBuilder->lastList;
 	};
 	~LabelsSaver() {
 		irBuilder->ifFalseLabel = ifFalseLabel;
 		irBuilder->ifTrueLabel = ifTrueLabel;
 		irBuilder->breakLabel = breakLabel;
+		irBuilder->lastList = lastList;
 	}
 };
 

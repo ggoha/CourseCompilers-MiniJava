@@ -138,9 +138,14 @@ void IRVisitor::visit(const IRExpMEM* node)
 
 void IRVisitor::visit(const IRExpCALL* node)
 {
-	node->function->accept(this);
+	
+	if (node->function != nullptr){
+		node->function->accept(this);
+	}
 	string funcString = lastNodeName;
-	node->arguments->accept(this);
+	if (node->arguments != nullptr){
+		node->arguments->accept(this);
+	}
 	string argsString = lastNodeName;
 	nextNameWithId("call");
 	treeRepresentation.AddEdge(lastNodeName, funcString, "func");

@@ -241,7 +241,7 @@ using std::string;
 		  void visit(CClassDeclInheritance *node) {
 			  inMethod = 0;
 			  table.classInfo.push_back(CClassInfo(node->id));
-			  table.classInfo.back().parent = node->id2;
+			  table.classInfo.back().parent = node->idParent;
 			  if (node->methodDecls != 0) {
 				  node->methodDecls->accept(this);
 			  }

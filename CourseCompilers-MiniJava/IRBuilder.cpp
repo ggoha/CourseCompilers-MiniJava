@@ -167,9 +167,9 @@ void CIRBuilder::visit( CExpPointID *n ){
 	n->exp->accept(this);
 	if (n->expList != 0)
 	{
-		pair<string,string> method = GetMethodType(n->id, className);
+		pair<string,string> method = GetMethodType(n->id, lastType);
 		n->expList->accept(this);
-		lastNode = new IRExpCALL(new IRExpNAME(new CLabel(method.first)), dynamic_cast<IRExpList*>(LastNodeAsIRExp()));
+		lastNode = new IRExpCALL(new IRExpNAME(new CLabel(method.first)), (lastNode==nullptr) ? nullptr : dynamic_cast<IRExpList*>(LastNodeAsIRExp()));
 		lastType = method.second;
 	}
 	else
@@ -229,7 +229,10 @@ void CIRBuilder::visit(CVarDecls *n)
 void CIRBuilder::visit(CFormalList *n)
 {
 	frame->setFormalsTemp(n->id, new CTemp(n->id));
-	n->formalRests->accept(this);
+	if (n->formalRests != nullptr)
+	{
+		n->formalRests->accept(this);
+	}
 }
 
 void CIRBuilder::visit(CFormalRests *n){
@@ -356,16 +359,29 @@ string CIRBuilder::GetVarType(const string& name)const
 }
 
 void CIRBuilder::visit( CExpList *n ) {
-	LabelsSaver oldLabels( this );
-	n->exp->accept( this );
-	n->expRests->accept( this );
-	lastNode = new IRExpList( lastList );
+	lastList.clear();
+	if (n->exp == nullptr)
+	{
+		lastNode = nullptr;
+		return;
+	}
+	else
+	{
+		LabelsSaver oldLabels(this);
+		n->exp->accept(this);
+		lastList.push_back(LastNodeAsIRExp());
+		if (n->expRests != nullptr)
+		{
+			n->expRests->accept(this);
+		}
+		lastNode = new IRExpList(lastList);
+	}
 }
 void CIRBuilder::visit( CExpRest *n ) {
-	LabelsSaver oldLabels( this );
+	auto Node = lastNode;
 	n->exp->accept( this );
-	lastList.push_back( (IRExp*)lastNode );
-
+	lastList.push_back( LastNodeAsIRExp() );
+	lastNode = Node;
 }
 void CIRBuilder::visit( CExpRests *n ) {
 	LabelsSaver oldLabels( this );
@@ -386,8 +402,9 @@ void CIRBuilder::visit( CExpUnaryMinus *n ) {
 
 void CIRBuilder::visit(CMainClass *n)
 {
+	frame = new IRFrame(className + "_" + methodName, 1);
 	frame->setFormalsTemp(string(n->idParams), new CTemp(n->idParams));
-	auto root = new IRStmLIST();
+	root = new IRStmLIST();
 	for (size_t i = 0; i < n->statements->statements.size(); ++i)
 	{
 		n->statements->statements[i]->accept(this);
@@ -398,15 +415,32 @@ void CIRBuilder::visit(CMainClass *n)
 
 void CIRBuilder::visit(CMethodDecl *n)
 {
-	n->formalList->accept(this);
-	n->varDecls->accept(this);
-	auto root = new IRStmLIST();
-	for (size_t i = 0; i < n->statements->statements.size(); ++i)
-	{
-		n->statements->statements[i]->accept(this);
-		root->add(LastNodeAsIRStm());
+	if (n->formalList != nullptr){
+		if (n->formalList->formalRests == nullptr)
+		{
+			frame = new IRFrame(className + "_" + methodName, 1 + n->formalList->formalRests->parametrs.size());
+		}
+		frame = new IRFrame(className + "_" + methodName, 1);
+		n->formalList->accept(this);
 	}
-	n->exp->accept(this);
+	else
+	{
+		frame = new IRFrame(className + "_" + methodName, 0);
+	}
+	if (n->varDecls != nullptr){
+		n->varDecls->accept(this);
+	}
+	root = new IRStmLIST();
+	if (n->statements != nullptr){
+		for (size_t i = 0; i < n->statements->statements.size(); ++i)
+		{
+			n->statements->statements[i]->accept(this);
+			root->add(LastNodeAsIRStm());
+		}
+	}
+	if (n->exp != nullptr){
+		n->exp->accept(this);
+	}
 
 }
 

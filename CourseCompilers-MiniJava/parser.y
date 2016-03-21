@@ -125,6 +125,9 @@ Program:
 	 typeChecker.visit($$);
 	 IRForest iRForest;
 	 iRForest.build($$,&symbolTableBuilder.table);
+	 auto irpp = IRVisitor("pp.txt");
+	 irpp.visit((IRStmLIST*)iRForest.iRForest[0]);
+
 	 }
 	| MainClass ClassDecls {
 	 $$ = new CProgram( $1, $2 );
@@ -138,6 +141,8 @@ Program:
 	 typeChecker.visit($$);
 	 IRForest iRForest;
 	 iRForest.build($$,&symbolTableBuilder.table);
+	 auto irpp = IRVisitor("pp.txt");
+	 irpp.visit((IRStmLIST*)iRForest.iRForest[0]);
 	 }
 	;
 ClassDecls:
