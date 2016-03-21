@@ -19,8 +19,8 @@ class IRFrame {
 public:
 	static const int WORD_SIZE = 4;
 	IRFrame(const string name, int formalsCount) : frameName(name) {
-		const CTemp* thisPtr = new CTemp("this");
-		const CTemp* returnPtr = new CTemp("return");
+		thisPtr = new CTemp("this");
+		returnPtr = new CTemp("return");
 	}
 	int FormalsCount() const { return formals.size(); }
 	int LocalsCount() const { return locals.size(); }
