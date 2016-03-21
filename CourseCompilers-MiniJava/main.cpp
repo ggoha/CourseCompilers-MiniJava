@@ -19,16 +19,6 @@ int main(int argc, char** argv) {
 	CProgram* root = 0;
 	int hasError = 0;
 	yyparse(root, &hasError);
-
-	CPrettyPrinter pp;
-	pp.visit(root);
-	CSymbolTableBuilder st;
-	st.visit(root);
-	st.Print();
-	CTypeChecker typeChecker;
-	typeChecker.table = st.table;
-	typeChecker.visit(root);
-
 	return 0;
 	std::string abv = "fd";
 }
