@@ -178,28 +178,22 @@ void CIRBuilder::visit( CExpPointLENGTH *n ) {
 	lastNode = new IRExpMEM(LastNodeAsIRExp());
 	lastType = "int";
 };
-	 
+
 void CIRBuilder::visit( CExpPointID *n ) {
 	if (n == nullptr)
 	{
 		std::cout << "in wisit CExpPointID is null";
 		return;
 	}
-	LabelsSaver oldLabels(this);
 	n->exp->accept(this);
-	if (n->expList != 0)
-	{
-		pair<string,string> method = GetMethodType(n->id, lastType);
-		n->expList->accept(this);
-		lastNode = new IRExpCALL(new IRExpNAME(new CLabel(method.first)), (lastNode==nullptr) ? nullptr : dynamic_cast<IRExpList*>(LastNodeAsIRExp()));
-		lastType = method.second;
-	}
-	else
-	{
-		pair<int, string> field = GetFieldType(n->id, className);
-		lastNode = new IRExpMEM(new IRExpBINOP('+', LastNodeAsIRExp(), new IRExpCONST(field.first)));
-		lastType = field.second;
-	}
+	auto oldList = lastList;
+	lastList.clear();
+	lastList.push_back(LastNodeAsIRExp());
+	pair<string,string> method = GetMethodType(n->id, lastType);
+	n->expList->accept(this);
+	lastNode = new IRExpCALL(new IRExpNAME(new CLabel(method.first)), dynamic_cast<IRExpList*>(LastNodeAsIRExp()));
+	lastType = method.second;
+	lastList = oldList;
 };
 	 
 void CIRBuilder::visit( CExpINTEGER_LITERAL *n ){
@@ -463,20 +457,13 @@ string CIRBuilder::GetVarType(const string& name)const
 }
 
 void CIRBuilder::visit( CExpList *n ) {
-	if (n == nullptr)
-	{
-		std::cout << "in wisit CExpList is null";
-		return;
-	}
-	lastList.clear();
 	if (n->exp == nullptr)
 	{
-		lastNode = nullptr;
+		lastNode = new IRExpList(lastList);
 		return;
 	}
 	else
 	{
-		LabelsSaver oldLabels(this);
 		n->exp->accept(this);
 		lastList.push_back(LastNodeAsIRExp());
 		if (n->expRests != nullptr)
@@ -492,10 +479,8 @@ void CIRBuilder::visit( CExpRest *n ) {
 		std::cout << "in wisit CExpList is null";
 		return;
 	}
-	auto Node = lastNode;
 	n->exp->accept( this );
 	lastList.push_back( LastNodeAsIRExp() );
-	lastNode = Node;
 }
 void CIRBuilder::visit( CExpRests *n ) {
 	if (n == nullptr)
@@ -571,6 +556,7 @@ void CIRBuilder::visit(CMethodDecl *n) {
 	}
 	if (n->exp != nullptr){
 		n->exp->accept(this);
+		root->add(new IRStmMOVE(new IRExpTEMP(frame->GetReturnPtr()), LastNodeAsIRExp()));
 	}
 
 }

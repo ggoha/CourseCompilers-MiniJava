@@ -167,8 +167,20 @@ void IRVisitor::visit(const IRExpList* node)
 {
 	/*I'm not sure about this code!*/
 	if (node->expslist.size() != 0) {
-		for (unsigned i = 0; i < node->expslist.size(); ++i)
-			node->expslist[i]->accept(this);
+		node->expslist[0]->accept(this);
+		string headString = lastNodeName;
+		if (node->expslist.size() > 1){
+			for (unsigned i = 1; i < node->expslist.size(); ++i)
+				node->expslist[i]->accept(this);
+			string tailString = lastNodeName;
+			nextNameWithId("expList");
+			treeRepresentation.AddEdge(lastNodeName, headString, "head");
+			treeRepresentation.AddEdge(lastNodeName, tailString, "tail");
+		}
+		else{
+			nextNameWithId("expList");
+			treeRepresentation.AddEdge(lastNodeName, headString, "head");
+		}
 	}
 	else {
 		nextNameWithId("expList");
@@ -209,7 +221,23 @@ void IRVisitor::LinkedVisit(const IRExp* node)
 
 void IRVisitor::visit(const IRStmLIST *node)
 {
-	/*I'm not sure about this code!*/
-	for (unsigned i = 0; i < node->stms.size(); ++i)
-		node->stms[i]->accept(this);
+	if (node->stms.size() != 0) {
+		node->stms[0]->accept(this);
+		string headString = lastNodeName;
+		if (node->stms.size() > 1){
+			for (unsigned i = 1; i < node->stms.size(); ++i)
+				node->stms[i]->accept(this);
+			string tailString = lastNodeName;
+			nextNameWithId("stmList");
+			treeRepresentation.AddEdge(lastNodeName, headString, "head");
+			treeRepresentation.AddEdge(lastNodeName, tailString, "tail");
+		}
+		else{
+			nextNameWithId("stmList");
+			treeRepresentation.AddEdge(lastNodeName, headString, "head");
+		}
+	}
+	else {
+		nextNameWithId("stmList");
+	}
 }

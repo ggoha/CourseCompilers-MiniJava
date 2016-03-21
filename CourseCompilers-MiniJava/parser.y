@@ -143,6 +143,7 @@ Program:
 	 iRForest.build($$,&symbolTableBuilder.table);
 	 auto irpp = IRVisitor("pp.txt");
 	 irpp.visit((IRStmLIST*)iRForest.iRForest[0]);
+	 irpp.Flush()
 	 }
 	;
 ClassDecls:
