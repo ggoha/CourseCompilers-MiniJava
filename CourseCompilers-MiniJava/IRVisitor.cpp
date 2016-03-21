@@ -169,7 +169,7 @@ void IRVisitor::visit(const IRExpList* node)
 	if (node->expslist.size() != 0) {
 		node->expslist[0]->accept(this);
 		string headString = lastNodeName;
-		if (node->expslist.size() > 0){
+		if (node->expslist.size() > 1){
 			for (unsigned i = 1; i < node->expslist.size(); ++i)
 				node->expslist[i]->accept(this);
 			string tailString = lastNodeName;
@@ -224,7 +224,7 @@ void IRVisitor::visit(const IRStmLIST *node)
 	if (node->stms.size() != 0) {
 		node->stms[0]->accept(this);
 		string headString = lastNodeName;
-		if (node->stms.size() > 0){
+		if (node->stms.size() > 1){
 			for (unsigned i = 1; i < node->stms.size(); ++i)
 				node->stms[i]->accept(this);
 			string tailString = lastNodeName;
