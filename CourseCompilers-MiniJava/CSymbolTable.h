@@ -50,7 +50,7 @@ using std::string;
 		}
 
 		int getVarIndex(const string& name) const {
-			for (size_t i = 0; i < methods.size(); ++i)
+			for (size_t i = 0; i < vars.size(); ++i)
 				if (vars[i].name == name)
 					return i;
 			return -1;

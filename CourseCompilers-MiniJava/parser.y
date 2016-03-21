@@ -142,7 +142,8 @@ Program:
 	 IRForest iRForest;
 	 iRForest.build($$,&symbolTableBuilder.table);
 	 auto irpp = IRVisitor("pp.txt");
-	 irpp.visit((IRStmLIST*)iRForest.iRForest[0]);
+	 for(int i = 0; i < iRForest.iRForest.size();+i)
+		irpp.visit((IRStmLIST*)iRForest.iRForest[i]);
 	 irpp.Flush()
 	 }
 	;

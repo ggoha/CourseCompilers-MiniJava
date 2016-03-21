@@ -233,7 +233,7 @@ void CIRBuilder::visit( CExpID *n ) {
 	else
 	{
 		int offset = GetFieldType(n->id, className).first;
-
+		lastNode = new IRExpMEM(new IRExpBINOP('+', new IRExpTEMP(frame->GetThisPtr()), new IRExpCONST(offset)));
 	}
 	lastType = GetVarType(n->id);
 };
@@ -437,7 +437,7 @@ pair<int, string> CIRBuilder::GetFieldType(const string& name, const string& _cl
 
 string CIRBuilder::GetVarType(const string& name)const
 {
-	int classIndex = SymbolTable->getClassIndex(lastType);
+	int classIndex = SymbolTable->getClassIndex(className);
 	int methodIndex = SymbolTable->classInfo[classIndex].getMethodIndex(methodName);
 	for (auto i = SymbolTable->classInfo[classIndex].methods[methodIndex].params.begin(); i != SymbolTable->classInfo[classIndex].methods[methodIndex].params.end(); ++i)
 	{
