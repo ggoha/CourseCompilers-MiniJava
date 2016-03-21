@@ -32,7 +32,7 @@ public:
 	CIRBuilder(const string& _className, const string& _methodName, const CTable* _symbolTable) :
 		className(_className), methodName(_methodName), SymbolTable(_symbolTable), lastNode(0){
 	};
-	IRNode* getRoot() const{
+	IRStmLIST* getRoot() const{
 		return root;
 	}
 	IRFrame* getFrame() const {
