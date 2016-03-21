@@ -15,8 +15,7 @@ IRStm* CIRBuilder::LastNodeAsIRStm() {
 	return res;
 }
 
-void CIRBuilder::visit(CStatementIF* ASTnode)
-{
+void CIRBuilder::visit(CStatementIF* ASTnode) {
 	LabelsSaver oldLabels(this);
 	/*
 	SEQ1
@@ -46,10 +45,14 @@ void CIRBuilder::visit(CStatementIF* ASTnode)
 	return;
 }
 
-void CIRBuilder::visit(CExpBinary* n)
-{
+void CIRBuilder::visit(CExpBinary* n) {
 	LabelsSaver oldLabels(this);
 	int relop;
+	if (n == nullptr)
+	{
+		std::cout << "in wisit CExBinary is null";
+		return;
+	}
 	if (n->op == '<')
 	{
 		n->exp1->accept(this);
@@ -114,8 +117,12 @@ void CIRBuilder::visit(CExpBinary* n)
 	};
 }
 
-void CIRBuilder::visit(CStatementWHILE* n)
-{
+void CIRBuilder::visit(CStatementWHILE* n) {
+	if (n == nullptr)
+	{
+		std::cout << "in wisit CStatementWHILE is null";
+		return;
+	}
 	LabelsSaver oldLabels(this);
 	/*
 	SEQ
@@ -143,6 +150,11 @@ void CIRBuilder::visit(CStatementWHILE* n)
 }
 
 void CIRBuilder::visit( CExpInSquareBrackets *n ){
+	if (n == nullptr)
+	{
+		std::cout << "in wisit CExpInSquareBrackets is null";
+		return;
+	}
 	LabelsSaver( this );
 	n->exp1->accept( this );
 	string arrType = lastType.substr(0, lastType.length() - 2);
@@ -155,14 +167,24 @@ void CIRBuilder::visit( CExpInSquareBrackets *n ){
 	lastType = arrType;
 };
 
-void CIRBuilder::visit( CExpPointLENGTH *n ){
+void CIRBuilder::visit( CExpPointLENGTH *n ) {
+	if (n == nullptr)
+	{
+		std::cout << "in wisit CExpPointLENGTH is null";
+		return;
+	}
 	LabelsSaver( this );
 	n->exp->accept( this );
 	lastNode = new IRExpMEM(LastNodeAsIRExp());
 	lastType = "int";
 };
-	 
-void CIRBuilder::visit( CExpPointID *n ){
+
+void CIRBuilder::visit( CExpPointID *n ) {
+	if (n == nullptr)
+	{
+		std::cout << "in wisit CExpPointID is null";
+		return;
+	}
 	n->exp->accept(this);
 	auto oldList = lastList;
 	lastList.clear();
@@ -175,18 +197,33 @@ void CIRBuilder::visit( CExpPointID *n ){
 };
 	 
 void CIRBuilder::visit( CExpINTEGER_LITERAL *n ){
+	if (n == nullptr)
+	{
+		std::cout << "in wisit CExpINTEGER_LITERAL is null";
+		return;
+	}
 	LabelsSaver oldLabels(this);
 	lastNode = new IRExpCONST( n->integer_literal );
 	lastType = "int";
 };
 	 
 void CIRBuilder::visit( CExpSingleOp *n ){
+	if (n == nullptr)
+	{
+		std::cout << "in wisit CExpSingleOp is null";
+		return;
+	}
 	LabelsSaver oldLabels(this);
 	lastNode = new IRExpCONST( (n->val) ? 1 : 0 );
 	lastType = "int";
 };
 
-void CIRBuilder::visit( CExpID *n ){
+void CIRBuilder::visit( CExpID *n ) {
+	if (n == nullptr)
+	{
+		std::cout << "in wisit CExpID is null";
+		return;
+	}
 	LabelsSaver oldLabels(this);
 	const CTemp* temp = frame->GetTemp(n->id);
 	if (temp)
@@ -201,27 +238,44 @@ void CIRBuilder::visit( CExpID *n ){
 	lastType = GetVarType(n->id);
 };
 
-void CIRBuilder::visit( CExpTHIS *n )
-{
+void CIRBuilder::visit( CExpTHIS *n ) {
+	if (n == nullptr)
+	{
+		std::cout << "in wisit CExpTHIS is null";
+		return;
+	}
 	LabelsSaver oldLabels(this);
 	lastNode = new IRExpTEMP(frame->getThis());
 	lastType = className;
 };
 
 void CIRBuilder::visit(CVarDecl *n) {
+	if (n == nullptr)
+	{
+		std::cout << "in wisit CVarDecl is null";
+		return;
+	}
 	frame->setLocalsTemp(n->id, new CTemp(n->id));
 }
 
-void CIRBuilder::visit(CVarDecls *n)
-{
+void CIRBuilder::visit(CVarDecls *n) {
+	if (n == nullptr)
+	{
+		std::cout << "in wisit CVarDecls is null";
+		return;
+	}
 	for (size_t i = 0; i < n->vars.size(); ++i)
 	{
 		n->vars[i]->accept(this);
 	}
 }
 
-void CIRBuilder::visit(CFormalList *n)
-{
+void CIRBuilder::visit(CFormalList *n) {
+	if (n == nullptr)
+	{
+		std::cout << "in wisit CFormalList is null";
+		return;
+	}
 	frame->setFormalsTemp(n->id, new CTemp(n->id));
 	if (n->formalRests != nullptr)
 	{
@@ -229,16 +283,31 @@ void CIRBuilder::visit(CFormalList *n)
 	}
 }
 
-void CIRBuilder::visit(CFormalRests *n){
+void CIRBuilder::visit(CFormalRests *n) {
+	if (n == nullptr)
+	{
+		std::cout << "in wisit CFormalRests is null";
+		return;
+	}
 	for (size_t i = 0; i < n->parametrs.size(); ++i)
 		n->parametrs[i]->accept(this);
 }
 
 void CIRBuilder::visit(CFormalRest *n) {
+	if (n == nullptr)
+	{
+		std::cout << "in wisit CFormalRest is null";
+		return;
+	}
 	frame->setFormalsTemp(n->id, new CTemp(n->id));
 }
 
 void CIRBuilder::visit(CExpNEWINT *n) {
+	if (n == nullptr)
+	{
+		std::cout << "in wisit CExpNEWINT is null";
+		return;
+	}
 	LabelsSaver oldLabels(this);
 	n->exp->accept(this);
 	lastNode = new IRExpCALL(new IRExpNAME(new CLabel("malloc")), new IRExpList(LastNodeAsIRExp()));
@@ -247,6 +316,11 @@ void CIRBuilder::visit(CExpNEWINT *n) {
 }
 
 void CIRBuilder::visit(CExpNEWID *n) {
+	if (n == nullptr)
+	{
+		std::cout << "in wisit CExpNEWID is null";
+		return;
+	}
 	LabelsSaver oldLabels(this);
 	lastNode = new IRExpCALL(
 							 new IRExpNAME(new CLabel("malloc")), 
@@ -255,6 +329,11 @@ void CIRBuilder::visit(CExpNEWID *n) {
 }
 
 void CIRBuilder::visit(CStatementPRINTLN* n) {
+	if (n == nullptr)
+	{
+		std::cout << "in wisit CStatementPRINTLN is null";
+		return;
+	}
 	LabelsSaver oldLabels(this);
 	n->exp->accept(this);
 	lastNode = new IRStmEXP(new IRExpCALL(new IRExpNAME(new CLabel("printLn")), new IRExpList(LastNodeAsIRExp())));
@@ -262,6 +341,11 @@ void CIRBuilder::visit(CStatementPRINTLN* n) {
 
 
 void CIRBuilder::visit(CStatementSQUEREASIGNMENT* n) {
+	if (n == nullptr)
+	{
+		std::cout << "in wisit CStatementSQUEREASIGNMENT is null";
+		return;
+	}
 	LabelsSaver oldLabels(this);
 	n->expAssigned->accept(this);
 	IRExp* Val = LastNodeAsIRExp();
@@ -270,6 +354,11 @@ void CIRBuilder::visit(CStatementSQUEREASIGNMENT* n) {
 }
 
 void CIRBuilder::visit(CStatementASIGNMENT* n) {
+	if (n == nullptr)
+	{
+		std::cout << "in wisit CStatementASIGNMENT is null";
+		return;
+	}
 	LabelsSaver oldLabels(this);
 	n->exp->accept(this);
 	lastNode = new IRStmMOVE(new IRExpTEMP(frame->GetTemp(n->id)), LastNodeAsIRExp());
@@ -277,12 +366,22 @@ void CIRBuilder::visit(CStatementASIGNMENT* n) {
 
 
 void CIRBuilder::visit(CStatementBRACKETS* n) {
+	if (n == nullptr)
+	{
+		std::cout << "in wisit CStatementBRACKETS is null";
+		return;
+	}
 	LabelsSaver oldLabels(this);
 	n->statements->accept(this);
 }
 
 
 void CIRBuilder::visit(CStatements *n) {
+	if (n == nullptr)
+	{
+		std::cout << "in wisit CStatementBRACKETS is null";
+		return;
+	}
 	auto stms = new IRStmLIST();
 	for (size_t i = 0; i < n->statements.size(); ++i)
 	{
@@ -293,6 +392,11 @@ void CIRBuilder::visit(CStatements *n) {
 
 
 void CIRBuilder::visit(CExpCircleBrackets *n) {
+	if (n == nullptr)
+	{
+		std::cout << "in wisit CExpCircleBrackets is null";
+		return;
+	}
 	n->exp->accept(this);
 }
 
@@ -370,10 +474,20 @@ void CIRBuilder::visit( CExpList *n ) {
 	}
 }
 void CIRBuilder::visit( CExpRest *n ) {
+	if (n == nullptr)
+	{
+		std::cout << "in wisit CExpList is null";
+		return;
+	}
 	n->exp->accept( this );
 	lastList.push_back( LastNodeAsIRExp() );
 }
 void CIRBuilder::visit( CExpRests *n ) {
+	if (n == nullptr)
+	{
+		std::cout << "in wisit CExpRests is null";
+		return;
+	}
 	LabelsSaver oldLabels( this );
 	for( size_t i = 0; i < n->expressions.size(); i++ ) {
 		n->expressions[i]->accept( this );
@@ -382,7 +496,11 @@ void CIRBuilder::visit( CExpRests *n ) {
 
 
 void CIRBuilder::visit( CExpUnaryMinus *n ) {
-
+	if (n == nullptr)
+	{
+		std::cout << "in wisit CExpUnaryMinus is null";
+		return;
+	}
 	LabelsSaver oldLabels( this );
 	IRExpCONST * constNull = new IRExpCONST( 0 );
 	n->exp->accept( this );
@@ -390,8 +508,12 @@ void CIRBuilder::visit( CExpUnaryMinus *n ) {
 	
 }
 
-void CIRBuilder::visit(CMainClass *n)
-{
+void CIRBuilder::visit(CMainClass *n) {
+	if (n == nullptr)
+	{
+		std::cout << "in wisit CMainClass is null";
+		return;
+	}
 	frame = new IRFrame(className + "_" + methodName, 1);
 	frame->setFormalsTemp(string(n->idParams), new CTemp(n->idParams));
 	root = new IRStmLIST();
@@ -403,8 +525,12 @@ void CIRBuilder::visit(CMainClass *n)
 
 }
 
-void CIRBuilder::visit(CMethodDecl *n)
-{
+void CIRBuilder::visit(CMethodDecl *n) {
+	if (n == nullptr)
+	{
+		std::cout << "in wisit CMethodDecl is null";
+		return;
+	}
 	if (n->formalList != nullptr){
 		if (n->formalList->formalRests == nullptr)
 		{
@@ -435,8 +561,12 @@ void CIRBuilder::visit(CMethodDecl *n)
 
 }
 
-void CIRBuilder::visit(CExpExclamationMark *n)
-{
+void CIRBuilder::visit(CExpExclamationMark *n) {
+	if (n == nullptr)
+	{
+		std::cout << "in wisit CExpExclamationMark is null";
+		return;
+	}
 	LabelsSaver oldLabels(this);
 	n->exp->accept(this);
 	lastNode = new IRExpBINOP('^', LastNodeAsIRExp(), new IRExpCONST(1));
