@@ -19,7 +19,8 @@ class IRFrame {
 public:
 	static const int WORD_SIZE = 4;
 	IRFrame(const string name, int formalsCount) : frameName(name) {
-
+		const CTemp* thisPtr = new CTemp("this");
+		const CTemp* returnPtr = new CTemp("return");
 	}
 	int FormalsCount() const { return formals.size(); }
 	int LocalsCount() const { return locals.size(); }
@@ -36,13 +37,14 @@ public:
 	};
 	CTemp* getThis()const {
 	//заглушка
+		auto test = IRFrame("This", 0);
 		if (!formals.empty())
 			return formals.begin()->second;
 		if (!locals.empty())
 			return locals.begin()->second;
 		if (!temprary.empty())
 			return locals.begin()->second;
-		return nullptr;
+		return thisPtr;
 	}
 	void setFormalsTemp(string name, CTemp* temp) { formals.insert(std::pair<string, CTemp*>(name, temp)); }
 	void setLocalsTemp(string name, CTemp* temp) { locals.insert(std::pair<string, CTemp*>(name, temp)); }
