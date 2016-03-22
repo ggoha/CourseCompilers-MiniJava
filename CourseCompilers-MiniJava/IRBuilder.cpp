@@ -18,30 +18,36 @@ IRStm* CIRBuilder::LastNodeAsIRStm() {
 void CIRBuilder::visit(CStatementIF* ASTnode) {
 	LabelsSaver oldLabels(this);
 	/*
-	SEQ1
+	SEQList
 		cjump
-		SEQ2
-			SEQ3
-				label iftrue
-				stmif
-			SEQ4
-				label iffalse
-				stmelse
+		label iftrue
+		stmiftrue?
+		jump -> end
+		label iffalse
+		stmelse
+		label_end
 
 	*/
-	ifTrueLabel  = new CLabel();
+	auto stmList = new IRStmLIST();
+	ifTrueLabel = new CLabel();
 	ifFalseLabel = new CLabel();
-	ASTnode->statementIf->accept(this);
-	IRStm* stmIf = LastNodeAsIRStm();
-	ASTnode->statementElse->accept(this);
-	IRStm* stmElse = LastNodeAsIRStm();
+	auto end = new CLabel();
 	ASTnode->exp->accept(this);
-	IRStmCJUMP* cjump = dynamic_cast<IRStmCJUMP*>(lastNode);
-	IRStmSEQ* SEQ4 = new IRStmSEQ(new IRStmLABEL(ifFalseLabel), stmElse);
-	IRStmSEQ* SEQ3 = new IRStmSEQ(new IRStmLABEL(ifTrueLabel), stmIf);
-	IRStmSEQ* SEQ2 = new IRStmSEQ(SEQ3, SEQ4);
-	IRStmSEQ* SEQ1 = new IRStmSEQ(cjump, SEQ2);
-	lastNode = SEQ1;
+	stmList->add(LastNodeAsIRStm());
+	stmList->add(new IRStmLABEL(ifTrueLabel));
+	if (((CStatements*)ASTnode->statementIf)->statements.size() != 0)
+	{
+		ASTnode->statementIf->accept(this);
+		stmList->add(LastNodeAsIRStm());
+	}
+	stmList->add(new IRStmJUMP(end));
+	stmList->add(new IRStmLABEL(ifFalseLabel));
+	if (((CStatements*)ASTnode->statementElse)->statements.size() != 0)
+	{
+		ASTnode->statementElse->accept(this);
+		stmList->add(LastNodeAsIRStm());
+	}
+	stmList->add(new IRStmLABEL(end));
 	return;
 }
 
