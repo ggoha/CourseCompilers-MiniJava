@@ -51,8 +51,37 @@ void IRVisitor::visit(const IRStmCJUMP* node)
 	node->left->accept(this);
 	treeRepresentation.MinusTab();
 	string leftString = lastNodeName;
-
-	nextNameWithId("Cjump" + char(node->relop));
+	string sign;
+	switch( node->relop ){
+	case 1:
+		sign = "==";
+		break;
+	case 2:
+		sign = "!=";
+		break;
+	case 3:
+		sign = "<";
+		break;
+	case 4:
+		sign = ">";
+		break;
+	case 5:
+		sign = "<=";
+		break;
+	case 6:
+		sign = "unary <";
+		break;
+	case 7:
+		sign = "unary <=";
+		break;
+	case 8:
+		sign = "unary >";
+		break;
+	case 9:
+		sign = "unary >=";
+		break;
+	}
+	nextNameWithId("Cjump " + sign);
 
 	treeRepresentation.AddEdge(lastNodeName, rightString, "right");
 	treeRepresentation.AddEdge(lastNodeName, leftString, "left");
@@ -227,7 +256,7 @@ void IRVisitor::visit(const IRStmLABEL* node)
 
 void IRVisitor::nextNameWithId(std::string label)
 {
-	lastNodeName = label + string("__id_") + to_string(minId++);
+	lastNodeName = label; //+ string("__id_") + to_string(minId++);
 	treeRepresentation.SetNodeLabel(lastNodeName, label);
 }
 

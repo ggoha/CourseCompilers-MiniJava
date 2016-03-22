@@ -151,6 +151,7 @@ void CIRBuilder::visit(CStatementWHILE* n) {
 	}
 	stmList->add(new IRStmJUMP(startLabel));
 	stmList->add(new IRStmLABEL(ifFalseLabel));
+	lastNode = stmList;
 }
 
 void CIRBuilder::visit( CExpInSquareBrackets *n ){
