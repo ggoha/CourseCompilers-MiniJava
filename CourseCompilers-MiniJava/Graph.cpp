@@ -6,7 +6,7 @@
 Graph::Graph(std::string _fileName)
 : fileName(_fileName), data("digraph {\n"), isFlushed(false)
 {
-
+	tab = "";
 }
 
 Graph::~Graph()
@@ -20,7 +20,7 @@ void Graph::AddEdge(std::string from, std::string to)
 {
 	decorateName(from);
 	decorateName(to);
-	data += from + " -> " + to + " ; \n";
+	data += tab + from + " -> " + to + " ; \n";
 }
 
 void Graph::AddEdge(std::string from, std::string to, std::string edgeName)
@@ -28,7 +28,7 @@ void Graph::AddEdge(std::string from, std::string to, std::string edgeName)
 	decorateName(from);
 	decorateName(to);
 	decorateName(edgeName);
-	data += from + " -> " + to + " [ label=\"" + edgeName + "\"] ; \n";
+	data += tab + from + " -> " + to + " [ label=\"" + edgeName + "\"] ; \n";
 }
 
 void Graph::Flush()
@@ -55,4 +55,12 @@ void Graph::decorateName(std::string& stringToDecorate)
 			stringToDecorate[i] = '_';
 		}
 	}
+}
+
+void Graph::PlusTab(){
+	tab.append("  ");
+}
+
+void Graph::MinusTab(){
+	tab.pop_back();
 }

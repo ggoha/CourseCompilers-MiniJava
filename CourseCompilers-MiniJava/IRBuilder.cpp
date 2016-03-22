@@ -125,28 +125,32 @@ void CIRBuilder::visit(CStatementWHILE* n) {
 	}
 	LabelsSaver oldLabels(this);
 	/*
-	SEQ
 		label startLabel
 		CJump
-			SEQLIST
-				label iftrue
-				stm
-				Jump -> startLabel
-			label iffalse
+		label iftrue
+		stm
+		Jump -> startLabel
+		label iffalse
 
 	*/
+	IRStmLIST* stmList = new IRStmLIST();
 	CLabel* startLabel = new CLabel();
 	ifTrueLabel = new CLabel();
 	breakLabel = ifFalseLabel = new CLabel();
-	n->statementWhile->accept(this);
-	IRStm* CJump = LastNodeAsIRStm();
+	stmList->add(new IRStmLABEL(startLabel));
+
+	//exp
 	n->exp->accept(this);
-	IRStm* stm = LastNodeAsIRStm();
-	IRStmLIST* StmLIST2 = new IRStmLIST();
-	StmLIST2->add(new IRStmLABEL(ifTrueLabel));
-	StmLIST2->add(stm);
-	StmLIST2->add(new IRStmLABEL(startLabel));
-	IRStmSEQ* StmSEQ = new IRStmSEQ(new IRStmLABEL(startLabel), CJump);
+	stmList->add(LastNodeAsIRStm());
+
+	stmList->add(new IRStmLABEL(ifTrueLabel));
+	if (((CStatements*)(n->statementWhile))->statements.size() != 0)
+	{
+		n->statementWhile->accept(this);
+		stmList->add(LastNodeAsIRStm());
+	}
+	stmList->add(new IRStmJUMP(startLabel));
+	stmList->add(new IRStmLABEL(ifFalseLabel));
 }
 
 void CIRBuilder::visit( CExpInSquareBrackets *n ){
