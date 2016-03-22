@@ -430,6 +430,7 @@ void CIRBuilder::visit(CMethodDecl *n)
 	}
 	if (n->exp != nullptr){
 		n->exp->accept(this);
+		root->add(new IRStmMOVE(new IRExpTEMP(frame->GetReturnPtr()), LastNodeAsIRExp()));
 	}
 
 }
