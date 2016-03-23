@@ -35,17 +35,23 @@ void CIRBuilder::visit(CStatementIF* ASTnode) {
 	ASTnode->exp->accept(this);
 	stmList->add(LastNodeAsIRStm());
 	stmList->add(new IRStmLABEL(ifTrueLabel));
-	if (((CStatements*)ASTnode->statementIf)->statements.size() != 0)
+	if (ASTnode->statementIf != nullptr)
 	{
 		ASTnode->statementIf->accept(this);
-		stmList->add(LastNodeAsIRStm());
+		if (lastNode != nullptr)
+		{
+			stmList->add(LastNodeAsIRStm());
+		}
 	}
 	stmList->add(new IRStmJUMP(end));
 	stmList->add(new IRStmLABEL(ifFalseLabel));
-	if (((CStatements*)ASTnode->statementElse)->statements.size() != 0)
+	if (ASTnode->statementElse != nullptr)
 	{
 		ASTnode->statementElse->accept(this);
-		stmList->add(LastNodeAsIRStm());
+		if (lastNode != nullptr)
+		{
+			stmList->add(LastNodeAsIRStm());
+		}
 	}
 	stmList->add(new IRStmLABEL(end));
 	return;
@@ -150,9 +156,9 @@ void CIRBuilder::visit(CStatementWHILE* n) {
 	stmList->add(LastNodeAsIRStm());
 
 	stmList->add(new IRStmLABEL(ifTrueLabel));
-	if (((CStatements*)(n->statementWhile))->statements.size() != 0)
+	n->statementWhile->accept(this);
+	if (lastNode != nullptr)
 	{
-		n->statementWhile->accept(this);
 		stmList->add(LastNodeAsIRStm());
 	}
 	stmList->add(new IRStmJUMP(startLabel));
@@ -383,22 +389,36 @@ void CIRBuilder::visit(CStatementBRACKETS* n) {
 		return;
 	}
 	LabelsSaver oldLabels(this);
-	n->statements->accept(this);
+	if (n->statements != nullptr)
+	{
+		n->statements->accept(this);
+	}
+	else
+	{
+		lastNode = nullptr;
+	}
 }
 
 
 void CIRBuilder::visit(CStatements *n) {
 	if (n == nullptr)
 	{
-		std::cout << "in wisit CStatementBRACKETS is null";
+		std::cout << "in visit CStatementBRACKETS is null";
 		return;
 	}
 	auto stms = new IRStmLIST();
 	for (size_t i = 0; i < n->statements.size(); ++i)
 	{
 		n->statements[i]->accept(this);
-		stms->add(LastNodeAsIRStm());
+		if (lastNode != nullptr)
+		{
+			stms->add(LastNodeAsIRStm());
+		}
 	}
+	if (stms->stms.size() != 0)
+		lastNode = stms;
+	else
+		lastNode = nullptr;
 }
 
 
