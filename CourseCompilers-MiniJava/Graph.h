@@ -14,6 +14,7 @@ public:
 	void AddEdge(std::string from, std::string to, std::string edgeName);
 	void PlusTab();
 	void MinusTab();
+	void Devide();
 	void Flush();
 
 private:
@@ -24,5 +25,5 @@ private:
 	std::string data;
 
 	void decorateName(std::string& stringToDecorate);
-
+	
 };

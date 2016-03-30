@@ -28,7 +28,7 @@ void Graph::AddEdge(std::string from, std::string to, std::string edgeName)
 	decorateName(from);
 	decorateName(to);
 	decorateName(edgeName);
-	data += tab + from + " -> " + to + " [ label=\"" + edgeName + "\"] ; \n";
+	data += /*tab +*/ from + " -> " + to + " [ label=\"" + edgeName + "\"] ; \n";
 }
 
 void Graph::Flush()
@@ -63,4 +63,8 @@ void Graph::PlusTab(){
 
 void Graph::MinusTab(){
 	tab.pop_back();
+}
+
+void Graph::Devide(){
+	//data += "/n/n";
 }

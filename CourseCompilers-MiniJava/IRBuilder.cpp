@@ -545,6 +545,7 @@ void CIRBuilder::visit(CMainClass *n) {
 		std::cout << "in wisit CMainClass is null";
 		return;
 	}
+	frame = new IRFrame("main", 1);
 	frame->setFormalsTemp(string(n->idParams), new CTemp(n->idParams));
 	root = new IRStmLIST();
 	for (size_t i = 0; i < n->statements->statements.size(); ++i)
@@ -602,3 +603,4 @@ void CIRBuilder::visit(CExpExclamationMark *n) {
 	lastNode = new IRExpBINOP('^', LastNodeAsIRExp(), new IRExpCONST(1));
 
 }
+

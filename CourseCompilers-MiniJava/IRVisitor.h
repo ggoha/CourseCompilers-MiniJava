@@ -44,6 +44,10 @@ public:
 	virtual void visit(const IRStmLIST *n);
 	virtual void visit(const IRStmJUMP *n);
 
+	void RecursiveVisit(const IRStmLIST *node, int i);
+	void RecursiveVisitExp(const IRExpList *node, int i);
+
+	void Devide();
 	void Flush() { treeRepresentation.Flush(); };
 
 private:

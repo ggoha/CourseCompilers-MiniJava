@@ -125,7 +125,7 @@ Program:
 	 typeChecker.visit($$);
 	 IRForest iRForest;
 	 iRForest.build($$,&symbolTableBuilder.table);
-	 auto irpp = IRVisitor("pp.txt");
+	 auto irpp = IRVisitor("main.txt");
 	 irpp.visit((IRStmLIST*)iRForest.iRForest[0]);
 
 	 }
@@ -141,10 +141,13 @@ Program:
 	 typeChecker.visit($$);
 	 IRForest iRForest;
 	 iRForest.build($$,&symbolTableBuilder.table);
-	 auto irpp = IRVisitor("pp.txt");
 	 for(int i = 0; i < iRForest.iRForest.size();++i)
+	 {
+		auto irpp = IRVisitor(std::string( "IRTree_" )+iRForest.Frames[i]->frameName + std::string( ".dot" ));
 		irpp.visit(iRForest.iRForest[i]);
-	 irpp.Flush()
+		irpp.Devide();
+		irpp.Flush();
+	 }
 	 }
 	;
 ClassDecls:

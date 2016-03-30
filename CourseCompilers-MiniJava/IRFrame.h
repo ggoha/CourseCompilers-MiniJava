@@ -70,8 +70,8 @@ public:
 	{
 		return root;
 	}
-private:
 	const string frameName;
+private:
 	IRStm* root;
 	std::map<string, CTemp*> formals;
 	std::map<string, CTemp*> locals;
