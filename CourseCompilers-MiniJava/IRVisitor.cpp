@@ -321,6 +321,7 @@ void IRVisitor::RecursiveVisit(const IRStmLIST *node, int i)
 			node->stms[i]->accept(this);
 			string headString = lastNodeName;
 			if (node->stms.size() > i) {
+
 				RecursiveVisit(node, i + 1);
 				string tailString = lastNodeName;
 				nextNameWithId("StmList" + ("_step_" + to_string(i)));
