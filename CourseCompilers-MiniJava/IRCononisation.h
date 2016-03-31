@@ -3,6 +3,11 @@
 
 class IRCanonizer : public IRVisitor
 {
+	IRNode *lastNode;
+
+	//save cast lastNode
+	IRExp* LastNodeAsIRExp();
+	IRStm* LastNodeAsIRStm();
 public:
 	IRStmLIST* stmList;
 
@@ -24,3 +29,17 @@ public:
 	virtual void visit(const IRStmJUMP *n);
 
 };
+
+IRExp* IRCanonizer::LastNodeAsIRExp() {
+	IRExp* res = dynamic_cast<IRExp*>(lastNode);
+	if (res == NULL)
+		throw invalid_argument("can't cast lastNode to IRExp");
+	return res;
+}
+
+IRStm* IRCanonizer::LastNodeAsIRStm() {
+	IRStm* res = dynamic_cast<IRStm*>(lastNode);
+	if (res == NULL)
+		throw invalid_argument("can't cast lastNode to IRStm");
+	return res;
+}

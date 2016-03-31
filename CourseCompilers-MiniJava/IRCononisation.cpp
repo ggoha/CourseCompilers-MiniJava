@@ -3,8 +3,20 @@
 #include "IRExp.h"
 
 
-void IRCanonizer::visit(const IRExpCALL* n){};
-void IRCanonizer::visit(const IRExpList* n){};
+void IRCanonizer::visit(const IRExpCALL* n){
+	n->arguments->accept(this);
+	auto args = LastNodeAsIRExp();
+	n->function->accept(this);
+	auto func = LastNodeAsIRExp();
+	lastNode = new IRExpCALL(func,(IRExpList*) args);
+};
+void IRCanonizer::visit(const IRExpList* n){
+	vector<IRExp*> expList;
+	for (int i = 0; i < n->expslist.size(); ++i)
+	{
+		n->expslist[i]->accept(this);
+	}
+};
 void IRCanonizer::visit(const IRExpESEQ* n){};
 void IRCanonizer::visit(const IRExpMEM *n){};
 void IRCanonizer::visit(const IRExpBINOP* n){};
