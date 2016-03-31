@@ -316,47 +316,61 @@ void IRVisitor::LinkedVisit(const IRExp* node)
 		nextNameWithId("stmList");
 	} */
 void IRVisitor::RecursiveVisit(const IRStmLIST *node, int i)
-	{
+{
+	string name = "";
+	if (i == 0){
+		name = "StmList";
+	}
+	else{
+		name = "Step_" + to_string(i);
+	}
+    if (node->stms.size() > i) {
+		node->stms[i]->accept(this);
+		string headString = lastNodeName;
 		if (node->stms.size() > i) {
-			node->stms[i]->accept(this);
-			string headString = lastNodeName;
-			if (node->stms.size() > i) {
 
-				RecursiveVisit(node, i + 1);
-				string tailString = lastNodeName;
-				nextNameWithId("StmList" + ("_step_" + to_string(i)));
-				treeRepresentation.AddEdge(lastNodeName, headString, "head");
-				treeRepresentation.AddEdge(lastNodeName, tailString, "tail");
-			}
-			else {
-				nextNameWithId("StmList" + ("_step_" + to_string(i)));
-				treeRepresentation.AddEdge(lastNodeName, headString, "head");
-			}
+			RecursiveVisit(node, i + 1);
+			string tailString = lastNodeName;
+			nextNameWithId(name);
+			treeRepresentation.AddEdge(lastNodeName, headString, "head");
+			treeRepresentation.AddEdge(lastNodeName, tailString, "tail");
 		}
 		else {
-			nextNameWithId("StmList" + ("_step_" + to_string(i)));
+			nextNameWithId(name);
+			treeRepresentation.AddEdge(lastNodeName, headString, "head");
 		}
 	}
+	else {
+		nextNameWithId(name);
+	}
+}
 
 void IRVisitor::RecursiveVisitExp(const IRExpList *node, int i)
 {
+	string name = "";
+	if (i == 0){
+		name = "ExpList";
+	}
+	else{
+		name = "Step_" + to_string(i);
+	}
 	if (node->expslist.size() > i) {
 		node->expslist[i]->accept(this);
 		string headString = lastNodeName;
 		if (node->expslist.size() > i) {
 			RecursiveVisitExp(node, i + 1);
 			string tailString = lastNodeName;
-			nextNameWithId("ExpList" + ("_step_" + to_string(i)));
+			nextNameWithId(name);
 			treeRepresentation.AddEdge(lastNodeName, headString, "head");
 			treeRepresentation.AddEdge(lastNodeName, tailString, "tail");
 		}
 		else {
-			nextNameWithId("ExpList" + ("_step_" + to_string(i)));
+			nextNameWithId(name);
 			treeRepresentation.AddEdge(lastNodeName, headString, "head");
 		}
 	}
 	else {
-		nextNameWithId("ExpList" + ("_step_" + to_string(i)));
+		nextNameWithId(name);
 	}
 }
 void IRVisitor::visit(const IRStmLIST *node)
