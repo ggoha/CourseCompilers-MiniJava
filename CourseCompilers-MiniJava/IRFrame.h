@@ -33,17 +33,10 @@ public:
 			return locals.find(name)->second;
 		if (temprary.find(name) != temprary.end())
 			return temprary.find(name)->second;
-		return nullptr;
+		throw invalid_argument(string("no such temp ") + name);
 	};
 	CTemp* getThis()const {
 	//заглушка
-		auto test = IRFrame("This", 0);
-		if (!formals.empty())
-			return formals.begin()->second;
-		if (!locals.empty())
-			return locals.begin()->second;
-		if (!temprary.empty())
-			return locals.begin()->second;
 		return thisPtr;
 	}
 	void setFormalsTemp(string name, CTemp* temp) { formals.insert(std::pair<string, CTemp*>(name, temp)); }

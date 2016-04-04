@@ -153,6 +153,10 @@ void CIRBuilder::visit(CStatementWHILE* n) {
 
 	//exp
 	n->exp->accept(this);
+	if (dynamic_cast<IRExp*>(lastNode))
+	{
+		lastNode = new IRStmCJUMP('=', LastNodeAsIRExp(), new IRExpCONST(0), ifFalseLabel, ifTrueLabel);
+	}
 	stmList->add(LastNodeAsIRStm());
 
 	stmList->add(new IRStmLABEL(ifTrueLabel));
@@ -242,12 +246,15 @@ void CIRBuilder::visit( CExpID *n ) {
 		return;
 	}
 	LabelsSaver oldLabels(this);
-	const CTemp* temp = frame->GetTemp(n->id);
-	if (temp)
+	try
 	{
-		lastNode = new IRExpTEMP(frame->GetTemp(n->id));
+		const CTemp* temp = frame->GetTemp(n->id);
+		if (temp)
+		{
+			lastNode = new IRExpTEMP(frame->GetTemp(n->id));
+		}
 	}
-	else
+	catch (...)
 	{
 		int offset = GetFieldType(n->id, className).first;
 		lastNode = new IRExpMEM(new IRExpBINOP('+', new IRExpTEMP(frame->GetThisPtr()), new IRExpCONST(offset)));
@@ -366,8 +373,10 @@ void CIRBuilder::visit(CStatementSQUEREASIGNMENT* n) {
 	LabelsSaver oldLabels(this);
 	n->expAssigned->accept(this);
 	IRExp* Val = LastNodeAsIRExp();
+	acceptIdAsTemp(n->id);
+	auto id_temp = LastNodeAsIRExp();
 	n->expInSquareBrackets->accept(this);
-	lastNode = new IRStmMOVE(new IRExpMEM(new IRExpBINOP('+',new IRExpTEMP(frame->GetTemp(n->id)), LastNodeAsIRExp())), Val);
+	lastNode = new IRStmMOVE(new IRExpMEM(new IRExpBINOP('+', id_temp, LastNodeAsIRExp())), Val);
 }
 
 void CIRBuilder::visit(CStatementASIGNMENT* n) {
@@ -377,8 +386,10 @@ void CIRBuilder::visit(CStatementASIGNMENT* n) {
 		return;
 	}
 	LabelsSaver oldLabels(this);
+	acceptIdAsTemp(n->id);
+	auto id_temp = LastNodeAsIRExp();
 	n->exp->accept(this);
-	lastNode = new IRStmMOVE(new IRExpTEMP(frame->GetTemp(n->id)), LastNodeAsIRExp());
+	lastNode = new IRStmMOVE(id_temp, LastNodeAsIRExp());
 }
 
 
@@ -599,8 +610,32 @@ void CIRBuilder::visit(CExpExclamationMark *n) {
 		return;
 	}
 	LabelsSaver oldLabels(this);
+	auto t = ifTrueLabel;
+	auto f = ifFalseLabel;
+	ifFalseLabel = t;
+	ifTrueLabel = f;
 	n->exp->accept(this);
-	lastNode = new IRExpBINOP('^', LastNodeAsIRExp(), new IRExpCONST(1));
+	//lastNode = new IRExpBINOP('^', LastNodeAsIRExp(), new IRExpCONST(1));
+	ifFalseLabel = f;
+	ifTrueLabel = t;
 
 }
 
+void CIRBuilder::acceptIdAsTemp(const string& id)
+{
+
+	try
+	{
+		const CTemp* temp = frame->GetTemp(id);
+		if (temp)
+		{
+			lastNode = new IRExpTEMP(frame->GetTemp(id));
+		}
+	}
+	catch (...)
+	{
+		int offset = GetFieldType(id, className).first;
+		lastNode = new IRExpMEM(new IRExpBINOP('+', new IRExpTEMP(frame->GetThisPtr()), new IRExpCONST(offset)));
+	}
+	lastType = GetVarType(id);
+}

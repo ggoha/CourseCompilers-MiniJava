@@ -28,6 +28,7 @@ class CIRBuilder : public IVisitor
 	pair<int, string> GetFieldType(const string& var_name, const string& _className)const;
 	string GetVarType(const string& )const;
 	std::vector<const IRExp*> lastList;
+	void acceptIdAsTemp(const string& id);
 public:
 	CIRBuilder(const string& _className, const string& _methodName, const CTable* _symbolTable) :
 		className(_className), methodName(_methodName), SymbolTable(_symbolTable), lastNode(0){

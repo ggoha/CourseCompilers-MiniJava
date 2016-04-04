@@ -54,9 +54,6 @@
     <ClCompile Include="IRTemp.cpp">
       <Filter>IRTree</Filter>
     </ClCompile>
-    <ClCompile Include="IRCononisation.cpp">
-      <Filter>IRTree</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="parser.y" />
@@ -102,9 +99,6 @@
       <Filter>IRTree</Filter>
     </ClInclude>
     <ClInclude Include="IRForest.h">
-      <Filter>IRTree</Filter>
-    </ClInclude>
-    <ClInclude Include="IRCononisation.h">
       <Filter>IRTree</Filter>
     </ClInclude>
   </ItemGroup>

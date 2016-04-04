@@ -1,4 +1,4 @@
-#include "IRCononisation.h"
+#include "IRCanonisation.h"
 #include "IRStm.h"
 #include "IRExp.h"
 
@@ -8,6 +8,7 @@ void IRCanonizer::visit(const IRExpCALL* n){
 	auto args = LastNodeAsIRExp();
 	n->function->accept(this);
 	auto func = LastNodeAsIRExp();
+
 	lastNode = new IRExpCALL(func,(IRExpList*) args);
 };
 void IRCanonizer::visit(const IRExpList* n){

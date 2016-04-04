@@ -72,7 +72,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Graph.cpp" />
-    <ClCompile Include="IRCononisation.cpp" />
     <ClCompile Include="IRTemp.cpp" />
     <ClCompile Include="IRVisitor.cpp" />
     <ClCompile Include="IRBuilder.cpp" />
@@ -93,7 +92,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graph.h" />
-    <ClInclude Include="IRCononisation.h" />
     <ClInclude Include="IRForest.h" />
     <ClInclude Include="IRVisitor.h" />
     <ClInclude Include="CSymbolTable.h" />
