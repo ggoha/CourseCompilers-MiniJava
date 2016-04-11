@@ -114,7 +114,7 @@ ostream& operator<<( ostream& o, const string& s ) {
 		cout << "\node}\node";
 	};
 
-	void CPrettyPrinter::visit(CStatementSQUEREASIGNMENT* node)
+	void CPrettyPrinter::visit(CStatementSQUAREASSIGNMENT* node)
 	{
 		cout << node->id;
 		cout << "[ ";
@@ -124,7 +124,7 @@ ostream& operator<<( ostream& o, const string& s ) {
 		cout << ";\node";
 	};
 
-	void CPrettyPrinter::visit(CStatementASIGNMENT* node)
+	void CPrettyPrinter::visit(CStatementASSIGNMENT* node)
 	{
 		cout << node->id;
 		cout << " = ";

@@ -10,6 +10,7 @@
 #include "CSymbolTable.h"
 #include "CTypeChecker.h"
 #include "PrettyPrinter.h"
+#include "IRCanonisation.h"
 
 extern FILE* yyin;
 extern "C" int yylex();
@@ -147,7 +148,16 @@ Program:
 		irpp.visit(iRForest.iRForest[i]);
 		irpp.Devide();
 		irpp.Flush();
+
+		//нужно отладить
+		auto ircan = IRCanonizer(("IRTree_Can" ) + iRForest.Frames[i]->frameName + std::string( ".dot" ));
+		ircan.visit(iRForest.iRForest[i]);
+		auto ircanpp = IRVisitor(std::string( "IRTree_Can" ) + iRForest.Frames[i]->frameName + std::string( ".dot" ));
+		ircanpp.visit(ircan.stmList);
+		ircanpp.Devide();
+		ircanpp.Flush();
 	 }
+
 	 }
 	;
 ClassDecls:
@@ -217,8 +227,8 @@ Statement:
 	| IF '(' Exp ')' Statement ELSE Statement { $$ = new CStatementIF($3,$5,$7); }
 	| WHILE '(' Exp ')' Statement { $$ = new CStatementWHILE($3,$5); }
 	| PRINTLN '(' Exp ')'';' {$$ = new CStatementPRINTLN($3); }
-	| ID '=' Exp ';' { $$ = new CStatementASIGNMENT($1,$3); }
-	| ID '['Exp']' '=' Exp ';' { $$ = new CStatementSQUEREASIGNMENT($1,$3,$6); }
+	| ID '=' Exp ';' { $$ = new CStatementASSIGNMENT($1,$3); }
+	| ID '['Exp']' '=' Exp ';' { $$ = new CStatementSQUAREASSIGNMENT($1,$3,$6); }
 	;
 Exp:
 	Exp '+' Exp { $$ = new CExpBinary($1,'+', $3); }

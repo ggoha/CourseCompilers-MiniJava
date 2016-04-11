@@ -95,8 +95,6 @@ class IRStmLIST : public IRStm
 {
 public:
 	vector<const IRStm*> stms;
-	IRStmLIST()
-	{}
 	void add(const IRStm* stm)
 	{
 		stms.push_back(stm);

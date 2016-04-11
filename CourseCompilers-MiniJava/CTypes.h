@@ -300,25 +300,25 @@ public:
 	};
 };
 
-class CStatementASIGNMENT : public IStatement
+class CStatementASSIGNMENT : public IStatement
 {
 public:
 	string id;
 	CExp* exp;
-	CStatementASIGNMENT(string _id, CExp* _exp):
+	CStatementASSIGNMENT(string _id, CExp* _exp):
 	id(_id), exp(_exp){};
 	virtual void accept(IVisitor* v){
 		v->visit(this);
 	};
 };
 
-class CStatementSQUEREASIGNMENT: public IStatement
+class CStatementSQUAREASSIGNMENT: public IStatement
 {
 public:
 	string id;
 	CExp* expInSquareBrackets;
 	CExp* expAssigned;
-	CStatementSQUEREASIGNMENT(string _id, CExp* _expInSquareBrackets, CExp* _expAssigned) :
+	CStatementSQUAREASSIGNMENT(string _id, CExp* _expInSquareBrackets, CExp* _expAssigned) :
 		id(_id), expInSquareBrackets(_expInSquareBrackets), expAssigned(_expAssigned) {};
 	virtual void accept(IVisitor* v) {
 		v->visit(this);

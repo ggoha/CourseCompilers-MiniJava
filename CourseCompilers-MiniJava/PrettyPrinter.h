@@ -11,9 +11,9 @@ public:
 	virtual void visit( CStatementIF* n );
 	virtual void visit( CStatementBRACKETS* n );
 
-	virtual void visit( CStatementSQUEREASIGNMENT* n );
+	virtual void visit( CStatementSQUAREASSIGNMENT* n );
 
-	virtual void visit( CStatementASIGNMENT* n );
+	virtual void visit( CStatementASSIGNMENT* n );
 
 	virtual void visit( CStatementPRINTLN* n );
 

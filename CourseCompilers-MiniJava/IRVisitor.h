@@ -18,6 +18,7 @@ class IRStmJUMP;
 class IRStmEXP;
 class IRStm;
 class IRExp;
+class IRNode;
 
 class IRVisitor {
 public:

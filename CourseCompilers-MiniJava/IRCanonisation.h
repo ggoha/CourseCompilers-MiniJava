@@ -1,16 +1,17 @@
 #pragma once
 #include "IRVisitor.h"
+#include "IRBuilder.h"
 
 class IRCanonizer : public IRVisitor
 {
-	IRNode *lastNode;
+	IRNode* lastNode;
 
 	//save cast lastNode
 	IRExp* LastNodeAsIRExp();
 	IRStm* LastNodeAsIRStm();
 public:
 	IRStmLIST* stmList;
-
+	IRCanonizer(std::string treeFileName) : IRVisitor(treeFileName) { stmList = new IRStmLIST(); };
 	virtual void visit(const IRExpCALL* n);
 	virtual void visit(const IRExpList* n);
 	virtual void visit(const IRExpESEQ* n);
@@ -29,17 +30,3 @@ public:
 	virtual void visit(const IRStmJUMP *n);
 
 };
-
-IRExp* IRCanonizer::LastNodeAsIRExp() {
-	IRExp* res = dynamic_cast<IRExp*>(lastNode);
-	if (res == NULL)
-		throw invalid_argument("can't cast lastNode to IRExp");
-	return res;
-}
-
-IRStm* IRCanonizer::LastNodeAsIRStm() {
-	IRStm* res = dynamic_cast<IRStm*>(lastNode);
-	if (res == NULL)
-		throw invalid_argument("can't cast lastNode to IRStm");
-	return res;
-}

@@ -213,9 +213,9 @@ using std::string;
 		  void visit(CStatementIF* n) { }
 		  void visit(CStatementBRACKETS* n) { }
 
-		  void visit(CStatementSQUEREASIGNMENT* n) { }
+		  void visit(CStatementSQUAREASSIGNMENT* n) { }
 
-		  void visit(CStatementASIGNMENT* n) { }
+		  void visit(CStatementASSIGNMENT* n) { }
 
 		  void visit(CStatementPRINTLN* n) { }
 

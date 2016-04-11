@@ -18,8 +18,8 @@ class CExpRest;
 
 class CStatementIF;
 class CStatementBRACKETS;
-class CStatementSQUEREASIGNMENT;
-class CStatementASIGNMENT;
+class CStatementSQUAREASSIGNMENT;
+class CStatementASSIGNMENT;
 class CStatementPRINTLN;
 class CStatementWHILE;
 
@@ -62,9 +62,9 @@ public:
 	virtual void visit(CStatementIF* n) = 0;
 	virtual void visit(CStatementBRACKETS* n) = 0;
 
-	virtual void visit(CStatementSQUEREASIGNMENT* n) = 0;
+	virtual void visit(CStatementSQUAREASSIGNMENT* n) = 0;
 
-	virtual void visit(CStatementASIGNMENT* n) = 0;
+	virtual void visit(CStatementASSIGNMENT* n) = 0;
 
 	virtual void visit(CStatementPRINTLN* n) = 0;
 

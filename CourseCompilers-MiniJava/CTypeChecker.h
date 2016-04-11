@@ -235,14 +235,14 @@ public:
 			cout << "Error in print expression" << endl;
 	}
 
-	void visit( CStatementASIGNMENT* node ) {
+	void visit( CStatementASSIGNMENT* node ) {
 		if( node->exp != NULL )
 			node->exp->accept( this );
 
 		checkAssignment( node->id );
 	}
 
-	void visit( CStatementSQUEREASIGNMENT* node ) {
+	void visit( CStatementSQUAREASSIGNMENT* node ) {
 		if( node->expInSquareBrackets != NULL )
 			node->expInSquareBrackets->accept( this );
 
