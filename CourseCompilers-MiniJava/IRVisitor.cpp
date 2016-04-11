@@ -116,7 +116,14 @@ void IRVisitor::visit(const IRStmSEQ* node)
 
 void IRVisitor::visit(const IRExpCONST* node)
 {
-	nextNameWithId(string("const_") + to_string(node->Value()));
+	string val;
+	if (node->Value() < 0){
+		val = "minus_" + to_string((-1)*node->Value());
+	}
+	else{
+		val = "plus_" + to_string(node->Value());
+	}
+	nextNameWithId(string("const_") + val);
 }
 
 void IRVisitor::visit(const IRExpNAME* node)

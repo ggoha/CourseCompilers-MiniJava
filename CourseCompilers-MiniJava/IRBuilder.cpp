@@ -209,9 +209,10 @@ void CIRBuilder::visit( CExpPointID *n ) {
 	n->exp->accept(this);
 	auto oldList = lastList;
 	lastList.clear();
-	lastList.push_back(LastNodeAsIRExp());
+	auto _self = LastNodeAsIRExp();
 	pair<string,string> method = GetMethodType(n->id, lastType);
 	n->expList->accept(this);
+	lastList.push_back(_self);
 	lastNode = new IRExpCALL(new IRExpNAME(new CLabel(method.first)), dynamic_cast<IRExpList*>(LastNodeAsIRExp()));
 	lastType = method.second;
 	lastList = oldList;
@@ -246,20 +247,7 @@ void CIRBuilder::visit( CExpID *n ) {
 		return;
 	}
 	LabelsSaver oldLabels(this);
-	try
-	{
-		const CTemp* temp = frame->GetTemp(n->id);
-		if (temp)
-		{
-			lastNode = new IRExpTEMP(frame->GetTemp(n->id));
-		}
-	}
-	catch (...)
-	{
-		int offset = GetFieldType(n->id, className).first;
-		lastNode = new IRExpMEM(new IRExpBINOP('+', new IRExpTEMP(frame->GetThisPtr()), new IRExpCONST(offset)));
-	}
-	lastType = GetVarType(n->id);
+	acceptIdAsTemp(n->id);
 };
 
 void CIRBuilder::visit( CExpTHIS *n ) {
@@ -272,59 +260,6 @@ void CIRBuilder::visit( CExpTHIS *n ) {
 	lastNode = new IRExpTEMP(frame->getThis());
 	lastType = className;
 };
-
-void CIRBuilder::visit(CVarDecl *n) {
-	if (n == nullptr)
-	{
-		std::cout << "in wisit CVarDecl is null";
-		return;
-	}
-	frame->setLocalsTemp(n->id, new CTemp(n->id));
-}
-
-void CIRBuilder::visit(CVarDecls *n) {
-	if (n == nullptr)
-	{
-		std::cout << "in wisit CVarDecls is null";
-		return;
-	}
-	for (size_t i = 0; i < n->vars.size(); ++i)
-	{
-		n->vars[i]->accept(this);
-	}
-}
-
-void CIRBuilder::visit(CFormalList *n) {
-	if (n == nullptr)
-	{
-		std::cout << "in wisit CFormalList is null";
-		return;
-	}
-	frame->setFormalsTemp(n->id, new CTemp(n->id));
-	if (n->formalRests != nullptr)
-	{
-		n->formalRests->accept(this);
-	}
-}
-
-void CIRBuilder::visit(CFormalRests *n) {
-	if (n == nullptr)
-	{
-		std::cout << "in wisit CFormalRests is null";
-		return;
-	}
-	for (size_t i = 0; i < n->parametrs.size(); ++i)
-		n->parametrs[i]->accept(this);
-}
-
-void CIRBuilder::visit(CFormalRest *n) {
-	if (n == nullptr)
-	{
-		std::cout << "in wisit CFormalRest is null";
-		return;
-	}
-	frame->setFormalsTemp(n->id, new CTemp(n->id));
-}
 
 void CIRBuilder::visit(CExpNEWINT *n) {
 	if (n == nullptr)
@@ -364,7 +299,7 @@ void CIRBuilder::visit(CStatementPRINTLN* n) {
 }
 
 
-void CIRBuilder::visit(CStatementSQUEREASIGNMENT* n) {
+void CIRBuilder::visit(CStatementSQUAREASSIGNMENT* n) {
 	if (n == nullptr)
 	{
 		std::cout << "in wisit CStatementSQUEREASIGNMENT is null";
@@ -379,7 +314,7 @@ void CIRBuilder::visit(CStatementSQUEREASIGNMENT* n) {
 	lastNode = new IRStmMOVE(new IRExpMEM(new IRExpBINOP('+', id_temp, LastNodeAsIRExp())), Val);
 }
 
-void CIRBuilder::visit(CStatementASIGNMENT* n) {
+void CIRBuilder::visit(CStatementASSIGNMENT* n) {
 	if (n == nullptr)
 	{
 		std::cout << "in wisit CStatementASIGNMENT is null";
@@ -557,7 +492,6 @@ void CIRBuilder::visit(CMainClass *n) {
 		return;
 	}
 	frame = new IRFrame("main", 1);
-	frame->setFormalsTemp(string(n->idParams), new CTemp(n->idParams));
 	root = new IRStmLIST();
 	for (size_t i = 0; i < n->statements->statements.size(); ++i)
 	{
@@ -579,14 +513,10 @@ void CIRBuilder::visit(CMethodDecl *n) {
 			frame = new IRFrame(className + "_" + methodName, 1 + n->formalList->formalRests->parametrs.size());
 		}
 		frame = new IRFrame(className + "_" + methodName, 1);
-		n->formalList->accept(this);
 	}
 	else
 	{
 		frame = new IRFrame(className + "_" + methodName, 0);
-	}
-	if (n->varDecls != nullptr){
-		n->varDecls->accept(this);
 	}
 	root = new IRStmLIST();
 	if (n->statements != nullptr){
@@ -623,19 +553,38 @@ void CIRBuilder::visit(CExpExclamationMark *n) {
 
 void CIRBuilder::acceptIdAsTemp(const string& id)
 {
-
-	try
+	int class_pos = SymbolTable->getClassIndex(className);
+	int method_pos = SymbolTable->classInfo[class_pos].getMethodIndex(methodName);
+	int offset = -1;
+	for (int i = 0; i < SymbolTable->classInfo[class_pos].methods[method_pos].vars.size(); ++i)
 	{
-		const CTemp* temp = frame->GetTemp(id);
-		if (temp)
+		if (SymbolTable->classInfo[class_pos].methods[method_pos].vars[i].name == id)
 		{
-			lastNode = new IRExpTEMP(frame->GetTemp(id));
+			offset = i;
+			lastType = SymbolTable->classInfo[class_pos].methods[method_pos].vars[i].type;
 		}
 	}
-	catch (...)
+	if (offset >= 0)
 	{
-		int offset = GetFieldType(id, className).first;
-		lastNode = new IRExpMEM(new IRExpBINOP('+', new IRExpTEMP(frame->GetThisPtr()), new IRExpCONST(offset)));
+		lastNode = new IRExpMEM(new IRExpBINOP('+', new IRExpTEMP(frame->GetThisPtr()), new IRExpCONST(offset + SymbolTable->classInfo[class_pos].methods[method_pos].params.size())));
+		return;
 	}
-	lastType = GetVarType(id);
+	for (int i = 0; i < SymbolTable->classInfo[class_pos].methods[method_pos].params.size(); ++i)
+	{
+		if (SymbolTable->classInfo[class_pos].methods[method_pos].params[i].name == id)
+		{
+			offset = i;
+			lastType = SymbolTable->classInfo[class_pos].methods[method_pos].params[i].type;
+		}
+	}
+	if (offset >= 0)
+	{
+		lastNode = new IRExpMEM(new IRExpBINOP('+', new IRExpTEMP(frame->GetThisPtr()), new IRExpCONST(-((int) SymbolTable->classInfo[class_pos].methods[method_pos].params.size()) + offset )));
+		return;
+	}
+
+	auto res = GetFieldType(id, className);
+	lastNode = new IRExpMEM(new IRExpBINOP('+', new IRExpMEM(new IRExpTEMP(frame->GetThisPtr())), new IRExpCONST(res.first)));
+	lastType = res.second;
 }
+

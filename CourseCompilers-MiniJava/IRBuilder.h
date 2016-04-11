@@ -29,6 +29,7 @@ class CIRBuilder : public IVisitor
 	string GetVarType(const string& )const;
 	std::vector<const IRExp*> lastList;
 	void acceptIdAsTemp(const string& id);
+
 public:
 	CIRBuilder(const string& _className, const string& _methodName, const CTable* _symbolTable) :
 		className(_className), methodName(_methodName), SymbolTable(_symbolTable), lastNode(0){
@@ -42,9 +43,9 @@ public:
 	virtual void visit(CStatementIF* n);//done
 	virtual void visit(CStatementBRACKETS* n);//done
 
-	virtual void visit(CStatementSQUEREASIGNMENT* n);//done
+	virtual void visit(CStatementSQUAREASSIGNMENT* n);//done
 
-	virtual void visit(CStatementASIGNMENT* n);//done
+	virtual void visit(CStatementASSIGNMENT* n);//done
 
 	virtual void visit(CStatementPRINTLN* n);//done
 
@@ -72,14 +73,14 @@ public:
 	virtual void visit(CClassDecl *n) {};
 	virtual void visit(CClassDecls *n) {};
 	virtual void visit(CClassDeclInheritance *n) {};
-	virtual void visit(CVarDecls *n);//done
+	virtual void visit(CVarDecls *n){};//done
 	virtual void visit(CMethodDecls *n) {};
-	virtual void visit(CVarDecl *n);//done
+	virtual void visit(CVarDecl *n){};//done
 	virtual void visit(CMethodDecl *n);//done
 	virtual void visit(CStatements *n);//done
-	virtual void visit(CFormalList *n);//done
-	virtual void visit(CFormalRests *n);//done
-	virtual void visit(CFormalRest *n);//done
+	virtual void visit(CFormalList *n){};//done
+	virtual void visit(CFormalRests *n){};//done
+	virtual void visit(CFormalRest *n){};//done
 	virtual void visit(CExpList *n);
 	virtual void visit(CType *n) {};
 	virtual void visit(CExpRest *n);
