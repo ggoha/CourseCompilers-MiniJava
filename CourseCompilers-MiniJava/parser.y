@@ -142,20 +142,24 @@ Program:
 	 typeChecker.visit($$);
 	 IRForest iRForest;
 	 iRForest.build($$,&symbolTableBuilder.table);
+	 
 	 for(int i = 0; i < iRForest.iRForest.size();++i)
 	 {
 		auto irpp = IRVisitor(std::string( "IRTree_" )+iRForest.Frames[i]->frameName + std::string( ".dot" ));
 		irpp.visit(iRForest.iRForest[i]);
 		irpp.Devide();
 		irpp.Flush();
-
-		//нужно отладить
-		auto ircan = IRCanonizer(("IRTree_Can" ) + iRForest.Frames[i]->frameName + std::string( ".dot" ));
-		ircan.visit(iRForest.iRForest[i]);
-		auto ircanpp = IRVisitor(std::string( "IRTree_Can" ) + iRForest.Frames[i]->frameName + std::string( ".dot" ));
-		ircanpp.visit(ircan.stmList);
-		ircanpp.Devide();
-		ircanpp.Flush();
+	 }
+	 for(int i = 0; i < iRForest.iRForest.size();++i)
+	 {
+		iRForest.iRForest[i] = canonize(iRForest.iRForest[i]);
+	 }
+	 for(int i = 0; i < iRForest.iRForest.size();++i)
+	 {
+		auto irpp = IRVisitor(std::string( "CononizedTree_" )+iRForest.Frames[i]->frameName + std::string( ".dot" ));
+		irpp.visit(iRForest.iRForest[i]);
+		irpp.Devide();
+		irpp.Flush();
 	 }
 
 	 }
