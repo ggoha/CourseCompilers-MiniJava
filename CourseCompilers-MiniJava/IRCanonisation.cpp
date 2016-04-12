@@ -27,7 +27,10 @@ void IRCanonizer::visit(const IRExpMEM *n){
 	n->exp->accept(this);
 	lastNode = new IRExpMEM(LastNodeAsIRExp());
 };
-void IRCanonizer::visit(const IRExpBINOP* n){};
+void IRCanonizer::visit(const IRExpBINOP* n){
+	n->left->accept(this);
+	
+};
 void IRCanonizer::visit(const IRExpNAME* n){
 	lastNode = new IRExpNAME(n->label);
 };
@@ -77,6 +80,7 @@ void IRCanonizer::visit(const IRStmJUMP *n){
 
 
 IRExp* IRCanonizer::LastNodeAsIRExp() {
+	int a = 10;
 	IRExp* res = dynamic_cast<IRExp*>(lastNode);
 	if (res == NULL)
 		throw invalid_argument("can't cast lastNode to IRExp");
