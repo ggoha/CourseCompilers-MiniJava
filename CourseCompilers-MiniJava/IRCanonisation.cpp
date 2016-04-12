@@ -2,94 +2,81 @@
 #include "IRStm.h"
 #include "IRExp.h"
 
-
-void IRCanonizer::visit(const IRExpCALL* n){
-	n->arguments->accept(this);
-	auto args = LastNodeAsIRExp();
-	n->function->accept(this);
-	auto func = LastNodeAsIRExp();
-
-	lastNode = new IRExpCALL(func,(IRExpList*) args);
-};
 void IRCanonizer::visit(const IRExpList* n){
 	vector<const IRExp*> expList;
 	for (int i = 0; i < n->expslist.size(); ++i)
 	{
-		n->expslist[i]->accept(this);
-		expList.push_back(LastNodeAsIRExp());
+		auto node = dynamic_cast<const IRExpList*>(n->expslist[i]);
+		if (node != nullptr)
+		{
+			node->accept(this);
+		}
+		else
+		{
+			expList.push_back(n->expslist[i]);
+		}
 	}
-	lastNode = new IRExpList(expList);
-};
-void IRCanonizer::visit(const IRExpESEQ* n){
-
-};
-void IRCanonizer::visit(const IRExpMEM *n){
-	n->exp->accept(this);
-	lastNode = new IRExpMEM(LastNodeAsIRExp());
-};
-void IRCanonizer::visit(const IRExpBINOP* n){
-	n->left->accept(this);
-	
-};
-void IRCanonizer::visit(const IRExpNAME* n){
-	lastNode = new IRExpNAME(n->label);
-};
-void IRCanonizer::visit(const IRExpTEMP* n){
-	lastNode = new IRExpTEMP(n->temp);
-};
-void IRCanonizer::visit(const IRExpCONST *n){
-	lastNode = new IRExpCONST(n->Value());
 };
 
-void IRCanonizer::visit(const IRStmMOVE *n){
-	n->dst->accept(this);
-	auto dst = LastNodeAsIRExp();
-	n->src->accept(this);
-	auto src = LastNodeAsIRExp();
-	lastNode = new IRStmMOVE(dst, src);
-};
-void IRCanonizer::visit(const IRStmEXP *n){
-	n->exp->accept(this);
-	lastNode = new IRStmEXP(LastNodeAsIRExp());
-};
-void IRCanonizer::visit(const IRStmCJUMP *n){
-	n->left->accept(this);
-	auto left = LastNodeAsIRExp();
-	n->right->accept(this);
-	auto right = LastNodeAsIRExp();
-	lastNode = new IRStmCJUMP(n->relop, left, right, n->iftrue, n->iffalse);
-};
-void IRCanonizer::visit(const IRStmSEQ *n){
-	n->left->accept(this);
-	n->right->accept(this);
-};
-void IRCanonizer::visit(const IRStmLABEL *n){
-	stmList->add(n);
-};
-void IRCanonizer::visit(const IRStmLIST *n){
-	for (int i = 0; i < n->stms.size(); ++i)
+
+v_iterator = vector<const IRStm*>::iterator
+
+v_iterator find_label_pos(v_iterator lo, const CLabel* label)
+{
+	while (1)
 	{
-		n->stms[i]->accept(this);
-		if(LastNodeAsIRStm())
-		stmList->add(n->stms[i]);
+		++lo;
+		auto label = dynamic_cast<const IRStmLABEL*>(*lo);
+		if (label != nullptr)
+		{
+			if (label->label == label)
+			{
+				return lo;
+			}
+		}
 	}
 };
-void IRCanonizer::visit(const IRStmJUMP *n){
-	lastNode = new IRStmJUMP(n->lable);
-}
 
-
-IRExp* IRCanonizer::LastNodeAsIRExp() {
-	int a = 10;
-	IRExp* res = dynamic_cast<IRExp*>(lastNode);
-	if (res == NULL)
-		throw invalid_argument("can't cast lastNode to IRExp");
-	return res;
-}
-
-IRStm* IRCanonizer::LastNodeAsIRStm() {
-	IRStm* res = dynamic_cast<IRStm*>(lastNode);
-	if (res == NULL)
-		throw invalid_argument("can't cast lastNode to IRStm");
-	return res;
+void cononize_cjump(v_iterator lo, v_iterator hi, vector<const IRStm*>& result)
+{
+	vector<const IRStm*> head;
+	vector<const IRStm*> tail;
+	while (lo != hi)
+	{
+		++lo;
+		auto cjump = dynamic_cast<const IRStmCJUMP*>(*lo);
+		if (cjump)
+		{
+			result.push_back(cjump);
+			++lo;
+			v_iterator p_true = find_label_pos(lo, cjump->iftrue);
+			v_iterator p_false = find_label_pos(lo, cjump->iffalse);
+			v_iterator p_end;
+			if (p_true < p_false)
+			{
+				p_end = p_false;
+				lo = p_true;
+				while (lo < p_false)
+				{
+					++lo;
+					auto jump = dynamic_cast<const IRStmJUMP*>(*lo);
+					if (jump != nullptr)
+					{
+						auto p_label = find_label_pos(lo, jump->label);
+						if (p_label > p_false)
+						{
+							if (p_label > p_end)
+							{
+								p_end = p_label;
+							}
+						}
+					}
+				}
+				cononize_cjump(p_false, p_end, result);
+				cononize_cjump(p_true, p_false, result);
+				lo = p_end;
+			}
+		}
+		result.push_back(lo);
+	}
 }
