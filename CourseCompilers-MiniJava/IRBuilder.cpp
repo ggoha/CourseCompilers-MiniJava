@@ -182,8 +182,8 @@ void CIRBuilder::visit( CExpInSquareBrackets *n ){
 	IRExp* mas = LastNodeAsIRExp();
 	n->exp2->accept( this );
 	IRExp* id = LastNodeAsIRExp();
-	IRExp* offset = new IRExpBINOP( '+', mas, id );
-	IRExp* oneExp = new IRExpCONST(1);
+	IRExp* offset = new IRExpBINOP( '+', mas, new IRExpBINOP('*', new IRExpCONST(IRFrame::WORD_SIZE), id));
+	IRExp* oneExp = new IRExpCONST(IRFrame::WORD_SIZE);
 	lastNode = new IRExpMEM(new IRExpBINOP('+', offset, oneExp));
 	lastType = arrType;
 };
@@ -409,7 +409,7 @@ pair<int, string> CIRBuilder::GetFieldType(const string& name, const string& _cl
 		classIndex = SymbolTable->getClassIndex(SymbolTable->classInfo[classIndex].parent);
 		offset += SymbolTable->classInfo[classIndex].vars.size();
 	}
-	return pair<int, string>(varIndex + offset, type);
+	return pair<int, string>(varIndex + offset*IRFrame::WORD_SIZE, type);
 }
 
 string CIRBuilder::GetVarType(const string& name)const
@@ -566,7 +566,7 @@ void CIRBuilder::acceptIdAsTemp(const string& id)
 	}
 	if (offset >= 0)
 	{
-		lastNode = new IRExpMEM(new IRExpBINOP('+', new IRExpTEMP(frame->GetThisPtr()), new IRExpCONST(offset + SymbolTable->classInfo[class_pos].methods[method_pos].params.size())));
+		lastNode = new IRExpMEM(new IRExpBINOP('+', new IRExpTEMP(frame->GetThisPtr()), new IRExpCONST(offset*IRFrame::WORD_SIZE + SymbolTable->classInfo[class_pos].methods[method_pos].params.size()*IRFrame::WORD_SIZE)));
 		return;
 	}
 	for (int i = 0; i < SymbolTable->classInfo[class_pos].methods[method_pos].params.size(); ++i)
@@ -579,7 +579,7 @@ void CIRBuilder::acceptIdAsTemp(const string& id)
 	}
 	if (offset >= 0)
 	{
-		lastNode = new IRExpMEM(new IRExpBINOP('+', new IRExpTEMP(frame->GetThisPtr()), new IRExpCONST(-((int) SymbolTable->classInfo[class_pos].methods[method_pos].params.size()) + offset )));
+		lastNode = new IRExpMEM(new IRExpBINOP('+', new IRExpTEMP(frame->GetThisPtr()), new IRExpCONST(-((int) SymbolTable->classInfo[class_pos].methods[method_pos].params.size())*IRFrame::WORD_SIZE + offset*IRFrame::WORD_SIZE)));
 		return;
 	}
 
