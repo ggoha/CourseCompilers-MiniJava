@@ -13,6 +13,7 @@ class IRExpList : public IRExp
 
 public:
 	std::vector<const IRExp*> expslist;
+	IRExpList(){}
 	IRExpList( std::vector<const IRExp*> & exps ) : expslist( exps ) {};
 	IRExpList(const IRExp* exps) : expslist(1,exps) {};
 	void accept(IRVisitor* irb ) const {
