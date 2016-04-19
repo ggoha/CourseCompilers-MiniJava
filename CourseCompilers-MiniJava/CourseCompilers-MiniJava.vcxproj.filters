@@ -22,6 +22,9 @@
     <Filter Include="bizon and lexer">
       <UniqueIdentifier>{4970a4c2-fd95-4475-b8d8-67358ffdc17f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="CodeGeneration">
+      <UniqueIdentifier>{82609177-0876-4ed5-a5bf-a62b0bfc280c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -106,6 +109,9 @@
     </ClInclude>
     <ClInclude Include="IRCanonisation.h">
       <Filter>IRTree</Filter>
+    </ClInclude>
+    <ClInclude Include="CodeGenerator.h">
+      <Filter>CodeGeneration</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -92,6 +92,7 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CodeGenerator.h" />
     <ClInclude Include="Graph.h" />
     <ClInclude Include="IRCanonisation.h" />
     <ClInclude Include="IRForest.h" />
