@@ -6,7 +6,7 @@ class IRCanonizer : public IRVisitor
 {
 	const IRNode* lastNode;
 	bool isInsideExp;
-	const IRNode* getLastNode();
+	const IRNode* getLastNode(const IRNode* n = 0);
 public:
 	IRStmLIST* stmList;
 	IRCanonizer() : IRVisitor("A") { stmList = new IRStmLIST(); };
@@ -26,8 +26,8 @@ public:
 	virtual void visit(const IRStmLABEL *n);
 	virtual void visit(const IRStmLIST *n);
 	virtual void visit(const IRStmJUMP *n);
-	const IRExp* LastNodeAsIRExp();
-	const IRStm* LastNodeAsIRStm();
+	const IRExp* LastNodeAsIRExp(const IRNode* n = 0);
+	const IRStm* LastNodeAsIRStm(const IRNode* n = 0);
 };
 
 typedef  vector<const IRStm*>::const_iterator  v_iterator;

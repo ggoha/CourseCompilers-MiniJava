@@ -7,6 +7,7 @@ void IRCanonizer::visit(const IRStmLIST* n){
 	for (int i = 0; i < n->stms.size(); ++i)
 	{
 		auto node = dynamic_cast<const IRStmLIST*>(n->stms[i]);
+		isInsideExp = false;
 		if (node != nullptr)
 		{
 			node->accept(this);
@@ -25,11 +26,22 @@ void IRCanonizer::visit(const IRExpMEM *n){
 };
 
 void IRCanonizer::visit(const IRExpBINOP* n){
+	bool oldIsInsideExp = isInsideExp;
+	bool nextIsInsideExp = isInsideExp;
+
 	n->left->accept(this);
-	auto left = LastNodeAsIRExp();
+	const IRNode* left = lastNode;
+
+	nextIsInsideExp = nextIsInsideExp || isInsideExp;
+	isInsideExp = oldIsInsideExp;
+
 	n->right->accept(this);
-	auto right = LastNodeAsIRExp();
-	lastNode = new IRExpBINOP(n->binop, left, right);
+	const IRNode* right = lastNode;
+
+	nextIsInsideExp = nextIsInsideExp || isInsideExp;
+	isInsideExp = nextIsInsideExp;
+
+	lastNode = new IRExpBINOP(n->binop, LastNodeAsIRExp(left), LastNodeAsIRExp(right));
 };
 
 void IRCanonizer::visit(const IRExpNAME* n){
@@ -55,35 +67,44 @@ void IRCanonizer::visit(const IRStmMOVE *n){
 	isInsideExp = false;
 	auto src = LastNodeAsIRExp();
 	lastNode = new IRStmMOVE(dst, src);
-	isInsideExp = true;
 };
 
 void IRCanonizer::visit(const IRStmEXP *n){
 	n->exp->accept(this);
+	isInsideExp = false;
 	lastNode = new IRStmEXP(LastNodeAsIRExp());
 };
 
 void IRCanonizer::visit(const IRStmCJUMP *n){
 	n->left->accept(this);
+	isInsideExp = false;
 	auto left = LastNodeAsIRExp();
 	n->right->accept(this);
+	isInsideExp = false;
 	auto right = LastNodeAsIRExp();
 	lastNode = new IRStmCJUMP(n->relop, left, right, n->iftrue, n->iffalse);
 };
-
 
 void IRCanonizer::visit(const IRStmLABEL *n){
 	lastNode = new IRStmLABEL(n->lable);
 };
 
 void IRCanonizer::visit(const IRExpList *n){
+	bool oldIsInsideExp = isInsideExp;
+	bool nextIsInsideExp = isInsideExp;
+	vector<const IRNode*> args;
 	IRExpList* el = new IRExpList();
 	for (int i = 0; i < n->expslist.size(); i++){
 		n->expslist[i]->accept(this);
-		el->expslist.push_back(LastNodeAsIRExp());
+		nextIsInsideExp = nextIsInsideExp || isInsideExp;
+		isInsideExp = oldIsInsideExp;
+		args.push_back(lastNode);
 	}
+	isInsideExp = nextIsInsideExp;
 	lastNode = el;
-
+	for (int i = 0; i < n->expslist.size(); i++) {
+		el->expslist.push_back(LastNodeAsIRExp(args[i]));
+	}
 };
 
 void IRCanonizer::visit(const IRExpCALL* n){
@@ -93,6 +114,7 @@ void IRCanonizer::visit(const IRExpCALL* n){
 	const IRExpList* arguments = (IRExpList*)LastNodeAsIRExp();
 	IRExpCALL* expcall = new IRExpCALL(function, arguments);
 	lastNode = expcall;
+	isInsideExp = true;
 }
 
 
@@ -100,15 +122,15 @@ void IRCanonizer::visit(const IRStmJUMP* n){
 	lastNode = new IRStmJUMP(n->lable);
 }
 
-const IRExp* IRCanonizer::LastNodeAsIRExp() {
-	const IRExp* res = dynamic_cast<const IRExp*>(getLastNode());
+const IRExp* IRCanonizer::LastNodeAsIRExp(const IRNode* n) {
+	const IRExp* res = dynamic_cast<const IRExp*>(getLastNode(n));
 	if (res == NULL)
 		 throw invalid_argument("can't cast lastNode to IRExp");
 	return res;
 }
 
-const IRStm* IRCanonizer::LastNodeAsIRStm() {
-	const IRStm* res = dynamic_cast<const IRStm*>(getLastNode());
+const IRStm* IRCanonizer::LastNodeAsIRStm(const IRNode* n) {
+	const IRStm* res = dynamic_cast<const IRStm*>(getLastNode(n));
 	if (res == NULL)
 		 throw invalid_argument("can't cast lastNode to IRStm");
 	return res;
@@ -117,14 +139,19 @@ const IRStm* IRCanonizer::LastNodeAsIRStm() {
 
 
 
-const IRNode* IRCanonizer::getLastNode()
+const IRNode* IRCanonizer::getLastNode(const IRNode* n)
 {
+	if (n == 0)
+	{
+		n = lastNode;
+	}
+
 	if (isInsideExp)
 	{
-		if (dynamic_cast<const IRExpCALL*>(lastNode))
+		if (dynamic_cast<const IRExpCALL*>(n))
 		{
 			auto temp = new CTemp();
-			stmList->stms.push_back(new IRStmMOVE(new IRExpTEMP(temp), dynamic_cast<const IRExpCALL*>(lastNode)));
+			stmList->stms.push_back(new IRStmMOVE(new IRExpTEMP(temp), dynamic_cast<const IRExpCALL*>(n)));
 			lastNode = new IRExpTEMP(temp);
 			return lastNode;
 		}
