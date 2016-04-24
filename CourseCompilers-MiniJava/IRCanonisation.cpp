@@ -148,13 +148,10 @@ const IRNode* IRCanonizer::getLastNode(const IRNode* n)
 
 	if (isInsideExp)
 	{
-		if (dynamic_cast<const IRExpCALL*>(n))
-		{
-			auto temp = new CTemp();
-			stmList->stms.push_back(new IRStmMOVE(new IRExpTEMP(temp), dynamic_cast<const IRExpCALL*>(n)));
-			lastNode = new IRExpTEMP(temp);
-			return lastNode;
-		}
+		auto temp = new CTemp();
+		stmList->stms.push_back(new IRStmMOVE(new IRExpTEMP(temp), dynamic_cast<const IRExpCALL*>(n)));
+		lastNode = new IRExpTEMP(temp);
+		return lastNode;
 	}
 	return lastNode;
 }
