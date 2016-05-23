@@ -60,6 +60,9 @@
     <ClCompile Include="IRCanonisation.cpp">
       <Filter>IRTree</Filter>
     </ClCompile>
+    <ClCompile Include="CodeGeneration.cpp">
+      <Filter>CodeGeneration</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="parser.y" />
@@ -110,7 +113,7 @@
     <ClInclude Include="IRCanonisation.h">
       <Filter>IRTree</Filter>
     </ClInclude>
-    <ClInclude Include="CodeGenerator.h">
+    <ClInclude Include="CodeGenaration.h">
       <Filter>CodeGeneration</Filter>
     </ClInclude>
   </ItemGroup>

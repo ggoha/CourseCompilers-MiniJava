@@ -72,6 +72,7 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CodeGeneration.cpp" />
     <ClCompile Include="Graph.cpp" />
     <ClCompile Include="IRCanonisation.cpp" />
     <ClCompile Include="IRTemp.cpp" />
@@ -93,7 +94,7 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CodeGenerator.h" />
+    <ClInclude Include="CodeGenaration.h" />
     <ClInclude Include="Graph.h" />
     <ClInclude Include="IRCanonisation.h" />
     <ClInclude Include="IRForest.h" />
