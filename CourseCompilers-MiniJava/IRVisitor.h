@@ -1,5 +1,5 @@
 #pragma once
-#include "Graph.h"
+#include "IRRepresentation.h"
 class IRExpCALL;
 class IRExpList;
 class IRExpESEQ;
@@ -57,7 +57,7 @@ private:
 
 	std::string lastNodeName;
 
-	Graph treeRepresentation;
+	IRRepresentation treeRepresentation;
 
 	void nextNameWithId(std::string label);
 };

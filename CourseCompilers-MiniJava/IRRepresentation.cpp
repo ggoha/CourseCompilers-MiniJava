@@ -1,29 +1,29 @@
-#include "Graph.h"
+#include "IRRepresentation.h"
 
 #include <ostream>
 #include <fstream>
 
-Graph::Graph(std::string _fileName)
+IRRepresentation::IRRepresentation(std::string _fileName)
 : fileName(_fileName), data("digraph {\n"), isFlushed(false)
 {
 	tab = "";
 }
 
-Graph::~Graph()
+IRRepresentation::~IRRepresentation()
 {
 	if (!isFlushed) {
 		Flush();
 	}
 }
 
-void Graph::AddEdge(std::string from, std::string to)
+void IRRepresentation::AddEdge(std::string from, std::string to)
 {
 	decorateName(from);
 	decorateName(to);
 	data += tab + from + " -> " + to + " ; \n";
 }
 
-void Graph::AddEdge(std::string from, std::string to, std::string edgeName)
+void IRRepresentation::AddEdge(std::string from, std::string to, std::string edgeName)
 {
 	decorateName(from);
 	decorateName(to);
@@ -31,7 +31,7 @@ void Graph::AddEdge(std::string from, std::string to, std::string edgeName)
 	data += /*tab +*/ from + " -> " + to + " [ label=\"" + edgeName + "\"] ; \n";
 }
 
-void Graph::Flush()
+void IRRepresentation::Flush()
 {
 	data += "\n}";
 	std::ofstream out(fileName);
@@ -40,7 +40,7 @@ void Graph::Flush()
 	isFlushed = true;
 }
 
-void Graph::SetNodeLabel(std::string nodeName, std::string nodeLabel)
+void IRRepresentation::SetNodeLabel(std::string nodeName, std::string nodeLabel)
 {
 	decorateName(nodeName);
 	decorateName(nodeLabel);
@@ -48,7 +48,7 @@ void Graph::SetNodeLabel(std::string nodeName, std::string nodeLabel)
 }
 
 
-void Graph::decorateName(std::string& stringToDecorate)
+void IRRepresentation::decorateName(std::string& stringToDecorate)
 {
 	for (int i = 0; i < stringToDecorate.size(); i++) {
 		if (stringToDecorate[i] == '.' || stringToDecorate[i] == ':' || stringToDecorate[i] == '=') {
@@ -57,14 +57,14 @@ void Graph::decorateName(std::string& stringToDecorate)
 	}
 }
 
-void Graph::PlusTab(){
+void IRRepresentation::PlusTab(){
 	tab.append("  ");
 }
 
-void Graph::MinusTab(){
+void IRRepresentation::MinusTab(){
 	tab.pop_back();
 }
 
-void Graph::Devide(){
+void IRRepresentation::Devide(){
 	//data += "/n/n";
 }

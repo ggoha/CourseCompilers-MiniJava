@@ -73,7 +73,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CodeGeneration.cpp" />
-    <ClCompile Include="Graph.cpp" />
+    <ClCompile Include="IRRepresentation.cpp" />
     <ClCompile Include="IRCanonisation.cpp" />
     <ClCompile Include="IRTemp.cpp" />
     <ClCompile Include="IRVisitor.cpp" />
@@ -97,7 +97,7 @@
   <ItemGroup>
     <ClInclude Include="Assembler.h" />
     <ClInclude Include="CodeGeneration.h" />
-    <ClInclude Include="Graph.h" />
+    <ClInclude Include="IRRepresentation.h" />
     <ClInclude Include="IRCanonisation.h" />
     <ClInclude Include="IRForest.h" />
     <ClInclude Include="IRVisitor.h" />
