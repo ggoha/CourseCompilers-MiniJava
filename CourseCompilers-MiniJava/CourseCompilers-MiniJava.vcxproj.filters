@@ -63,6 +63,9 @@
     <ClCompile Include="CodeGeneration.cpp">
       <Filter>CodeGeneration</Filter>
     </ClCompile>
+    <ClCompile Include="TempMap.cpp">
+      <Filter>CodeGeneration</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="parser.y" />
@@ -117,6 +120,9 @@
       <Filter>CodeGeneration</Filter>
     </ClInclude>
     <ClInclude Include="Assembler.h">
+      <Filter>CodeGeneration</Filter>
+    </ClInclude>
+    <ClInclude Include="TempMap.h">
       <Filter>CodeGeneration</Filter>
     </ClInclude>
   </ItemGroup>

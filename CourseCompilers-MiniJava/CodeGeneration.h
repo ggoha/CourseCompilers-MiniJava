@@ -5,6 +5,7 @@
 #include "IRTemp.h"
 #include "IRFrame.h"
 #include "Assembler.h"
+#include "TempMap.h"
 #define ArithmeticOpType char
 
 class CCodegen {
@@ -16,7 +17,7 @@ public:
 
 	void MunchStm(const IRStm* s);
 
-	void MunchStm(const IRStmSEQ* s);
+	void MunchStmSEQ(const IRStmSEQ* s);
 
 
 	void MunchMove(const IRExp* dst, const IRExp* src);

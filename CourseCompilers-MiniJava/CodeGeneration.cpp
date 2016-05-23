@@ -1,12 +1,11 @@
 #include "CodeGeneration.h"
-#include <iostream>
 
 CCodegen::CCodegen() : instrList(0), last(0) {}
 
 void CCodegen::MunchStm(const IRStm* s) {
 	const IRStmSEQ* seq = dynamic_cast<const IRStmSEQ*>(s);
 	if (seq != 0) {
-		MunchStm(seq);
+		MunchStmSEQ(seq);
 	}
 	else {
 		const IRStmMOVE* move = dynamic_cast<const IRStmMOVE*>(s);
@@ -172,7 +171,7 @@ void CCodegen::MunchMove(const IRExpTEMP* dst, const IRExp* src) {
 		new CTempList(MunchExp(src), nullptr)));
 }
 
-void CCodegen::MunchStm(const IRStmSEQ* s) {
+void CCodegen::MunchStmSEQ(const IRStmSEQ* s) {
 	MunchStm(s->left);
 	MunchStm(s->right);
 }
@@ -334,7 +333,7 @@ namespace CodeGenerator {
 	void GenerateCode(ostream &out, const vector<IRStmLIST*> &blocks,
 		vector<CInstrList*> &blockInstructions) {
 		CCodegen generator;
-		CDefaultMap* defMap = new CDefaultMap();
+		Temp::CDefaultMap* defMap = new Temp::CDefaultMap();
 		for (int i = 0; i < blocks.size(); ++i) {
 			CInstrList* instructs = 0;
 			out << "===========================" << endl;
