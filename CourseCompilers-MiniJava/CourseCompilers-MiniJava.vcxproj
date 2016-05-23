@@ -74,6 +74,7 @@
   <ItemGroup>
     <ClCompile Include="Assembler.cpp" />
     <ClCompile Include="CodeGeneration.cpp" />
+    <ClCompile Include="FlowGraph.cpp" />
     <ClCompile Include="IRCanonisation.cpp" />
     <ClCompile Include="IRFrame.cpp" />
     <ClCompile Include="IRRepresentation.cpp" />
@@ -99,6 +100,9 @@
   <ItemGroup>
     <ClInclude Include="Assembler.h" />
     <ClInclude Include="CodeGeneration.h" />
+    <ClInclude Include="FlowGraph.h" />
+    <ClInclude Include="Graph.h" />
+    <ClInclude Include="Graph.hpp" />
     <ClInclude Include="IRCanonisation.h" />
     <ClInclude Include="IRForest.h" />
     <ClInclude Include="IRRepresentation.h" />
