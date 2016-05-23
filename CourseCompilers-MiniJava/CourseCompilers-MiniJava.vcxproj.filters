@@ -66,6 +66,9 @@
     <ClCompile Include="IRRepresentation.cpp">
       <Filter>IRTree</Filter>
     </ClCompile>
+    <ClCompile Include="FlowGraph.cpp">
+      <Filter>CodeGeneration</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="parser.y" />
@@ -124,6 +127,9 @@
     </ClInclude>
     <ClInclude Include="IRRepresentation.h">
       <Filter>IRTree</Filter>
+    </ClInclude>
+    <ClInclude Include="Graph.hpp">
+      <Filter>CodeGeneration</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
