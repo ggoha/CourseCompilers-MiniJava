@@ -1,32 +1,27 @@
 #pragma once
 #include "IRTemp.h"
 
-namespace Temp {
-
-
-	class CTempMap {
-	public:
-		virtual const std::string& tempMap(const CTemp* t) = 0;
-	};
+class CTempMap {
+public:
+	virtual const std::string& tempMap(const CTemp* t) = 0;
+};
 
 
 
-	class CCombineMap : public CTempMap {
-	public:
+class CCombineMap : public CTempMap {
+public:
 
-		CCombineMap(CTempMap* _tmapFirst, CTempMap* _tmapSecond);
+	CCombineMap(CTempMap* _tmapFirst, CTempMap* _tmapSecond);
 
-		CTempMap* tmapFirst;
-		CTempMap* tmapSecond;
+	CTempMap* tmapFirst;
+	CTempMap* tmapSecond;
 
-		const std::string& tempMap(const CTemp* t);
+	const std::string& tempMap(const CTemp* t);
 
-	};
+};
 
-	class CDefaultMap : public CTempMap {
-	public:
-		const std::string& tempMap(const CTemp* t);
-	};
-
-}
+class CDefaultMap : public CTempMap {
+public:
+	const std::string& tempMap(const CTemp* t);
+};
 

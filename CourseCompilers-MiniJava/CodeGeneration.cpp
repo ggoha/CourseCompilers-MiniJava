@@ -84,10 +84,9 @@ CTempList* CCodegen::MunchArgs(const IRExpList* args) {
 		else {
 			l = new CTempList(new CTemp(), nullptr);
 		}
-		emit(new AOPER("push `s0\n", nullptr, new CTempList(MunchExp(args->expslist[j]), nullptr)
-			)
-			);
+		emit(new AOPER("push `s0\n", nullptr, new CTempList(MunchExp(args->expslist[j]), nullptr)));
 	}
+	return l;
 }
 
 
@@ -245,10 +244,7 @@ const CTemp*  CCodegen::MunchExp(const IRExp* exp) {
 		MunchExpCall(call);
 		return IRFrame::CallerSaveRegister();
 	}
-
-
-
-
+	throw invalid_argument("error in MunchExp");
 }
 
 const CTemp* CCodegen::MunchBinop(const IRExpCONST* cst, const IRExp* exp, ArithmeticOpType binop)
@@ -333,7 +329,7 @@ namespace CodeGenerator {
 	void GenerateCode(ostream &out, const vector<IRStmLIST*> &blocks,
 		vector<CInstrList*> &blockInstructions) {
 		CCodegen generator;
-		Temp::CDefaultMap* defMap = new Temp::CDefaultMap();
+		CDefaultMap* defMap = new CDefaultMap();
 		for (int i = 0; i < blocks.size(); ++i) {
 			CInstrList* instructs = 0;
 			out << "===========================" << endl;

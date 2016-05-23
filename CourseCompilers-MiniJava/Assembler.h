@@ -20,7 +20,7 @@ public:
 
 	const CTemp* getTemp(CTempList* l, int tempNumber);
 	const CLabel* getLabel(CLabelList* l, int tempNumber);
-	std::string format(Temp::CTempMap* m);
+	std::string format(CTempMap* m);
 };
 
 class CInstrList {
