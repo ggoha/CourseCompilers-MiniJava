@@ -5,7 +5,7 @@
 class IRExp : public  IRNode 
 {
 public:
-	virtual void accept(IRVisitor* visitor)const = 0;
+	virtual void accept(IRVisitor* visitor) const = 0;
 };
 
 class IRExpList : public IRExp

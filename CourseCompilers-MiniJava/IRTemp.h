@@ -7,6 +7,7 @@ using namespace std;
 
 class IRNode
 {
+public:
 	virtual void accept(IRVisitor* visitor) const = 0;
 };
 
@@ -74,4 +75,3 @@ public:
 	const CLabel* head;
 	CLabelList* tail;
 };
-}

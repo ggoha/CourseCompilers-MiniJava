@@ -1,5 +1,6 @@
 #include <string>
 #include "IRTemp.h"
+#include "TempMap.h"
 
 class CTargets {
 public:
@@ -19,7 +20,7 @@ public:
 
 	const CTemp* getTemp(CTempList* l, int tempNumber);
 	const CLabel* getLabel(CLabelList* l, int tempNumber);
-	std::string format(CTempMap* m);
+	std::string format(Temp::CTempMap* m);
 };
 
 class CInstrList {
