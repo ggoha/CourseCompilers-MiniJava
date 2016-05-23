@@ -17,6 +17,8 @@ public:
 // Класс-контейнер с платформо-зависимой информацией о функции
 class IRFrame {
 public:
+
+	static map<std::string, const CTemp*> allRegisters;
 	static const int WORD_SIZE = 4;
 	IRFrame(const string name, int formalsCount) : frameName(name) {
 		thisPtr = new CTemp("this");
@@ -64,7 +66,18 @@ public:
 		return root;
 	}
 	const string frameName;
+
+	static const CTemp* CallerSaveRegister() {
+		return allRegisters["ecx"];
+	}
+
+	static CTempList* PreColoredRegisters() {
+		return new CTempList(allRegisters["ecx"], new CTempList(allRegisters["ebp"],
+			new CTempList(allRegisters["esp"], nullptr)));
+	}
 private:
+
+	static std::map<std::string, const CTemp*> registersInit();
 	IRStm* root;
 	std::map<string, CTemp*> formals;
 	std::map<string, CTemp*> locals;

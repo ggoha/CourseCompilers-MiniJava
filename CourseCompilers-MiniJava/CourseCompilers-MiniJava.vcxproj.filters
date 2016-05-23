@@ -66,6 +66,12 @@
     <ClCompile Include="TempMap.cpp">
       <Filter>CodeGeneration</Filter>
     </ClCompile>
+    <ClCompile Include="IRFrame.cpp">
+      <Filter>IRTree</Filter>
+    </ClCompile>
+    <ClCompile Include="Asembler.cpp">
+      <Filter>CodeGeneration</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="parser.y" />

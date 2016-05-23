@@ -19,7 +19,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -72,9 +72,11 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Asembler.cpp" />
     <ClCompile Include="CodeGeneration.cpp" />
     <ClCompile Include="Graph.cpp" />
     <ClCompile Include="IRCanonisation.cpp" />
+    <ClCompile Include="IRFrame.cpp" />
     <ClCompile Include="IRTemp.cpp" />
     <ClCompile Include="IRVisitor.cpp" />
     <ClCompile Include="IRBuilder.cpp" />
