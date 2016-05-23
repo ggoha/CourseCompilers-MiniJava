@@ -1,5 +1,5 @@
 #include "CodeGeneration.h"
-
+#include <iostream>
 
 CCodegen::CCodegen() : instrList(0), last(0) {}
 
