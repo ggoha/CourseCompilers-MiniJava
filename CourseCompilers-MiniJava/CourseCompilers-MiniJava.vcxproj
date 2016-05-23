@@ -72,7 +72,7 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Asembler.cpp" />
+    <ClCompile Include="Assembler.cpp" />
     <ClCompile Include="CodeGeneration.cpp" />
     <ClCompile Include="Graph.cpp" />
     <ClCompile Include="IRCanonisation.cpp" />

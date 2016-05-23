@@ -2,11 +2,11 @@
 
 #include <string>
 
-class Graph {
+class IRRepresentation {
 public:
 
-	Graph(std::string _fileName);
-	~Graph();
+	IRRepresentation(std::string _fileName);
+	~IRRepresentation();
 
 	void SetNodeLabel(std::string nodeName, std::string nodeLabel);
 
