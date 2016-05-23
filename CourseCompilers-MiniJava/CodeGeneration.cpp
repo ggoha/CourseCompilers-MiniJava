@@ -3,40 +3,40 @@
 
 CCodegen::CCodegen() : instrList(0), last(0) {}
 
-void CCodegen::MunchStm(IRStm* s) {
-	IRStmSEQ* seq = dynamic_cast<IRStmSEQ*>(s);
+void CCodegen::MunchStm(const IRStm* s) {
+	const IRStmSEQ* seq = dynamic_cast<const IRStmSEQ*>(s);
 	if (seq != 0) {
 		MunchStm(seq);
 	}
 	else {
-		IRStmMOVE* move = dynamic_cast<IRStmMOVE*>(s);
+		const IRStmMOVE* move = dynamic_cast<const IRStmMOVE*>(s);
 		if (move != 0) {
 			MunchMove(move->dst, move->src);
 		}
 		else {
-			IRStmLABEL* label = dynamic_cast<IRStmLABEL*>(s);
+			const IRStmLABEL* label = dynamic_cast<const IRStmLABEL*>(s);
 			if (label != 0) {
 				MunchStm(label);
 			}
 			else {
-				IRExp* exp = dynamic_cast<IRExp*>(s);
+				const IRExp* exp = dynamic_cast<const IRExp*>(s);
 				if (exp != 0) {
-					IRExpCALL* call = dynamic_cast<IRExpCALL*>(exp->exp);
+					const IRExpCALL* call = dynamic_cast<const IRExpCALL*>(exp);
 					if (call != 0) {
 						MunchExpCall(call);
 					}
 				}
 				else {
-					IRStmJUMP* jmp = dynamic_cast<IRStmJUMP*>(s);
+					const IRStmJUMP* jmp = dynamic_cast<const IRStmJUMP*>(s);
 					if (jmp != 0) {
 						emit(new AOPER("jmp `j0\n",
 							nullptr,
 							nullptr,
 
-							new CLabelList(jmp->target, nullptr))
+							new CLabelList(jmp->lable, nullptr))
 							);
 					}
-					IRStmCJUMP* cjump = dynamic_cast<IRStmCJUMP*>(s);
+					const IRStmCJUMP* cjump = dynamic_cast<const IRStmCJUMP*>(s);
 					if (cjump != 0) {
 						emit(new AOPER("cmp `s0, `s1\n", nullptr,
 							new CTempList(
@@ -46,10 +46,10 @@ void CCodegen::MunchStm(IRStm* s) {
 							)
 							);
 						std::string jumpCmdName;
-						if (cjump->relop == EQ) {
+						if (cjump->relop == IRStmCJUMP::EQ) {
 							jumpCmdName = "je";
 						}
-						else if (cjump->relop == LT) {
+						else if (cjump->relop == IRStmCJUMP::LT) {
 							jumpCmdName = "jl";
 						}
 						emit(new AOPER(jumpCmdName + "   `j0\n", nullptr, nullptr,
@@ -62,30 +62,30 @@ void CCodegen::MunchStm(IRStm* s) {
 	}
 }
 
-void CCodegen::MunchExpCall(IRExpCALL* call) {
-	IRExpNAME* name = dynamic_cast<IRExpNAME*>(call->func);
+void CCodegen::MunchExpCall(const IRExpCALL* call) {
+	const IRExpNAME* name = dynamic_cast<const IRExpNAME*>(call->function);
 	if (name != 0) {
-		CTempList* l = MunchArgs(call->args);
-		emit(new AOPER("CALL " + name->label->Name() + "\n", CFrame::PreColoredRegisters(), l));
+		CTempList* l = MunchArgs(call->arguments);
+		emit(new AOPER("CALL " + name->label->Name() + "\n", IRFrame::PreColoredRegisters(), l));
 	}
 	else {
-		const CTemp* r = MunchExp(call->func);
-		CTempList* l = MunchArgs(call->args);
-		emit(new AOPER("CALL `s0\n", CFrame::PreColoredRegisters(), new CTempList(r, l)));
+		const CTemp* r = MunchExp(call->function);
+		CTempList* l = MunchArgs(call->arguments);
+		emit(new AOPER("CALL `s0\n", IRFrame::PreColoredRegisters(), new CTempList(r, l)));
 	}
 }
 
-CTempList* CCodegen::MunchArgs(IRExpList* args) {
+CTempList* CCodegen::MunchArgs(const IRExpList* args) {
 	CTempList* l = nullptr;
 	for( int j = 0; j < args->expslist.size(); j++ ){
 		if (l != nullptr) {
-			l->tail = new CTempList(std::make_shared<CTemp>(), nullptr);
+			l->tail = new CTempList(new CTemp(), nullptr);
 			l = l->tail;
 		}
 		else {
-			l = new CTempList(std::make_shared<CTemp>(), nullptr);
+			l = new CTempList(new CTemp(), nullptr);
 		}
-		emit(new AOPER("push `s0\n", nullptr, new CTempList(MunchExp(args->expslist[i]), nullptr)
+		emit(new AOPER("push `s0\n", nullptr, new CTempList(MunchExp(args->expslist[j]), nullptr)
 			)
 			);
 	}
@@ -96,13 +96,13 @@ CTempList* CCodegen::MunchArgs(IRExpList* args) {
 {Temp r = munchExp(e); TempList l = munchArgs(0,args);
 emit(new OPER("CALL 's0\n",calldefs,L(r,l)));}*/
 
-void CCodegen::MunchMove(IExp* dst, IExp* src) {
-	IRExpMEM* mem = dynamic_cast<IRExpMEM*>(dst);
+void CCodegen::MunchMove(const IRExp* dst, const IRExp* src) {
+	const IRExpMEM* mem = dynamic_cast<const IRExpMEM*>(dst);
 	if (mem != 0) {
 		MunchMove(mem, src);
 	}
 	else {
-		IRExpTEMP* temp = dynamic_cast<IRExpTEMP*>(dst);
+		const IRExpTEMP* temp = dynamic_cast<const IRExpTEMP*>(dst);
 		if (temp != 0)  {
 			//MOVE(IRExpTEMP(i), e2)
 			MunchMove(temp, src);
@@ -110,16 +110,16 @@ void CCodegen::MunchMove(IExp* dst, IExp* src) {
 	}
 }
 
-void CCodegen::MunchMove(IRExpMEM* dst, IExp* src) {
+void CCodegen::MunchMove(const IRExpMEM* dst, const IRExp* src) {
 
-	IRExpBINOP* binop = dynamic_cast<IRExpBINOP*>(dst->exp);
+	const IRExpBINOP* binop = dynamic_cast<const IRExpBINOP*>(dst->exp);
 	if (binop != 0) {
 
-		IRExpCONST* cst = dynamic_cast<IRExpCONST*>(binop->right);
+		const IRExpCONST* cst = dynamic_cast<const IRExpCONST*>(binop->right);
 		if (cst != 0) {
 			//MOVE(IRExpMEM(IRExpBINOP(PLUS,e1,IRExpCONST(i))),e2)
 
-			emit(new AOPER("mov [`s0 " + CCodegen::opSymbols[binop->binop] + std::to_string(cst->value) + "],	`s1\n",
+			emit(new AOPER("mov [`s0 " + CCodegen::opSymbols[binop->binop] + std::to_string(cst->Value()) + "],	`s1\n",
 				nullptr, new CTempList(MunchExp(binop->left),
 				new CTempList(MunchExp(src), nullptr)
 				)
@@ -128,10 +128,10 @@ void CCodegen::MunchMove(IRExpMEM* dst, IExp* src) {
 			return;
 		}
 
-		cst = dynamic_cast<IRExpCONST*>(binop->left);
+		cst = dynamic_cast<const IRExpCONST*>(binop->left);
 		if (cst != 0) {
 			//MOVE(IRExpMEM(IRExpBINOP(PLUS,IRExpCONST(i),e1)),e2)
-			emit(new AOPER("mov [`s0 " + CCodegen::opSymbols[binop->binop] + std::to_string(cst->value) + "],	`s1\n",
+			emit(new AOPER("mov [`s0 " + CCodegen::opSymbols[binop->binop] + std::to_string(cst->Value()) + "],	`s1\n",
 				nullptr, new CTempList(MunchExp(binop->right),
 				new CTempList(MunchExp(src), nullptr)
 				)
@@ -144,14 +144,14 @@ void CCodegen::MunchMove(IRExpMEM* dst, IExp* src) {
 	}
 
 	//???
-	IRExpMEM* mem = dynamic_cast<IRExpMEM*>(src);
+	const IRExpMEM* mem = dynamic_cast<const IRExpMEM*>(src);
 	if (mem != 0) {
 		emit(new AMOVE("mov `d0, `s0\n", MunchExp(dst->exp), MunchExp(mem->exp)
 			)
 			);
 		return;
 	}
-	IRExpCONST* cst = dynamic_cast<IRExpCONST*>(dst->exp);
+	const IRExpCONST* cst = dynamic_cast<const IRExpCONST*>(dst->exp);
 	if (cst != 0) {
 		emit(new AOPER("mov [" + std::to_string(cst->value) + "], `s0\n", nullptr,
 			new CTempList(MunchExp(src), nullptr)));
@@ -165,58 +165,58 @@ void CCodegen::MunchMove(IRExpMEM* dst, IExp* src) {
 }
 
 
-void CCodegen::MunchMove(IRExpTEMP* dst, IExp* src) {
+void CCodegen::MunchMove(const IRExpTEMP* dst, const IRExp* src) {
 	//MOVE(IRExpTEMP(i), e2)
 	//???
 	emit(new AOPER("mov 	`d0, `s0\n", new CTempList(dst->temp, nullptr),
 		new CTempList(MunchExp(src), nullptr)));
 }
 
-void CCodegen::MunchStm(SEQ* s) {
+void CCodegen::MunchStm(const IRStmSEQ* s) {
 	MunchStm(s->left);
 	MunchStm(s->right);
 }
 
 
-void CCodegen::MunchStm(LABEL* label) {
-	emit(new ALABEL(label->label->Name() + ":\n", label->label));
+void CCodegen::MunchStm(const IRStmLABEL* label) {
+	emit(new ALABEL(label->lable->Name() + ":\n", label->lable));
 }
 
-const Temp::CTemp*  CCodegen::MunchExp(IExp* exp) {
-	IRExpMEM* mem = dynamic_cast<IRExpMEM*>(exp);
+const CTemp*  CCodegen::MunchExp(const IRExp* exp) {
+	const IRExpMEM* mem = dynamic_cast<const IRExpMEM*>(exp);
 	if (mem != 0) {
-		IRExpBINOP* binop = dynamic_cast<IRExpBINOP*>(mem->exp);
+		const IRExpBINOP* binop = dynamic_cast<const IRExpBINOP*>(mem->exp);
 		if (binop != 0) {
-			IRExpCONST* cst = dynamic_cast<IRExpCONST*>(binop->right);
+			const IRExpCONST* cst = dynamic_cast<const IRExpCONST*>(binop->right);
 			if (cst != 0) {
 				//IRExpMEM(IRExpBINOP(PLUS,e1,IRExpCONST(i)))
-				const CTemp* r = const CTemp*;
-				emit(new AOPER("mov `d0, [`s0 " + CCodegen::opSymbols[binop->binop] + std::to_string(cst->value) + "]\n",
+				const CTemp* r = new const CTemp();
+				emit(new AOPER("mov `d0, [`s0 " + CCodegen::opSymbols[binop->binop] + std::to_string(cst->Value()) + "]\n",
 					new CTempList(r, nullptr), new CTempList(MunchExp(binop->left), nullptr)
 					)
 					);
 				return r;
 			}
-			cst = dynamic_cast<IRExpCONST*>(binop->left);
+			cst = dynamic_cast<const IRExpCONST*>(binop->left);
 			if (cst != 0) {
 				//IRExpMEM(IRExpBINOP(PLUS,IRExpCONST(i),e1))
-				const CTemp* r = make_shared<const CTemp>();
-				emit(new AOPER("mov `d0, [`s0 " + CCodegen::opSymbols[binop->binop] + std::to_string(cst->value) + "]\n",
+				const CTemp* r = new const CTemp();
+				emit(new AOPER("mov `d0, [`s0 " + CCodegen::opSymbols[binop->binop] + std::to_string(cst->Value()) + "]\n",
 					new CTempList(r, nullptr), new CTempList(MunchExp(binop->right), nullptr)
 					)
 					);
 				return r;
 			}
 		}
-		IRExpCONST* cst = dynamic_cast<IRExpCONST*>(mem->exp);
+		const IRExpCONST* cst = dynamic_cast<const IRExpCONST*>(mem->exp);
 		if (cst != 0) {
 			//IRExpMEM(IRExpCONST(i))
 			const CTemp* r = new CTemp();
-			emit(new AOPER("mov `d0, [" + std::to_string(cst->value) + "]\n",
+			emit(new AOPER("mov `d0, [" + std::to_string(cst->Value()) + "]\n",
 				new CTempList(r, nullptr), nullptr));
 			return r;
 		}
-		shared_ptr<const CTemp> r = make_shared<const CTemp>();
+		const CTemp*r = new const CTemp();
 		//IRExpMEM(e1)
 		//?????
 		emit(new AMOVE("mov `d0, `s0\n", r, MunchExp(mem->exp)
@@ -225,26 +225,26 @@ const Temp::CTemp*  CCodegen::MunchExp(IExp* exp) {
 		return r;
 	}
 
-	IRExpBINOP* binop = dynamic_cast<IRExpBINOP*>(exp);
+	const IRExpBINOP* binop = dynamic_cast<const IRExpBINOP*>(exp);
 	if ((binop != 0)) {
 		return MunchBinop(binop->left, binop->right, binop->binop);
 	}
-	IRExpCONST* cst = dynamic_cast<IRExpCONST*>(exp);
+	const IRExpCONST* cst = dynamic_cast<const IRExpCONST*>(exp);
 	if (cst != 0) {
 		//IRExpCONST(i)
 		const CTemp* r =   new CTemp();
-		emit(new AOPER("mov `d0, " + std::to_string(cst->value) + "\n", new CTempList(r, nullptr), nullptr)
+		emit(new AOPER("mov `d0, " + std::to_string(cst->Value()) + "\n", new CTempList(r, nullptr), nullptr)
 			);
 		return r;
 	}
-	IRExpTEMP* t = dynamic_cast<IRExpTEMP*>(exp);
+	const IRExpTEMP* t = dynamic_cast<const IRExpTEMP*>(exp);
 	if (t != 0) {
 		return t->temp;
 	}
-	IRExpCALL* call = dynamic_cast<IRExpCALL*>(exp);
+	const IRExpCALL* call = dynamic_cast<const IRExpCALL*>(exp);
 	if (call != 0) {
 		MunchExpCall(call);
-		return CFrame::CallerSaveRegister();
+		return IRFrame::CallerSaveRegister();
 	}
 
 
@@ -252,37 +252,32 @@ const Temp::CTemp*  CCodegen::MunchExp(IExp* exp) {
 
 }
 
-shared_ptr<const Temp::CTemp> CCodegen::MunchBinop(
-	IRExpCONST* cst,
-	IExp* exp,
-	ArithmeticOpType binop)
+const CTemp* CCodegen::MunchBinop(const IRExpCONST* cst, const IRExp* exp, ArithmeticOpType binop)
 {
 
-	shared_ptr<const CTemp> r = make_shared<const CTemp>();
+	const CTemp* r = new const CTemp();
 	emit(new AMOVE("move `d0, `s0\n", r, MunchExp(exp)
 		)
 		);
-	emit(new AOPER(CCodegen::opNames[binop] + " `d0, " + std::to_string(cst->value) + "\n", new CTempList(r, nullptr),
+	emit(new AOPER(CCodegen::opNames[binop] + " `d0, " + std::to_string(cst->Value()) + "\n", new CTempList(r, nullptr),
 		new CTempList(r, nullptr)
 		)
 		);
 	return r;
 }
 
-shared_ptr<const Temp::CTemp> CCodegen::MunchBinop(
-	IRTree::IExp* src, IRTree::IExp* exp,
-	ArithmeticOpType binop)
+const CTemp*:: CCodegen::MunchBinop( const IRExp* src, const IRExp* exp, ArithmeticOpType binop)
 {
-	IRExpCONST* cst = dynamic_cast<IRExpCONST*>(src);
+	const IRExpCONST* cst = dynamic_cast<const IRExpCONST*>(src);
 	if (cst != 0) {
 		return MunchBinop(cst, exp, binop);
 	}
-	cst = dynamic_cast<IRExpCONST*>(exp);
+	cst = dynamic_cast<const IRExpCONST*>(exp);
 	if (cst != 0){
 		return MunchBinop(cst, src, binop);
 	}
 	//IRExpBINOP(PLUS,e1,e2)
-	shared_ptr<const CTemp> r = make_shared<const CTemp>();
+    const CTemp* r = new const CTemp();
 	emit(new AMOVE("mov `d0, `s0\n", r, MunchExp(src)
 		)
 		);
@@ -293,7 +288,7 @@ shared_ptr<const Temp::CTemp> CCodegen::MunchBinop(
 	return r;
 }
 
-CInstrList* CCodegen::Codegen(IStm* s) {
+CInstrList* CCodegen::Codegen(const IRStm* s) {
 	CInstrList* l;
 	MunchStm(s);
 	l = instrList;
@@ -353,7 +348,7 @@ namespace CodeGenerator {
 					instructs = instructs->tail;
 				}
 			}
-			blockInstructions.push_back(CInstrList*(instructs));
+			blockInstructions.push_back(new CInstrList(*instructs));
 		}
 	}
 }

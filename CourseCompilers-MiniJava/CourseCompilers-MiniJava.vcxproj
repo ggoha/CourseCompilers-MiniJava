@@ -94,6 +94,7 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Assembler.h" />
     <ClInclude Include="CodeGeneration.h" />
     <ClInclude Include="Graph.h" />
     <ClInclude Include="IRCanonisation.h" />

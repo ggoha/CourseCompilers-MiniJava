@@ -2,7 +2,10 @@
 #include "iostream"
 #include "IRStm.h"
 #include "IRExp.h"
+#include "IRTemp.h"
+#include "IRFrame.h"
 #include "Assembler.h"
+#define ArithmeticOpType char
 
 class CCodegen {
 public:
@@ -11,23 +14,23 @@ public:
 	CCodegen();
 
 
-	void MunchStm(IRStm* s);
+	void MunchStm(const IRStm* s);
 
-	void MunchStm(IRStmSEQ* s);
+	void MunchStm(const IRStmSEQ* s);
 
 
-	void MunchMove(IRExp* dst, IRExp* src);
-	void MunchMove(IRExpMEM* dst, IRExp* src);
-	void MunchMove(IRExpTEMP* dst, IRExp* src);
-	void MunchStm(IRStmLABEL* label);
-	void MunchExpCall(IRExpCALL* call);
-	CTempList* MunchArgs(shared_ptr<ExpList>);
+	void MunchMove(const IRExp* dst, const IRExp* src);
+	void MunchMove(const IRExpMEM* dst, const IRExp* src);
+	void MunchMove(const IRExpTEMP* dst, const IRExp* src);
+	void MunchStm(const IRStmLABEL* label);
+	void MunchExpCall(const IRExpCALL* call);
+	CTempList* MunchArgs(const IRExpList* explist);
 
-	const CTemp*  MunchExp(IRExp* exp);
-	const CTemp* MunchBinop(IRExpCONST* cst, IRExp* exp, IRExpBINOP binop);
-	const CTemp* MunchBinop(IRExp* src, IRExp* exp, IRExpBINOP binop);
+	const CTemp* MunchExp(const IRExp* exp);
+	const CTemp* MunchBinop(const IRExpCONST* cst, const IRExp* exp, ArithmeticOpType binop);
+	const CTemp* MunchBinop(const IRExp* src, const IRExp* exp, ArithmeticOpType binop);
 
-	CInstrList* Codegen(IRStm* s);
+	CInstrList* Codegen(const IRStm* s);
 private:
 	CInstrList* instrList;
 	CInstrList* last;

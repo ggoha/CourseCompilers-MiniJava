@@ -116,5 +116,8 @@
     <ClInclude Include="CodeGeneration.h">
       <Filter>CodeGeneration</Filter>
     </ClInclude>
+    <ClInclude Include="Assembler.h">
+      <Filter>CodeGeneration</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
