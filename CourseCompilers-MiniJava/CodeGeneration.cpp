@@ -153,7 +153,7 @@ void CCodegen::MunchMove(const IRExpMEM* dst, const IRExp* src) {
 	}
 	const IRExpCONST* cst = dynamic_cast<const IRExpCONST*>(dst->exp);
 	if (cst != 0) {
-		emit(new AOPER("mov [" + std::to_string(cst->value) + "], `s0\n", nullptr,
+		emit(new AOPER("mov [" + std::to_string(cst->Value()) + "], `s0\n", nullptr,
 			new CTempList(MunchExp(src), nullptr)));
 		return;
 	}

@@ -50,7 +50,6 @@ private:
 class CTempList {
 public:
 	CTempList(const CTemp* _head, CTempList* _tail);
-	CTempList* Reverse();
 
 	const CTemp* head;
 	CTempList* tail;
@@ -59,8 +58,11 @@ public:
 		CTempList* cur = this;
 		set<const CTemp*> res;
 		while (cur != 0) {
-			assert(cur->head != 0);
-			res.insert(cur->head.get());
+			if (cur->head == 0)
+			{
+				throw std::invalid_argument("null head");
+			}
+			res.insert(cur->head);
 			cur = cur->tail;
 		}
 		return res;
@@ -74,4 +76,3 @@ public:
 	const CLabel* head;
 	CLabelList* tail;
 };
-}
