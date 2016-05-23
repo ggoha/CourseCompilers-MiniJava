@@ -113,7 +113,7 @@
     <ClInclude Include="IRCanonisation.h">
       <Filter>IRTree</Filter>
     </ClInclude>
-    <ClInclude Include="CodeGenaration.h">
+    <ClInclude Include="CodeGeneration.h">
       <Filter>CodeGeneration</Filter>
     </ClInclude>
   </ItemGroup>

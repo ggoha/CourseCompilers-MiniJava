@@ -94,7 +94,7 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CodeGenaration.h" />
+    <ClInclude Include="CodeGeneration.h" />
     <ClInclude Include="Graph.h" />
     <ClInclude Include="IRCanonisation.h" />
     <ClInclude Include="IRForest.h" />
