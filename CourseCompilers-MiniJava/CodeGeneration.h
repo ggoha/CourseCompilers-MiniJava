@@ -41,3 +41,5 @@ private:
 	static std::vector<std::string> initOpSymbols();
 	void emit(CInstr* instr);
 };
+void GenerateCode(ostream &out, const vector<IRStmLIST*> &blocks,
+	vector<CInstrList*> &blockInstructions);

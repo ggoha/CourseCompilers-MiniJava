@@ -11,7 +11,7 @@
 #include "CTypeChecker.h"
 #include "PrettyPrinter.h"
 #include "IRCanonisation.h"
-
+#include "CodeGeneration.h"
 extern FILE* yyin;
 extern "C" int yylex();
 void yyerror( CProgram* root, int*, const char* );
@@ -128,7 +128,8 @@ Program:
 	 iRForest.build($$,&symbolTableBuilder.table);
 	 auto irpp = IRVisitor("main.txt");
 	 irpp.visit((IRStmLIST*)iRForest.iRForest[0]);
-
+	 vector<CInstrList*> blockInstructions;
+	 GenerateCode(cout, iRForest.iRForest,blockInstructions);
 	 }
 	| MainClass ClassDecls {
 	 $$ = new CProgram( $1, $2 );
@@ -160,9 +161,10 @@ Program:
 		irpp.visit(iRForest.iRForest[i]);
 		irpp.Devide();
 		irpp.Flush();
-	 }
-
-	 }
+	 };
+	 vector<CInstrList*> blockInstructions;
+	 GenerateCode(cout, iRForest.iRForest,blockInstructions);
+	}
 	;
 ClassDecls:
 	ClassDecl { $$ = new CClassDecls($1); }

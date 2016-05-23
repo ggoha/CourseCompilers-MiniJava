@@ -51,9 +51,6 @@
     <ClCompile Include="IRVisitor.cpp">
       <Filter>IRTree</Filter>
     </ClCompile>
-    <ClCompile Include="Graph.cpp">
-      <Filter>IRTree</Filter>
-    </ClCompile>
     <ClCompile Include="IRTemp.cpp">
       <Filter>IRTree</Filter>
     </ClCompile>
@@ -71,6 +68,9 @@
     </ClCompile>
     <ClCompile Include="Assembler.cpp">
       <Filter>CodeGeneration</Filter>
+    </ClCompile>
+    <ClCompile Include="IRRepresentation.cpp">
+      <Filter>IRTree</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -113,9 +113,6 @@
     <ClInclude Include="IRVisitor.h">
       <Filter>IRTree</Filter>
     </ClInclude>
-    <ClInclude Include="Graph.h">
-      <Filter>IRTree</Filter>
-    </ClInclude>
     <ClInclude Include="IRForest.h">
       <Filter>IRTree</Filter>
     </ClInclude>
@@ -130,6 +127,9 @@
     </ClInclude>
     <ClInclude Include="TempMap.h">
       <Filter>CodeGeneration</Filter>
+    </ClInclude>
+    <ClInclude Include="IRRepresentation.h">
+      <Filter>IRTree</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

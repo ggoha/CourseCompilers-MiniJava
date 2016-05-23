@@ -89,11 +89,6 @@ CTempList* CCodegen::MunchArgs(const IRExpList* args) {
 	return l;
 }
 
-
-/*munchStm(EXP(CALL(e,args)))
-{Temp r = munchExp(e); TempList l = munchArgs(0,args);
-emit(new OPER("CALL 's0\n",calldefs,L(r,l)));}*/
-
 void CCodegen::MunchMove(const IRExp* dst, const IRExp* src) {
 	const IRExpMEM* mem = dynamic_cast<const IRExpMEM*>(dst);
 	if (mem != 0) {
@@ -162,7 +157,6 @@ void CCodegen::MunchMove(const IRExpMEM* dst, const IRExp* src) {
 
 }
 
-
 void CCodegen::MunchMove(const IRExpTEMP* dst, const IRExp* src) {
 	//MOVE(IRExpTEMP(i), e2)
 	//???
@@ -174,7 +168,6 @@ void CCodegen::MunchStmSEQ(const IRStmSEQ* s) {
 	MunchStm(s->left);
 	MunchStm(s->right);
 }
-
 
 void CCodegen::MunchStm(const IRStmLABEL* label) {
 	emit(new ALABEL(label->lable->Name() + ":\n", label->lable));
@@ -325,25 +318,23 @@ std::vector<std::string> CCodegen::opNames = CCodegen::initOpNames();
 std::vector<std::string> CCodegen::opSymbols = CCodegen::initOpSymbols();
 
 
-namespace CodeGenerator {
-	void GenerateCode(ostream &out, const vector<IRStmLIST*> &blocks,
-		vector<CInstrList*> &blockInstructions) {
-		CCodegen generator;
-		CDefaultMap* defMap = new CDefaultMap();
-		for (int i = 0; i < blocks.size(); ++i) {
-			CInstrList* instructs = 0;
-			out << "===========================" << endl;
-			IRStmLIST* curBlock = blocks[i];
-			for (int j = 0; j < curBlock->stms.size(); j++){
-				instructs = generator.Codegen(curBlock->stms[j]);
-				while (instructs != 0) {
-					if (instructs->head != 0) {
-						out << instructs->head->format(defMap);
-					}
-					instructs = instructs->tail;
+void GenerateCode(ostream &out, const vector<IRStmLIST*> &blocks,
+	vector<CInstrList*> &blockInstructions) {
+	CCodegen generator;
+	CDefaultMap* defMap = new CDefaultMap();
+	for (int i = 0; i < blocks.size(); ++i) {
+		CInstrList* instructs = 0;
+		out << "===========================" << endl;
+		IRStmLIST* curBlock = blocks[i];
+		for (int j = 0; j < curBlock->stms.size(); j++){
+			instructs = generator.Codegen(curBlock->stms[j]);
+			while (instructs != 0) {
+				if (instructs->head != 0) {
+					out << instructs->head->format(defMap);
 				}
+				instructs = instructs->tail;
 			}
-			blockInstructions.push_back(new CInstrList(*instructs));
 		}
+		blockInstructions.push_back(new CInstrList(*instructs));
 	}
 }

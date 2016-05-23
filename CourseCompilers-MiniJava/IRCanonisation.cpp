@@ -101,10 +101,10 @@ void IRCanonizer::visit(const IRExpList *n){
 		args.push_back(lastNode);
 	}
 	isInsideExp = nextIsInsideExp;
-	lastNode = el;
 	for (int i = 0; i < n->expslist.size(); i++) {
 		el->expslist.push_back(LastNodeAsIRExp(args[i]));
 	}
+	lastNode = el;
 };
 
 void IRCanonizer::visit(const IRExpCALL* n){
@@ -139,21 +139,26 @@ const IRStm* IRCanonizer::LastNodeAsIRStm(const IRNode* n) {
 
 
 
-const IRNode* IRCanonizer::getLastNode(const IRNode* n)
+const IRNode* IRCanonizer::getLastNode(const IRNode* _n)
 {
-	if (n == 0)
+	const IRNode** n;
+	if (_n == 0)
 	{
-		n = lastNode;
+		n = &lastNode;
+	}
+	else
+	{
+		n = &_n;
 	}
 
 	if (isInsideExp)
 	{
 		auto temp = new CTemp();
-		stmList->stms.push_back(new IRStmMOVE(new IRExpTEMP(temp), dynamic_cast<const IRExpCALL*>(n)));
-		lastNode = new IRExpTEMP(temp);
-		return lastNode;
+		stmList->stms.push_back(new IRStmMOVE(new IRExpTEMP(temp), dynamic_cast<const IRExp*>(*n)));
+		*n = new IRExpTEMP(temp);
+		return *n;
 	}
-	return lastNode;
+	return *n;
 }
 
 v_iterator find_label_pos(v_iterator lo, const CLabel* label)

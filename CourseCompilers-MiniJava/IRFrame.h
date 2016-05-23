@@ -1,3 +1,4 @@
+#pragma once
 #include "IRExp.h"
 #include "map"
 using namespace std;
