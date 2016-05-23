@@ -1,31 +1,33 @@
 #include "CodeGeneration.h"
 
 
+CCodegen::CCodegen() : instrList(0), last(0) {}
+
 void CCodegen::MunchStm(IRStm* s) {
-	SEQ* seq = dynamic_cast<SEQ*>(s);
+	IRStmSEQ* seq = dynamic_cast<IRStmSEQ*>(s);
 	if (seq != 0) {
 		MunchStm(seq);
 	}
 	else {
-		MOVE* move = dynamic_cast<MOVE*>(s);
+		IRStmMOVE* move = dynamic_cast<IRStmMOVE*>(s);
 		if (move != 0) {
 			MunchMove(move->dst, move->src);
 		}
 		else {
-			LABEL* label = dynamic_cast<LABEL*>(s);
+			IRStmLABEL* label = dynamic_cast<IRStmLABEL*>(s);
 			if (label != 0) {
 				MunchStm(label);
 			}
 			else {
-				EXP* exp = dynamic_cast<EXP*>(s);
+				IRExp* exp = dynamic_cast<IRExp*>(s);
 				if (exp != 0) {
-					CALL* call = dynamic_cast<CALL*>(exp->exp);
+					IRExpCALL* call = dynamic_cast<IRExpCALL*>(exp->exp);
 					if (call != 0) {
 						MunchExpCall(call);
 					}
 				}
 				else {
-					JUMP* jmp = dynamic_cast<JUMP*>(s);
+					IRStmJUMP* jmp = dynamic_cast<IRStmJUMP*>(s);
 					if (jmp != 0) {
 						emit(new AOPER("jmp `j0\n",
 							nullptr,
@@ -34,7 +36,7 @@ void CCodegen::MunchStm(IRStm* s) {
 							new CLabelList(jmp->target, nullptr))
 							);
 					}
-					CJUMP* cjump = dynamic_cast<CJUMP*>(s);
+					IRStmCJUMP* cjump = dynamic_cast<IRStmCJUMP*>(s);
 					if (cjump != 0) {
 						emit(new AOPER("cmp `s0, `s1\n", nullptr,
 							new CTempList(
@@ -60,22 +62,22 @@ void CCodegen::MunchStm(IRStm* s) {
 	}
 }
 
-void CCodegen::MunchExpCall(CALL* call) {
-	NAME* name = dynamic_cast<NAME*>(call->func);
+void CCodegen::MunchExpCall(IRExpCALL* call) {
+	IRExpNAME* name = dynamic_cast<IRExpNAME*>(call->func);
 	if (name != 0) {
 		CTempList* l = MunchArgs(call->args);
 		emit(new AOPER("CALL " + name->label->Name() + "\n", CFrame::PreColoredRegisters(), l));
 	}
 	else {
-		shared_ptr<const CTemp> r = MunchExp(call->func);
+		const CTemp* r = MunchExp(call->func);
 		CTempList* l = MunchArgs(call->args);
 		emit(new AOPER("CALL `s0\n", CFrame::PreColoredRegisters(), new CTempList(r, l)));
 	}
 }
 
-CTempList* CCodegen::MunchArgs(shared_ptr<ExpList> args) {
+CTempList* CCodegen::MunchArgs(IRExpList* args) {
 	CTempList* l = nullptr;
-	while (args != 0) {
+	for( int j = 0; j < args->expslist.size(); j++ ){
 		if (l != nullptr) {
 			l->tail = new CTempList(std::make_shared<CTemp>(), nullptr);
 			l = l->tail;
@@ -83,10 +85,9 @@ CTempList* CCodegen::MunchArgs(shared_ptr<ExpList> args) {
 		else {
 			l = new CTempList(std::make_shared<CTemp>(), nullptr);
 		}
-		emit(new AOPER("push `s0\n", nullptr, new CTempList(MunchExp(args->head), nullptr)
+		emit(new AOPER("push `s0\n", nullptr, new CTempList(MunchExp(args->expslist[i]), nullptr)
 			)
 			);
-		args = args->tail;
 	}
 }
 
@@ -96,27 +97,27 @@ CTempList* CCodegen::MunchArgs(shared_ptr<ExpList> args) {
 emit(new OPER("CALL 's0\n",calldefs,L(r,l)));}*/
 
 void CCodegen::MunchMove(IExp* dst, IExp* src) {
-	MEM* mem = dynamic_cast<MEM*>(dst);
+	IRExpMEM* mem = dynamic_cast<IRExpMEM*>(dst);
 	if (mem != 0) {
 		MunchMove(mem, src);
 	}
 	else {
-		TEMP* temp = dynamic_cast<TEMP*>(dst);
+		IRExpTEMP* temp = dynamic_cast<IRExpTEMP*>(dst);
 		if (temp != 0)  {
-			//MOVE(TEMP(i), e2)
+			//MOVE(IRExpTEMP(i), e2)
 			MunchMove(temp, src);
 		}
 	}
 }
 
-void CCodegen::MunchMove(MEM* dst, IExp* src) {
+void CCodegen::MunchMove(IRExpMEM* dst, IExp* src) {
 
-	BINOP* binop = dynamic_cast<BINOP*>(dst->exp);
+	IRExpBINOP* binop = dynamic_cast<IRExpBINOP*>(dst->exp);
 	if (binop != 0) {
 
-		CONST* cst = dynamic_cast<CONST*>(binop->right);
+		IRExpCONST* cst = dynamic_cast<IRExpCONST*>(binop->right);
 		if (cst != 0) {
-			//MOVE(MEM(BINOP(PLUS,e1,CONST(i))),e2)
+			//MOVE(IRExpMEM(IRExpBINOP(PLUS,e1,IRExpCONST(i))),e2)
 
 			emit(new AOPER("mov [`s0 " + CCodegen::opSymbols[binop->binop] + std::to_string(cst->value) + "],	`s1\n",
 				nullptr, new CTempList(MunchExp(binop->left),
@@ -127,9 +128,9 @@ void CCodegen::MunchMove(MEM* dst, IExp* src) {
 			return;
 		}
 
-		cst = dynamic_cast<CONST*>(binop->left);
+		cst = dynamic_cast<IRExpCONST*>(binop->left);
 		if (cst != 0) {
-			//MOVE(MEM(BINOP(PLUS,CONST(i),e1)),e2)
+			//MOVE(IRExpMEM(IRExpBINOP(PLUS,IRExpCONST(i),e1)),e2)
 			emit(new AOPER("mov [`s0 " + CCodegen::opSymbols[binop->binop] + std::to_string(cst->value) + "],	`s1\n",
 				nullptr, new CTempList(MunchExp(binop->right),
 				new CTempList(MunchExp(src), nullptr)
@@ -143,14 +144,14 @@ void CCodegen::MunchMove(MEM* dst, IExp* src) {
 	}
 
 	//???
-	MEM* mem = dynamic_cast<MEM*>(src);
+	IRExpMEM* mem = dynamic_cast<IRExpMEM*>(src);
 	if (mem != 0) {
 		emit(new AMOVE("mov `d0, `s0\n", MunchExp(dst->exp), MunchExp(mem->exp)
 			)
 			);
 		return;
 	}
-	CONST* cst = dynamic_cast<CONST*>(dst->exp);
+	IRExpCONST* cst = dynamic_cast<IRExpCONST*>(dst->exp);
 	if (cst != 0) {
 		emit(new AOPER("mov [" + std::to_string(cst->value) + "], `s0\n", nullptr,
 			new CTempList(MunchExp(src), nullptr)));
@@ -164,8 +165,8 @@ void CCodegen::MunchMove(MEM* dst, IExp* src) {
 }
 
 
-void CCodegen::MunchMove(TEMP* dst, IExp* src) {
-	//MOVE(TEMP(i), e2)
+void CCodegen::MunchMove(IRExpTEMP* dst, IExp* src) {
+	//MOVE(IRExpTEMP(i), e2)
 	//???
 	emit(new AOPER("mov 	`d0, `s0\n", new CTempList(dst->temp, nullptr),
 		new CTempList(MunchExp(src), nullptr)));
@@ -181,25 +182,25 @@ void CCodegen::MunchStm(LABEL* label) {
 	emit(new ALABEL(label->label->Name() + ":\n", label->label));
 }
 
-shared_ptr<const Temp::CTemp>  CCodegen::MunchExp(IExp* exp) {
-	MEM* mem = dynamic_cast<MEM*>(exp);
+const Temp::CTemp*  CCodegen::MunchExp(IExp* exp) {
+	IRExpMEM* mem = dynamic_cast<IRExpMEM*>(exp);
 	if (mem != 0) {
-		BINOP* binop = dynamic_cast<BINOP*>(mem->exp);
+		IRExpBINOP* binop = dynamic_cast<IRExpBINOP*>(mem->exp);
 		if (binop != 0) {
-			CONST* cst = dynamic_cast<CONST*>(binop->right);
+			IRExpCONST* cst = dynamic_cast<IRExpCONST*>(binop->right);
 			if (cst != 0) {
-				//MEM(BINOP(PLUS,e1,CONST(i)))
-				shared_ptr<const CTemp> r = make_shared<const CTemp>();
+				//IRExpMEM(IRExpBINOP(PLUS,e1,IRExpCONST(i)))
+				const CTemp* r = const CTemp*;
 				emit(new AOPER("mov `d0, [`s0 " + CCodegen::opSymbols[binop->binop] + std::to_string(cst->value) + "]\n",
 					new CTempList(r, nullptr), new CTempList(MunchExp(binop->left), nullptr)
 					)
 					);
 				return r;
 			}
-			cst = dynamic_cast<CONST*>(binop->left);
+			cst = dynamic_cast<IRExpCONST*>(binop->left);
 			if (cst != 0) {
-				//MEM(BINOP(PLUS,CONST(i),e1))
-				shared_ptr<const CTemp> r = make_shared<const CTemp>();
+				//IRExpMEM(IRExpBINOP(PLUS,IRExpCONST(i),e1))
+				const CTemp* r = make_shared<const CTemp>();
 				emit(new AOPER("mov `d0, [`s0 " + CCodegen::opSymbols[binop->binop] + std::to_string(cst->value) + "]\n",
 					new CTempList(r, nullptr), new CTempList(MunchExp(binop->right), nullptr)
 					)
@@ -207,16 +208,16 @@ shared_ptr<const Temp::CTemp>  CCodegen::MunchExp(IExp* exp) {
 				return r;
 			}
 		}
-		CONST* cst = dynamic_cast<CONST*>(mem->exp);
+		IRExpCONST* cst = dynamic_cast<IRExpCONST*>(mem->exp);
 		if (cst != 0) {
-			//MEM(CONST(i))
-			shared_ptr<const CTemp> r = make_shared<const CTemp>();
+			//IRExpMEM(IRExpCONST(i))
+			const CTemp* r = new CTemp();
 			emit(new AOPER("mov `d0, [" + std::to_string(cst->value) + "]\n",
 				new CTempList(r, nullptr), nullptr));
 			return r;
 		}
 		shared_ptr<const CTemp> r = make_shared<const CTemp>();
-		//MEM(e1)
+		//IRExpMEM(e1)
 		//?????
 		emit(new AMOVE("mov `d0, `s0\n", r, MunchExp(mem->exp)
 			)
@@ -224,23 +225,23 @@ shared_ptr<const Temp::CTemp>  CCodegen::MunchExp(IExp* exp) {
 		return r;
 	}
 
-	BINOP* binop = dynamic_cast<BINOP*>(exp);
+	IRExpBINOP* binop = dynamic_cast<IRExpBINOP*>(exp);
 	if ((binop != 0)) {
 		return MunchBinop(binop->left, binop->right, binop->binop);
 	}
-	CONST* cst = dynamic_cast<CONST*>(exp);
+	IRExpCONST* cst = dynamic_cast<IRExpCONST*>(exp);
 	if (cst != 0) {
-		//CONST(i)
-		shared_ptr<const CTemp> r = make_shared<const CTemp>();
+		//IRExpCONST(i)
+		const CTemp* r =   new CTemp();
 		emit(new AOPER("mov `d0, " + std::to_string(cst->value) + "\n", new CTempList(r, nullptr), nullptr)
 			);
 		return r;
 	}
-	TEMP* t = dynamic_cast<TEMP*>(exp);
+	IRExpTEMP* t = dynamic_cast<IRExpTEMP*>(exp);
 	if (t != 0) {
 		return t->temp;
 	}
-	CALL* call = dynamic_cast<CALL*>(exp);
+	IRExpCALL* call = dynamic_cast<IRExpCALL*>(exp);
 	if (call != 0) {
 		MunchExpCall(call);
 		return CFrame::CallerSaveRegister();
@@ -252,7 +253,7 @@ shared_ptr<const Temp::CTemp>  CCodegen::MunchExp(IExp* exp) {
 }
 
 shared_ptr<const Temp::CTemp> CCodegen::MunchBinop(
-	CONST* cst,
+	IRExpCONST* cst,
 	IExp* exp,
 	ArithmeticOpType binop)
 {
@@ -272,15 +273,15 @@ shared_ptr<const Temp::CTemp> CCodegen::MunchBinop(
 	IRTree::IExp* src, IRTree::IExp* exp,
 	ArithmeticOpType binop)
 {
-	CONST* cst = dynamic_cast<CONST*>(src);
+	IRExpCONST* cst = dynamic_cast<IRExpCONST*>(src);
 	if (cst != 0) {
 		return MunchBinop(cst, exp, binop);
 	}
-	cst = dynamic_cast<CONST*>(exp);
+	cst = dynamic_cast<IRExpCONST*>(exp);
 	if (cst != 0){
 		return MunchBinop(cst, src, binop);
 	}
-	//BINOP(PLUS,e1,e2)
+	//IRExpBINOP(PLUS,e1,e2)
 	shared_ptr<const CTemp> r = make_shared<const CTemp>();
 	emit(new AMOVE("mov `d0, `s0\n", r, MunchExp(src)
 		)
@@ -332,3 +333,27 @@ std::vector<std::string> CCodegen::initOpSymbols() {
 
 std::vector<std::string> CCodegen::opNames = CCodegen::initOpNames();
 std::vector<std::string> CCodegen::opSymbols = CCodegen::initOpSymbols();
+
+
+namespace CodeGenerator {
+	void GenerateCode(ostream &out, const vector<IRStmLIST*> &blocks,
+		vector<CInstrList*> &blockInstructions) {
+		CCodegen generator;
+		CDefaultMap* defMap = new CDefaultMap();
+		for (int i = 0; i < blocks.size(); ++i) {
+			CInstrList* instructs = 0;
+			out << "===========================" << endl;
+			IRStmLIST* curBlock = blocks[i];
+			for (int j = 0; j < curBlock->stms.size(); j++){
+				instructs = generator.Codegen(curBlock->stms[j]);
+				while (instructs != 0) {
+					if (instructs->head != 0) {
+						out << instructs->head->format(defMap);
+					}
+					instructs = instructs->tail;
+				}
+			}
+			blockInstructions.push_back(CInstrList*(instructs));
+		}
+	}
+}
