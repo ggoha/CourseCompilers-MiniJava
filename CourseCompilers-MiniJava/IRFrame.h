@@ -80,9 +80,9 @@ private:
 //Реализация на стеке
 class InFrame : IAccess {
 	InFrame(int _offset) : offset(_offset) {};
-	const IRExp* GetExp(const CTemp framePtr) {
+	IRExp* GetExp(const CTemp framePtr) {
 		int machineOffset = offset * IRFrame::WORD_SIZE;
-		return new IRExpMEM(new IRExpBINOP('+', new IRExpTEMP(&framePtr), new IRExpCONST(machineOffset)));
+		return (IRExp*)new IRExpMEM( (IRExp*)new IRExpBINOP('+', (IRExp*)new IRExpTEMP(&framePtr), (IRExp*)new IRExpCONST(machineOffset)));
 	}
 	int offset;
 };
@@ -90,8 +90,8 @@ class InFrame : IAccess {
 //Реализация на регистрах
 class InReg : IAccess {
 	InReg() { temp = &CTemp(); };
-	const IRExp* GetExp(const CTemp temp) {
-		return new IRExpTEMP(&temp);
+	IRExp* GetExp(const CTemp temp) {
+		return (IRExp*)(new IRExpTEMP(&temp));
 	}
 	CTemp* temp;
 };

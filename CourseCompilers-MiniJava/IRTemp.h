@@ -7,6 +7,7 @@ using namespace std;
 
 class IRNode
 {
+public:
 	virtual void accept(IRVisitor* visitor) const = 0;
 };
 
