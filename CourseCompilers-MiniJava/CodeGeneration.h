@@ -35,9 +35,9 @@ public:
 private:
 	CInstrList* instrList;
 	CInstrList* last;
-	static std::vector<std::string> opNames;
+	static std::map<char, std::string > opNames;
 	static std::vector<std::string> opSymbols;
-	static std::vector<std::string> initOpNames();
+	static std::map<char, std::string > initOpNames();
 	static std::vector<std::string> initOpSymbols();
 	void emit(CInstr* instr);
 };

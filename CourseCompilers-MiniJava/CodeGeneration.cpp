@@ -1,4 +1,5 @@
 #include "CodeGeneration.h"
+#include <assert.h>
 
 CCodegen::CCodegen() : instrList(0), last(0) {}
 
@@ -54,11 +55,19 @@ void CCodegen::MunchStm(const IRStm* s) {
 						emit(new AOPER(jumpCmdName + "   `j0\n", nullptr, nullptr,
 							new CLabelList(cjump->iftrue, new CLabelList(cjump->iffalse, nullptr))));
 					}
+					else {
+						const IRStmEXP* sexp = dynamic_cast<const IRStmEXP*>(s);
+						if (sexp != 0)
+						{
+							MunchExp(sexp->exp);
+						}
+					}
 
 				}
 			}
 		}
 	}
+
 }
 
 void CCodegen::MunchExpCall(const IRExpCALL* call) {
@@ -296,13 +305,12 @@ void CCodegen::emit(CInstr* instr) {
 	}
 }
 
-
-std::vector<std::string> CCodegen::initOpNames() {
-	std::vector<std::string> names;
-	names.push_back("add");
-	names.push_back("sub");
-	names.push_back("mul");
-	names.push_back("div");
+std::map<char, std::string > CCodegen::initOpNames() {
+	std::map<char, std::string > names;
+	names['+'] = "add";
+	names['-'] = "sub";
+	names['*'] = "mul";
+	names['/'] = "div";
 	return names;
 }
 std::vector<std::string> CCodegen::initOpSymbols() {
@@ -314,9 +322,8 @@ std::vector<std::string> CCodegen::initOpSymbols() {
 	return names;
 }
 
-std::vector<std::string> CCodegen::opNames = CCodegen::initOpNames();
+std::map<char, std::string > CCodegen::opNames = CCodegen::initOpNames();
 std::vector<std::string> CCodegen::opSymbols = CCodegen::initOpSymbols();
-
 
 void GenerateCode(ostream &out, const vector<IRStmLIST*> &blocks,
 	vector<CInstrList*> &blockInstructions) {
@@ -328,6 +335,7 @@ void GenerateCode(ostream &out, const vector<IRStmLIST*> &blocks,
 		IRStmLIST* curBlock = blocks[i];
 		for (int j = 0; j < curBlock->stms.size(); j++){
 			instructs = generator.Codegen(curBlock->stms[j]);
+			blockInstructions.push_back(new CInstrList(*instructs));
 			while (instructs != 0) {
 				if (instructs->head != 0) {
 					out << instructs->head->format(defMap);
@@ -335,6 +343,5 @@ void GenerateCode(ostream &out, const vector<IRStmLIST*> &blocks,
 				instructs = instructs->tail;
 			}
 		}
-		blockInstructions.push_back(new CInstrList(*instructs));
 	}
 }
