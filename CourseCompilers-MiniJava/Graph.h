@@ -1,7 +1,17 @@
 #ifndef CGraph_H_INCLUDED
 #define CGraph_H_INCLUDED
-template <class F, class S, class T> struct trine;
-template <class F, class S, class T> ostream& operator<< (ostream&, trine<F, S, T> const &);
+#include <iostream>
+#include <list>
+#include <vector>
+#include <set>
+using namespace std;
+
+template <class F, class S, class T> 
+struct trine;
+
+template <class F, class S, class T> 
+std::ostream& operator<< (std::ostream&, trine<F, S, T> const &);
+
 template <class F, class S, class T>
 struct trine{
 	F first;
